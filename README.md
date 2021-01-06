@@ -57,4 +57,4 @@ YTIM().checkConnectStatus();
 YTIM().release();
 ```
 ## 示例代码
-[example project](https://github.com/).
+[example project](https://github.com/and2long/flutter_ytim/tree/master/example).
