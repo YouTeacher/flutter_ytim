@@ -1,8 +1,7 @@
 name: flutter_ytim
-description: A Flutter package of YouTeacher IM.
-version: 0.0.1
-author:
-homepage:
+description: YouTeacher IM SDK for Flutter.
+version: 1.0.0
+homepage: https://github.com/and2long/flutter_ytim
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -15,3 +14,4 @@ dependencies:
   dio: ^3.0.10
   provider: ^4.3.2+2
   shared_preferences: ^0.5.10
+  crypto: ^2.1.5
