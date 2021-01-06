@@ -1,0 +1,17 @@
+name: flutter_ytim
+description: A Flutter package of YouTeacher IM.
+version: 0.0.1
+author:
+homepage:
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  web_socket_channel: ^1.1.0
+  dio: ^3.0.10
+  provider: ^4.3.2+2
+  shared_preferences: ^0.5.10
