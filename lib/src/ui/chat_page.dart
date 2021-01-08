@@ -85,7 +85,7 @@ class _ChatPageState extends State<ChatPage> {
   /// 列表滚动到底部
   void _jump2bottom() {
     Timer(
-        Duration(milliseconds: 500),
+        Duration(milliseconds: 200),
         () => _scrollController
             .jumpTo(_scrollController.position.maxScrollExtent));
   }

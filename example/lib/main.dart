@@ -45,6 +45,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         YTIM().getUserList(order: '4');
       },
     );
+    YTIM().addKickOutCallback(() {
+      print('被踢下线！');
+    });
   }
 
   @override

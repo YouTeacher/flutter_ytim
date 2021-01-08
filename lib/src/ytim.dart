@@ -16,18 +16,13 @@ import 'package:flutter_ytim/src/other/yt_urls.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-enum IMConnectState { IDLE, Connecting, Connected }
+enum IMConnectState { IDLE, CONNECTING, CONNECTED }
 
 typedef Callback<T> = void Function(T value);
+typedef void KickOutCallback();
 
 class YTIM {
-  factory YTIM() {
-    if (_singleton == null) {
-      _singleton = YTIM._();
-      YTSPUtils.init();
-    }
-    return _singleton;
-  }
+  String _tag = 'YTIM';
 
   YTIM._() {
     _streamController = StreamController.broadcast();
@@ -35,7 +30,13 @@ class YTIM {
 
   static YTIM _singleton;
 
-  String _tag = 'YTIM';
+  factory YTIM() {
+    if (_singleton == null) {
+      _singleton = YTIM._();
+      YTSPUtils.init();
+    }
+    return _singleton;
+  }
 
   IMConnectState _connectState = IMConnectState.IDLE;
   IOWebSocketChannel _channel;
@@ -60,6 +61,7 @@ class YTIM {
   /// 回调
   Callback<IMUser> onIMUserCreatedCallback;
   Callback<IMUser> onLoginSuccessCallback;
+  KickOutCallback kickOutCallback;
 
   Stream<T> on<T>() {
     if (T == dynamic) {
@@ -102,12 +104,16 @@ class YTIM {
     _connectServer();
   }
 
+  void addKickOutCallback(KickOutCallback callback) {
+    this.kickOutCallback = callback;
+  }
+
   /// 连接
   void _connectServer() {
     if (_connectState == IMConnectState.IDLE) {
       release();
-      _connectState = IMConnectState.Connecting;
-      _streamController.sink.add(IMConnectState.Connecting);
+      _connectState = IMConnectState.CONNECTING;
+      _streamController.sink.add(IMConnectState.CONNECTING);
       YTLog.d(_tag, 'connect sockets address: ${YTUrls.IM_SERVER_ADDRESS}');
       _channel = IOWebSocketChannel.connect(YTUrls.IM_SERVER_ADDRESS);
       _needReconnect = true;
@@ -182,7 +188,7 @@ class YTIM {
 
   /// 给服务器发消息
   void _send(String message) {
-    if (_connectState == IMConnectState.Connected && _channel?.sink != null) {
+    if (_connectState == IMConnectState.CONNECTED && _channel?.sink != null) {
       YTLog.d(_tag, '--> message:$message');
       _channel.sink.add(message);
     }
@@ -196,8 +202,8 @@ class YTIM {
       switch (obj['module']) {
         case 'connect':
           YTLog.d(_tag, 'connect success');
-          _connectState = IMConnectState.Connected;
-          _streamController.sink.add(IMConnectState.Connected);
+          _connectState = IMConnectState.CONNECTED;
+          _streamController.sink.add(IMConnectState.CONNECTED);
           _login();
           break;
         case 'login':
@@ -254,6 +260,9 @@ class YTIM {
       switch (obj['module']) {
         case 'kickOut':
           // 如果帐号已经在其它端登录，退出执行重新登陆
+          if (kickOutCallback != null) {
+            kickOutCallback();
+          }
           release();
           break;
         case 'message':

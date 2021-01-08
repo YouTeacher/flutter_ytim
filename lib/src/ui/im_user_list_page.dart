@@ -101,10 +101,10 @@ class _IMUserListPageState extends State<IMUserListPage> {
             case IMConnectState.IDLE:
               state = '离线';
               break;
-            case IMConnectState.Connecting:
+            case IMConnectState.CONNECTING:
               state = '连接中...';
               break;
-            case IMConnectState.Connected:
+            case IMConnectState.CONNECTED:
               state = '在线';
               break;
             default:
