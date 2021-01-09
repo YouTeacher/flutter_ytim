@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ytim/flutter_ytim.dart';
 import 'package:flutter_ytim/src/bean/im_msg.dart';
-import 'package:flutter_ytim/src/other/yt_utils.dart';
 import 'package:flutter_ytim/src/ui/im_user_avatar.dart';
+import 'package:flutter_ytim/src/utils/yt_utils.dart';
 
 /// 聊天消息类别
 enum ChatItemType { Me, Other }

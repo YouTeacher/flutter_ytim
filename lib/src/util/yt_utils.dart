@@ -1,5 +1,5 @@
+import 'package:flutter_ytim/src/bean/im_store.dart';
 import 'package:flutter_ytim/src/bean/im_unread_count.dart';
-import 'package:flutter_ytim/src/other/im_store.dart';
 import 'package:flutter_ytim/src/ytim.dart';
 
 class YTUtils {

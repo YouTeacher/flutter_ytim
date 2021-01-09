@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_ytim/src/other/yt_log.dart';
+import 'package:flutter_ytim/src/utils/yt_log.dart';
 import 'package:flutter_ytim/src/ytim.dart';
 
 class YTHttp {

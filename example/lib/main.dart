@@ -10,6 +10,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: [
+        // 这一行很重要，YTIM内置界面的文字国际化。
+        YTIMLocalizations.delegate,
+      ],
       home: HomePage(),
     );
   }

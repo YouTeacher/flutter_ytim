@@ -5,20 +5,21 @@ import 'package:flutter_ytim/flutter_ytim.dart';
 import 'package:flutter_ytim/src/bean/im_command.dart';
 import 'package:flutter_ytim/src/bean/im_history.dart';
 import 'package:flutter_ytim/src/bean/im_msg.dart';
-import 'package:flutter_ytim/src/other/yt_sp_utils.dart';
 import 'package:flutter_ytim/src/ui/item_chat_msg.dart';
+import 'package:flutter_ytim/src/utils/yt_sp_utils.dart';
+import 'package:flutter_ytim/src/values/yt_localizations.dart';
 
-class ChatPage extends StatefulWidget {
+class IMChatPage extends StatefulWidget {
   /// 对方的im id。
   final String tid;
 
-  const ChatPage({Key key, @required this.tid}) : super(key: key);
+  const IMChatPage({Key key, @required this.tid}) : super(key: key);
 
   @override
-  _ChatPageState createState() => _ChatPageState();
+  _IMChatPageState createState() => _IMChatPageState();
 }
 
-class _ChatPageState extends State<ChatPage> {
+class _IMChatPageState extends State<IMChatPage> {
   TextEditingController _textController = TextEditingController();
   bool _btnDisabled = true;
 
@@ -216,16 +217,20 @@ class _ChatPageState extends State<ChatPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          content: Text('确定撤回删除？'),
+          content: Text(YTIMLocalizations.of(context)
+              .currentLocalization
+              .alertRevokeMessage),
           actions: <Widget>[
             TextButton(
-                child: Text('Cancel',
+                child: Text(
+                    YTIMLocalizations.of(context).currentLocalization.cancel,
                     style: TextStyle(color: Theme.of(context).primaryColor)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 }),
             TextButton(
-                child: Text('OK',
+                child: Text(
+                    YTIMLocalizations.of(context).currentLocalization.ok,
                     style: TextStyle(color: Theme.of(context).primaryColor)),
                 onPressed: () {
                   Navigator.pop(context);

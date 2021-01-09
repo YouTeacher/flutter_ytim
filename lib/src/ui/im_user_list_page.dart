@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ytim/flutter_ytim.dart';
 import 'package:flutter_ytim/src/bean/im_msg_list.dart';
-import 'package:flutter_ytim/src/other/yt_sp_utils.dart';
-import 'package:flutter_ytim/src/other/yt_utils.dart';
+import 'package:flutter_ytim/src/bean/im_store.dart';
+import 'package:flutter_ytim/src/ui/im_chat_page.dart';
+import 'package:flutter_ytim/src/utils/yt_sp_utils.dart';
+import 'package:flutter_ytim/src/utils/yt_utils.dart';
 import 'package:provider/provider.dart';
 
 class IMUserListPage extends StatefulWidget {
@@ -23,6 +25,7 @@ class _IMUserListPageState extends State<IMUserListPage> {
   @override
   void initState() {
     super.initState();
+    // 未读消息列表
     YTIM().on<IMMsgList>().listen((event) {
       Map<String, dynamic> messageList = event.messageList;
       for (String imId in messageList.keys) {
@@ -39,7 +42,7 @@ class _IMUserListPageState extends State<IMUserListPage> {
         _updateUnreadCount(map);
       }
     });
-
+    // 新消息
     YTIM().on<IMMessage>().listen((event) {
       Map<String, IMLastInfo> map = context.read<IMStore>().lastInfos;
       if (map.keys.contains(event.from)) {
@@ -58,13 +61,14 @@ class _IMUserListPageState extends State<IMUserListPage> {
       context.read<IMStore>().update(map);
       _updateUnreadCount(map);
     });
-
+    // 联系人列表
     YTIM().on<IMUserList>().listen((event) {
       if (mounted) {
         YTIM().getUnreadMessage();
         setState(() {
           _items = event.userList;
         });
+        _setLastMsg();
       }
     });
   }
@@ -133,7 +137,7 @@ class _IMUserListPageState extends State<IMUserListPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ChatPage(tid: item.userId.toString()),
+            builder: (context) => IMChatPage(tid: item.userId.toString()),
           ),
         ).then((value) {
           _currentChatUserId = '';
