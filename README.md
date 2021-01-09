@@ -22,16 +22,26 @@ YouTeacher IM 快速开发SDK.
 | ![](arts/user_list.png) | ![](arts/chat_1v1.png) |
 
 ## 使用方法
-1. 添加依赖
+### 添加依赖
 ```
 dependencies:
-  flutter_ytim: ^1.0.0
+  flutter_ytim: ^1.0.1
 ```
-2. 导包
+### 导包
 ```
 import 'package:flutter_ytim/flutter_ytim.dart';
 ```
-3. 快速集成
+### 快速集成
+```
+// 0. 国际化
+MaterialApp(
+  localizationsDelegates: [
+    // 这一行很重要，YTIM内置界面的文字国际化。
+    YTIMLocalizations.delegate,
+  ],
+  home: HomePage(),
+)
+```
 ```
 // 1.初始化
 YTIM().init(
@@ -58,4 +68,4 @@ YTIM().checkConnectStatus();
 YTIM().release();
 ```
 ## 示例代码
-[example project](https://github.com/and2long/flutter_ytim/tree/master/example).
+[example project](https://github.com/and2long/flutter_ytim/tree/master/example)

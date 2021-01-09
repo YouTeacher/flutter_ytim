@@ -1,3 +1,6 @@
-## [1.0.0]
+## [1.0.1]
+* Add callback when login on another device.
+* Support localization.
 
-* 第一个版本，完成核心功能，包含示例代码。
+## [1.0.0]
+* Fully working YTIM, example included.
