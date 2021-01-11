@@ -1,15 +1,15 @@
 import 'dart:convert';
 
 /// IM未读消息列表
-class IMMsgList {
+class IMUnreadMsgList {
   String ack, module;
   int code;
   Map<String, dynamic> messageList;
 
-  IMMsgList({this.ack, this.module, this.code, this.messageList});
+  IMUnreadMsgList({this.ack, this.module, this.code, this.messageList});
 
-  factory IMMsgList.fromJson(Map<String, dynamic> data) {
-    return IMMsgList(
+  factory IMUnreadMsgList.fromJson(Map<String, dynamic> data) {
+    return IMUnreadMsgList(
       code: data['code'],
       ack: data['ack'],
       module: data['module'],

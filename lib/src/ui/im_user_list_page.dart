@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ytim/flutter_ytim.dart';
-import 'package:flutter_ytim/src/bean/im_unread_msg_list.dart';
 import 'package:flutter_ytim/src/bean/im_store.dart';
+import 'package:flutter_ytim/src/bean/im_unread_msg_list.dart';
 import 'package:flutter_ytim/src/ui/im_chat_page.dart';
 import 'package:flutter_ytim/src/utils/yt_sp_utils.dart';
 import 'package:flutter_ytim/src/utils/yt_utils.dart';
@@ -27,11 +27,11 @@ class _IMUserListPageState extends State<IMUserListPage> {
   void initState() {
     super.initState();
     // 未读消息列表
-    YTIM().on<IMMsgList>().listen((event) {
+    YTIM().on<IMUnreadMsgList>().listen((event) {
       Map<String, dynamic> messageList = event.messageList;
+      Map<String, IMLastInfo> map = context.read<IMStore>().lastInfos;
       for (String imId in messageList.keys) {
         List msgs = messageList[imId] as List;
-        Map<String, IMLastInfo> map = context.read<IMStore>().lastInfos;
         if (map[imId] == null) {
           map[imId] = IMLastInfo(
               msg: IMMessage.fromJson(msgs.last), unreadCount: msgs.length);
@@ -39,9 +39,9 @@ class _IMUserListPageState extends State<IMUserListPage> {
           map[imId].msg = IMMessage.fromJson(msgs.last);
           map[imId].unreadCount = msgs.length;
         }
-        context.read<IMStore>().update(map);
-        _updateUnreadCount(map);
       }
+      context.read<IMStore>().update(map);
+      _updateUnreadCount(map);
     });
     // 新消息
     YTIM().on<IMMessage>().listen((event) {

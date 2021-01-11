@@ -250,7 +250,7 @@ class YTIM {
           break;
         case 'unreadMessage':
           if (obj['messageList'] is Map) {
-            _streamController.sink.add(IMMsgList.fromJson(obj));
+            _streamController.sink.add(IMUnreadMsgList.fromJson(obj));
           }
           break;
         default:

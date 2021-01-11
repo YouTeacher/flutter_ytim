@@ -25,7 +25,7 @@ YouTeacher IM 快速开发SDK.
 ### 添加依赖
 ```
 dependencies:
-  flutter_ytim: ^1.0.1
+  flutter_ytim: ^1.0.0
 ```
 ### 导包
 ```
