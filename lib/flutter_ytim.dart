@@ -14,4 +14,5 @@ export 'src/ui/im_item_chat_msg.dart';
 export 'src/ui/im_user_avatar.dart';
 export 'src/ui/unread_count_view.dart';
 export 'src/values/yt_localizations.dart';
+export 'src/values/yt_urls.dart';
 export 'src/ytim.dart';

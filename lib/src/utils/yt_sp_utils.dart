@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_ytim/src/bean/im_msg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// 处理一些需要保存在本地的数据。
 class YTSPUtils {
   /// 内部构造方法，可避免外部暴露构造函数，进行实例化
   YTSPUtils._internal();

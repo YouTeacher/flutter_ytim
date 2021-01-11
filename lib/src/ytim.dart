@@ -21,6 +21,7 @@ enum IMConnectState { IDLE, CONNECTING, CONNECTED }
 typedef Callback<T> = void Function(T value);
 typedef void KickOutCallback();
 
+/// YTIM 核心类
 class YTIM {
   String _tag = 'YTIM';
 

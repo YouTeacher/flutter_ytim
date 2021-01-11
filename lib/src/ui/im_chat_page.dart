@@ -9,6 +9,7 @@ import 'package:flutter_ytim/src/ui/im_item_chat_msg.dart';
 import 'package:flutter_ytim/src/utils/yt_sp_utils.dart';
 import 'package:flutter_ytim/src/values/yt_localizations.dart';
 
+/// IM 1v1聊天界面
 class IMChatPage extends StatefulWidget {
   /// 对方的im id。
   final String tid;

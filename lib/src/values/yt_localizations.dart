@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+/// 国际化，支持 英文、中文、日文。
 class YTIMLocalizations {
   final Locale locale;
 

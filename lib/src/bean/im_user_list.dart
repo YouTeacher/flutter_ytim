@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_ytim/src/bean/im_user.dart';
 
+/// IM用户列表
 class IMUserList {
   String action, module;
   int code;

@@ -3,6 +3,8 @@ import 'package:flutter_ytim/src/bean/im_store.dart';
 import 'package:flutter_ytim/src/ui/im_user_list_page.dart';
 import 'package:provider/provider.dart';
 
+/// IM 联系人列表界面。
+/// 使用 StatefulWidget 包裹一下，在界面切换时保持保持内部数据不丢失。
 class ContactsPage extends StatefulWidget {
   final bool showAppBar;
 

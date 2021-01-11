@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_ytim/src/utils/yt_log.dart';
 import 'package:flutter_ytim/src/ytim.dart';
 
+/// http 封装
 class YTHttp {
   static Dio _dio = Dio();
 

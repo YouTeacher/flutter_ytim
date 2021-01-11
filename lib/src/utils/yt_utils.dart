@@ -2,6 +2,7 @@ import 'package:flutter_ytim/src/bean/im_store.dart';
 import 'package:flutter_ytim/src/bean/im_unread_count.dart';
 import 'package:flutter_ytim/src/ytim.dart';
 
+/// 通用工具类
 class YTUtils {
   /// 将时间戳转换为本地格式化时间：1586182731897 -> 2020-04-07 11:35
   static String millisecondsToString(String milliseconds) {

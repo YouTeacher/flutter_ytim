@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+/// IM消息体
 class IMMessage {
   String type,
       read, // "0"：未读， "1"：已读

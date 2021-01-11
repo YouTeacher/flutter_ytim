@@ -1,3 +1,4 @@
+/// YTIM 一些接口地址。
 class YTUrls {
   YTUrls._internal();
 

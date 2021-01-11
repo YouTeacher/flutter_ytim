@@ -1,5 +1,6 @@
 import 'package:flutter_ytim/src/bean/im_user.dart';
 
+/// IM返回值
 class ImResponse {
   int code;
   String msg;

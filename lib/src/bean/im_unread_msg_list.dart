@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+/// IM未读消息列表
 class IMMsgList {
   String ack, module;
   int code;

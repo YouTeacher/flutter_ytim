@@ -7,6 +7,7 @@ import 'package:flutter_ytim/src/utils/yt_sp_utils.dart';
 import 'package:flutter_ytim/src/utils/yt_utils.dart';
 import 'package:provider/provider.dart';
 
+/// IM 用户列表
 class IMUserListPage extends StatefulWidget {
   final bool showAppBar;
 

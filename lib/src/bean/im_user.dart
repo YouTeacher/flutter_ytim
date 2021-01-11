@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+/// IM用户信息
 class IMUser {
   /// 注册时返回的用户id。
   String id;
