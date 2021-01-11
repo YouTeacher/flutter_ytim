@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter_ytim/src/bean/im_msg.dart';
 
-class IMHistory {
+class IMHistoryMsgList {
   String action, module, lastTimestamp;
   int code, limit, userId;
   List<IMMessage> messageList;
 
-  IMHistory({
+  IMHistoryMsgList({
     this.action,
     this.module,
     this.lastTimestamp,
@@ -17,8 +17,8 @@ class IMHistory {
     this.messageList,
   });
 
-  factory IMHistory.fromJson(Map<String, dynamic> data) {
-    return IMHistory(
+  factory IMHistoryMsgList.fromJson(Map<String, dynamic> data) {
+    return IMHistoryMsgList(
       action: data['action'],
       module: data['module'],
       lastTimestamp: data['lastTimestamp'],

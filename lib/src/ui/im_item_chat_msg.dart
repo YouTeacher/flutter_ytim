@@ -5,16 +5,16 @@ import 'package:flutter_ytim/src/ui/im_user_avatar.dart';
 import 'package:flutter_ytim/src/utils/yt_utils.dart';
 
 /// 聊天消息类别
-enum ChatItemType { Me, Other }
+enum IMChatItemType { Me, Other }
 
 /// 聊天消息item
-class ItemChat extends StatelessWidget {
+class IMItemChat extends StatelessWidget {
   final IMUser user;
   final IMMessage preItem;
   final IMMessage item;
-  final ChatItemType type;
+  final IMChatItemType type;
 
-  const ItemChat(
+  const IMItemChat(
       {Key key,
       @required this.item,
       @required this.user,
@@ -56,11 +56,11 @@ class ItemChat extends StatelessWidget {
     );
   }
 
-  Widget _buildItem(BuildContext context, ChatItemType type) {
+  Widget _buildItem(BuildContext context, IMChatItemType type) {
     double defaultRadius = 6.0;
     Widget widget;
     switch (type) {
-      case ChatItemType.Me:
+      case IMChatItemType.Me:
         widget = Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.end,
@@ -98,7 +98,7 @@ class ItemChat extends StatelessWidget {
           ],
         );
         break;
-      case ChatItemType.Other:
+      case IMChatItemType.Other:
         widget = Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[

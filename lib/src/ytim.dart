@@ -3,9 +3,9 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_ytim/src/bean/im_command.dart';
-import 'package:flutter_ytim/src/bean/im_history.dart';
+import 'package:flutter_ytim/src/bean/im_history_msg_list.dart';
 import 'package:flutter_ytim/src/bean/im_msg.dart';
-import 'package:flutter_ytim/src/bean/im_msg_list.dart';
+import 'package:flutter_ytim/src/bean/im_unread_msg_list.dart';
 import 'package:flutter_ytim/src/bean/im_response.dart';
 import 'package:flutter_ytim/src/bean/im_user.dart';
 import 'package:flutter_ytim/src/bean/im_user_list.dart';
@@ -225,7 +225,7 @@ class YTIM {
           _streamController.sink.add(IMUserList.fromJson(obj));
           break;
         case 'history':
-          _streamController.sink.add(IMHistory.fromJson(obj));
+          _streamController.sink.add(IMHistoryMsgList.fromJson(obj));
           break;
         case 'userInfo':
           _streamController.sink.add(IMUser.fromJson(obj['userInfo']));

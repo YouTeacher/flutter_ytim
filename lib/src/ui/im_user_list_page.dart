@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ytim/flutter_ytim.dart';
-import 'package:flutter_ytim/src/bean/im_msg_list.dart';
+import 'package:flutter_ytim/src/bean/im_unread_msg_list.dart';
 import 'package:flutter_ytim/src/bean/im_store.dart';
 import 'package:flutter_ytim/src/ui/im_chat_page.dart';
 import 'package:flutter_ytim/src/utils/yt_sp_utils.dart';

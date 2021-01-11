@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_ytim/flutter_ytim.dart';
 import 'package:flutter_ytim/src/bean/im_command.dart';
-import 'package:flutter_ytim/src/bean/im_history.dart';
+import 'package:flutter_ytim/src/bean/im_history_msg_list.dart';
 import 'package:flutter_ytim/src/bean/im_msg.dart';
-import 'package:flutter_ytim/src/ui/item_chat_msg.dart';
+import 'package:flutter_ytim/src/ui/im_item_chat_msg.dart';
 import 'package:flutter_ytim/src/utils/yt_sp_utils.dart';
 import 'package:flutter_ytim/src/values/yt_localizations.dart';
 
@@ -33,7 +33,7 @@ class _IMChatPageState extends State<IMChatPage> {
     super.initState();
     _tUser = IMUser(id: widget.tid);
     YTIM().getHistoryMessage(widget.tid);
-    YTIM().on<IMHistory>().listen((event) {
+    YTIM().on<IMHistoryMsgList>().listen((event) {
       if (mounted) {
         setState(() {
           _items.clear();
@@ -181,18 +181,18 @@ class _IMChatPageState extends State<IMChatPage> {
           if (msg.from == YTIM().mUser.userId.toString()) {
             return GestureDetector(
               onLongPress: () => _revokeMessage(msg.timestamp),
-              child: ItemChat(
+              child: IMItemChat(
                   preItem: preMsg,
                   item: msg,
                   user: YTIM().mUser,
-                  type: ChatItemType.Me),
+                  type: IMChatItemType.Me),
             );
           } else {
-            return ItemChat(
+            return IMItemChat(
                 preItem: preMsg,
                 item: msg,
                 user: _tUser,
-                type: ChatItemType.Other);
+                type: IMChatItemType.Other);
           }
         },
         itemCount: _items.length,
