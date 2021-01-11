@@ -7,7 +7,7 @@ import 'package:flutter_ytim/src/bean/im_history_msg_list.dart';
 import 'package:flutter_ytim/src/bean/im_msg.dart';
 import 'package:flutter_ytim/src/ui/im_item_chat_msg.dart';
 import 'package:flutter_ytim/src/utils/yt_sp_utils.dart';
-import 'package:flutter_ytim/src/values/yt_localizations.dart';
+import 'package:flutter_ytim/src/values/localizations.dart';
 
 /// IM 1v1聊天界面
 class IMChatPage extends StatefulWidget {

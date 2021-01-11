@@ -12,7 +12,7 @@ import 'package:flutter_ytim/src/bean/im_user_list.dart';
 import 'package:flutter_ytim/src/utils/yt_http.dart';
 import 'package:flutter_ytim/src/utils/yt_log.dart';
 import 'package:flutter_ytim/src/utils/yt_sp_utils.dart';
-import 'package:flutter_ytim/src/values/yt_urls.dart';
+import 'package:flutter_ytim/src/values/urls.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -115,8 +115,8 @@ class YTIM {
       release();
       _connectState = IMConnectState.CONNECTING;
       _streamController.sink.add(IMConnectState.CONNECTING);
-      YTLog.d(_tag, 'connect sockets address: ${YTUrls.IM_SERVER_ADDRESS}');
-      _channel = IOWebSocketChannel.connect(YTUrls.IM_SERVER_ADDRESS);
+      YTLog.d(_tag, 'connect sockets address: ${YTIMUrls.IM_SERVER_ADDRESS}');
+      _channel = IOWebSocketChannel.connect(YTIMUrls.IM_SERVER_ADDRESS);
       _needReconnect = true;
       _channel.stream.listen(
         _handleMassage,
@@ -162,7 +162,7 @@ class YTIM {
   /// 创建IM用户
   void _createIMUser() async {
     final data = await YTHttp.postFormData(
-      YTUrls.IM_USER_ADD,
+      YTIMUrls.IM_USER_ADD,
       YTHttp.getSignedParams([
         'appId=$_appID',
         'timestamp=${DateTime.now().millisecondsSinceEpoch.toString().substring(0, 10)}',
@@ -375,7 +375,7 @@ class YTIM {
 
   Future<int> getUnreadMessageCount(int userId) async {
     final data = await YTHttp.postFormData(
-      YTUrls.IM_GET_UNREAD_MESSAGE_COUNT,
+      YTIMUrls.IM_GET_UNREAD_MESSAGE_COUNT,
       YTHttp.getSignedParams([
         'appId=$_appID',
         'timestamp=${DateTime.now().millisecondsSinceEpoch.toString().substring(0, 10)}',

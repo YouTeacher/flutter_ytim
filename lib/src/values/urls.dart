@@ -1,6 +1,6 @@
 /// YTIM 一些接口地址。
-class YTUrls {
-  YTUrls._internal();
+class YTIMUrls {
+  YTIMUrls._internal();
 
   // IM
   static const String IM_URL = 'https://im.youteacher.asia';

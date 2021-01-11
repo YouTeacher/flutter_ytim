@@ -1,3 +1,6 @@
+## [1.0.3]
+* Modify some class name. 
+
 ## [1.0.2]
 * export necessary bean. 
 
