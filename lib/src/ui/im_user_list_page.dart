@@ -20,9 +20,6 @@ class IMUserListPage extends StatefulWidget {
 class _IMUserListPageState extends State<IMUserListPage> {
   List<IMUser> _items = [];
 
-  // 当前正在与之聊天的用户id。
-  String _currentChatUserId = '';
-
   @override
   void initState() {
     super.initState();
@@ -47,7 +44,7 @@ class _IMUserListPageState extends State<IMUserListPage> {
     YTIM().on<IMMessage>().listen((event) {
       Map<String, IMLastInfo> map = context.read<IMStore>().lastInfos;
       if (map.keys.contains(event.from)) {
-        if (_currentChatUserId != event.from) {
+        if (YTIM().currentChatUserId != event.from) {
           map[event.from].unreadCount += 1;
         }
         map[event.from].msg = event;
@@ -55,7 +52,7 @@ class _IMUserListPageState extends State<IMUserListPage> {
         if (event.from != YTIM().mUser.userId.toString()) {
           map[event.from] = IMLastInfo(
               msg: event,
-              unreadCount: _currentChatUserId != event.from ? 1 : 0);
+              unreadCount: YTIM().currentChatUserId != event.from ? 1 : 0);
         }
       }
       YTSPUtils.saveLastMsg(event.from, event);
@@ -134,14 +131,14 @@ class _IMUserListPageState extends State<IMUserListPage> {
           context.read<IMStore>().update(map);
         }
         YTUtils.updateUnreadCount(map);
-        _currentChatUserId = item.userId.toString();
+        YTIM().currentChatUserId = item.userId.toString();
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => IMChatPage(tid: item.userId.toString()),
           ),
         ).then((value) {
-          _currentChatUserId = '';
+          YTIM().currentChatUserId = '';
           _setLastMsg();
         });
       },

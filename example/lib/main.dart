@@ -2,7 +2,6 @@ import 'package:example/about.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ytim/flutter_ytim.dart';
 
-
 void main() {
   runApp(MyApp());
 }
@@ -53,7 +52,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     YTIM().addKickOutCallback(() {
       print('被踢下线！');
     });
-    YTIM().on<IMMessage>().listen((event) { });
   }
 
   @override

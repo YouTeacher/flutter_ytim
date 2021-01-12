@@ -5,8 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_ytim/src/bean/im_command.dart';
 import 'package:flutter_ytim/src/bean/im_history_msg_list.dart';
 import 'package:flutter_ytim/src/bean/im_msg.dart';
-import 'package:flutter_ytim/src/bean/im_unread_msg_list.dart';
 import 'package:flutter_ytim/src/bean/im_response.dart';
+import 'package:flutter_ytim/src/bean/im_unread_msg_list.dart';
 import 'package:flutter_ytim/src/bean/im_user.dart';
 import 'package:flutter_ytim/src/bean/im_user_list.dart';
 import 'package:flutter_ytim/src/utils/yt_http.dart';
@@ -39,11 +39,17 @@ class YTIM {
     return _singleton;
   }
 
+  StreamController get streamController => _streamController;
+
+  /// 当前正在与之聊天的用户id。
+  String currentChatUserId = '';
+
+  /// 自己的用户信息
+  IMUser mUser;
+
   IMConnectState _connectState = IMConnectState.IDLE;
   IOWebSocketChannel _channel;
   StreamController _streamController;
-
-  StreamController get streamController => _streamController;
 
   /// 临时保存发送消息内容。发送消息成功后，服务器成功响应体内没有消息内容，所以临时存一下。
   String _tempContent = '';
@@ -56,13 +62,10 @@ class YTIM {
   String _account = '';
   String _username = '';
 
-  /// 自己的用户信息
-  IMUser mUser;
-
   /// 回调
-  Callback<IMUser> onIMUserCreatedCallback;
-  Callback<IMUser> onLoginSuccessCallback;
-  KickOutCallback kickOutCallback;
+  Callback<IMUser> _onIMUserCreatedCallback;
+  Callback<IMUser> _onLoginSuccessCallback;
+  KickOutCallback _kickOutCallback;
 
   Stream<T> on<T>() {
     if (T == dynamic) {
@@ -100,13 +103,14 @@ class YTIM {
     _appSecret = imAppSecret;
     _account = imAccount;
     _username = imUsername;
-    onIMUserCreatedCallback = imUserCreatedCallback;
-    onLoginSuccessCallback = imLoginSuccessCallback;
+    _onIMUserCreatedCallback = imUserCreatedCallback;
+    _onLoginSuccessCallback = imLoginSuccessCallback;
     _connectServer();
   }
 
+  /// 添加被踢出回调
   void addKickOutCallback(KickOutCallback callback) {
-    this.kickOutCallback = callback;
+    this._kickOutCallback = callback;
   }
 
   /// 连接
@@ -161,17 +165,8 @@ class YTIM {
 
   /// 创建IM用户
   void _createIMUser() async {
-    final data = await YTHttp.postFormData(
-      YTIMUrls.IM_USER_ADD,
-      YTHttp.getSignedParams([
-        'appId=$_appID',
-        'timestamp=${DateTime.now().millisecondsSinceEpoch.toString().substring(0, 10)}',
-        'account=$_account',
-        'password=000000',
-        'status=1',
-        'username=${_username.isEmpty ? _account : _username}',
-      ]),
-    );
+    final data =
+        await addUser(_account, _username.isEmpty ? _account : _username);
     if (data == null) {
       YTLog.d(_tag, 'createIMUser：请求出错。');
     } else {
@@ -179,7 +174,7 @@ class YTIM {
       if (ir.code == 0 || ir.code == 50010) {
         YTLog.d(_tag,
             '${ir.code == 0 ? 'IM账号创建成功' : 'IM账号已存在'}，IM id：${ir.userInfo.id}');
-        onIMUserCreatedCallback(ir.userInfo);
+        _onIMUserCreatedCallback(ir.userInfo);
         _login();
       } else {
         YTLog.d(_tag, 'IM账号创建失败：${ir.msg}');
@@ -215,7 +210,7 @@ class YTIM {
             YTLog.d(_tag, 'login success.');
             YTLog.d(_tag, 'send heartbeat every 120 seconds.');
             mUser = IMUser.fromJson(obj['userInfo']);
-            onLoginSuccessCallback(mUser);
+            _onLoginSuccessCallback(mUser);
             _keepBeat();
           }
           break;
@@ -261,8 +256,8 @@ class YTIM {
       switch (obj['module']) {
         case 'kickOut':
           // 如果帐号已经在其它端登录，退出执行重新登陆
-          if (kickOutCallback != null) {
-            kickOutCallback();
+          if (_kickOutCallback != null) {
+            _kickOutCallback();
           }
           release();
           break;
@@ -363,7 +358,7 @@ class YTIM {
     }));
   }
 
-  /// 取用户资料
+  /// 获取用户资料
   /// [userId] 对方userId
   void getProfile(String userId) {
     _send(json.encode({
@@ -373,6 +368,7 @@ class YTIM {
     }));
   }
 
+  /// 获取未读消息数
   Future<int> getUnreadMessageCount(int userId) async {
     final data = await YTHttp.postFormData(
       YTIMUrls.IM_GET_UNREAD_MESSAGE_COUNT,
@@ -384,5 +380,59 @@ class YTIM {
     );
     if (data != null) {}
     return 0;
+  }
+
+  /// 修改IM用户信息
+  Future<dynamic> editUser(String userId, String username,
+      {int sex, String headImg, String phone, String email}) async {
+    var params = [
+      'appId=$_appID',
+      'timestamp=${DateTime.now().millisecondsSinceEpoch.toString().substring(0, 10)}',
+      'userId=$userId',
+      'status=1',
+    ];
+    if (sex != null) {
+      params.add('sex=$sex');
+    }
+    if (headImg != null) {
+      params.add('headImg=$headImg');
+    }
+    if (phone != null) {
+      params.add('phone=$phone');
+    }
+    if (email != null) {
+      params.add('email=$email');
+    }
+    return await YTHttp.postFormData(
+      YTIMUrls.IM_USER_EDIT,
+      YTHttp.getSignedParams(params),
+    );
+  }
+
+  /// 删除用户
+  Future<dynamic> deleteUser(int userId) async {
+    return await YTHttp.postFormData(
+      YTIMUrls.IM_USER_DELETE,
+      YTHttp.getSignedParams([
+        'appId=$_appID',
+        'timestamp=${DateTime.now().millisecondsSinceEpoch.toString().substring(0, 10)}',
+        'userId=$userId',
+      ]),
+    );
+  }
+
+  /// 创建用户
+  Future<dynamic> addUser(String account, String username) async {
+    return await YTHttp.postFormData(
+      YTIMUrls.IM_USER_ADD,
+      YTHttp.getSignedParams([
+        'appId=$_appID',
+        'timestamp=${DateTime.now().millisecondsSinceEpoch.toString().substring(0, 10)}',
+        'account=$account',
+        'password=000000',
+        'status=1',
+        'username=$username}',
+      ]),
+    );
   }
 }

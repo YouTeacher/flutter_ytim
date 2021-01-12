@@ -30,6 +30,13 @@ class _IMChatPageState extends State<IMChatPage> {
   IMUser _tUser;
 
   @override
+  void dispose() {
+    super.dispose();
+    // 将全局的聊天对象用户id置为空。
+    YTIM().currentChatUserId = '';
+  }
+
+  @override
   void initState() {
     super.initState();
     _tUser = IMUser(id: widget.tid);

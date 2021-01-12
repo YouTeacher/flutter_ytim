@@ -5,6 +5,7 @@ class IMMessage {
   String type,
       read, // "0"：未读， "1"：已读
       from,
+      fromName,
       to,
       timestamp,
       time,
@@ -16,6 +17,7 @@ class IMMessage {
   IMMessage({
     this.type,
     this.from,
+    this.fromName,
     this.to,
     this.timestamp,
     this.time,
@@ -31,6 +33,7 @@ class IMMessage {
     return IMMessage(
       type: json['type'],
       from: json['from'],
+      fromName: json['fromName'],
       to: json['to'],
       timestamp: json['timestamp'],
       time: json['time'],
@@ -44,6 +47,7 @@ class IMMessage {
     return {
       'type': type,
       'from': from,
+      'fromName': fromName,
       'to': to,
       'timestamp': timestamp,
       'time': time,
