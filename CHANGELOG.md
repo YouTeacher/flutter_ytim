@@ -1,3 +1,6 @@
+## [1.0.5]
+* Fix fired IMMessage data when receive IM message.
+
 ## [1.0.4]
 * Set the global currentChatUserId being chat with.
 * Fix IMMessage entry, add fromName field.

@@ -262,15 +262,7 @@ class YTIM {
           release();
           break;
         case 'message':
-          _streamController.sink.add(
-            IMMessage(
-              type: obj['type'].toString(),
-              from: obj['from'],
-              to: obj['to'],
-              content: obj['content'],
-              timestamp: obj['timestamp'],
-            ),
-          );
+          _streamController.sink.add(IMMessage.fromJson(obj));
           break;
         case 'readMessage':
           _streamController.sink.add(IMCommand.fromJson(obj));
