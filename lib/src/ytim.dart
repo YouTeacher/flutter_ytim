@@ -25,15 +25,15 @@ typedef void KickOutCallback();
 class YTIM {
   String _tag = 'YTIM';
 
-  YTIM._() {
+  static YTIM _singleton;
+
+  YTIM._internal() {
     _streamController = StreamController.broadcast();
   }
 
-  static YTIM _singleton;
-
   factory YTIM() {
     if (_singleton == null) {
-      _singleton = YTIM._();
+      _singleton = YTIM._internal();
       YTSPUtils.init();
     }
     return _singleton;
@@ -91,6 +91,7 @@ class YTIM {
     @required Callback<IMUser> imLoginSuccessCallback,
     String imUsername = '',
   }) {
+    YTLog.i('YTIM.init');
     if (imAppID == null ||
         imAppID.isEmpty ||
         imAppSecret == null ||
@@ -117,6 +118,9 @@ class YTIM {
   void _connectServer() {
     if (_connectState == IMConnectState.IDLE) {
       _connectState = IMConnectState.CONNECTING;
+      if (_streamController == null) {
+        _streamController = StreamController.broadcast();
+      }
       _streamController.sink.add(IMConnectState.CONNECTING);
       YTLog.d(_tag, 'connect sockets address: ${YTIMUrls.IM_SERVER_ADDRESS}');
       _channel = IOWebSocketChannel.connect(YTIMUrls.IM_SERVER_ADDRESS);
@@ -128,7 +132,7 @@ class YTIM {
         onDone: () {
           YTLog.d(_tag, 'IM断开：${_channel?.closeReason}');
           _connectState = IMConnectState.IDLE;
-          _streamController.sink.add(IMConnectState.IDLE);
+          _streamController?.sink?.add(IMConnectState.IDLE);
           if (_needReconnect) {
             _connectServer();
           }
@@ -140,12 +144,13 @@ class YTIM {
 
   /// 释放连接
   void release() {
-    YTLog.d(_tag, 'close sockets');
+    YTLog.i('YTIM.release');
     _connectState = IMConnectState.IDLE;
-    _streamController.sink.add(IMConnectState.IDLE);
+    _streamController?.sink?.add(IMConnectState.IDLE);
     _needReconnect = false;
-    _channel.sink.close();
-    _streamController.close();
+    _channel?.sink?.close();
+    _streamController?.close();
+    _streamController = null;
     _singleton = null;
   }
 

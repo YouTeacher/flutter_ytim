@@ -7,4 +7,10 @@ class YTLog {
       print('$tag : $content');
     }
   }
+
+  static void i(Object content) {
+    if (kDebugMode || kProfileMode) {
+      print('$content');
+    }
+  }
 }

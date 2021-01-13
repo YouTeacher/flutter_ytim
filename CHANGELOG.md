@@ -1,3 +1,6 @@
+## [1.1.0]
+* Optimize stability.
+
 ## [1.0.7]
 * Optimize the opration of release.
 
