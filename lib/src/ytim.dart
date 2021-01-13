@@ -140,14 +140,13 @@ class YTIM {
 
   /// 释放连接
   void release() {
-    if (_channel != null && _channel.sink != null) {
-      YTLog.d(_tag, 'close sockets');
-      _connectState = IMConnectState.IDLE;
-      _streamController.sink.add(IMConnectState.IDLE);
-      _needReconnect = false;
-      _channel.sink.close();
-      _streamController.close();
-    }
+    YTLog.d(_tag, 'close sockets');
+    _connectState = IMConnectState.IDLE;
+    _streamController.sink.add(IMConnectState.IDLE);
+    _needReconnect = false;
+    _channel.sink.close();
+    _streamController.close();
+    _singleton = null;
   }
 
   /// 检查连接状态

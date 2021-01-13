@@ -1,3 +1,6 @@
+## [1.0.7]
+* Optimize the opration of release.
+
 ## [1.0.6]
 * Optimize the opration of connect.
 
