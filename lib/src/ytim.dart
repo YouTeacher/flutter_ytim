@@ -145,6 +145,8 @@ class YTIM {
       _connectState = IMConnectState.IDLE;
       _streamController.sink.add(IMConnectState.IDLE);
       _needReconnect = false;
+      _channel.sink.close();
+      _streamController.close();
     }
   }
 
