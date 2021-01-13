@@ -109,6 +109,9 @@ class _IMUserListPageState extends State<IMUserListPage> {
             case IMConnectState.CONNECTED:
               state = '在线';
               break;
+            case IMConnectState.NETWORK_NONE:
+              state = '网络错误';
+              break;
             default:
               state = '离线';
           }

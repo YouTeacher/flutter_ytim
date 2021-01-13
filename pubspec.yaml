@@ -1,6 +1,6 @@
 name: flutter_ytim
 description: YouTeacher IM SDK for Flutter. Help you quickly integrate YTIM into your project.
-version: 1.1.0
+version: 1.2.0
 homepage: https://github.com/and2long/flutter_ytim
 
 environment:
@@ -15,3 +15,4 @@ dependencies:
   provider: ^4.3.2+2
   shared_preferences: ^0.5.10
   crypto: ^2.1.5
+  connectivity: ^2.0.2

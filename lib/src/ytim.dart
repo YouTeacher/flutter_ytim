@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_ytim/src/bean/im_command.dart';
 import 'package:flutter_ytim/src/bean/im_history_msg_list.dart';
@@ -16,7 +17,7 @@ import 'package:flutter_ytim/src/values/urls.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-enum IMConnectState { IDLE, CONNECTING, CONNECTED }
+enum IMConnectState { IDLE, CONNECTING, CONNECTED, NETWORK_NONE }
 
 typedef Callback<T> = void Function(T value);
 typedef void KickOutCallback();
@@ -106,7 +107,12 @@ class YTIM {
     _username = imUsername;
     _onIMUserCreatedCallback = imUserCreatedCallback;
     _onLoginSuccessCallback = imLoginSuccessCallback;
-    _connectServer();
+    connectServer();
+    // 网络监听
+    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      YTLog.d(_tag, '网络状态变化：$result');
+      connectServer();
+    });
   }
 
   /// 添加被踢出回调
@@ -114,8 +120,15 @@ class YTIM {
     this._kickOutCallback = callback;
   }
 
-  /// 连接
-  void _connectServer() {
+  /// 连接IM服务器
+  void connectServer() async {
+    ConnectivityResult connectivityResult =
+        await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      _streamController.sink.add(IMConnectState.NETWORK_NONE);
+      YTLog.d(_tag, '网络错误');
+      return;
+    }
     if (_connectState == IMConnectState.IDLE) {
       _connectState = IMConnectState.CONNECTING;
       if (_streamController == null) {
@@ -134,7 +147,7 @@ class YTIM {
           _connectState = IMConnectState.IDLE;
           _streamController?.sink?.add(IMConnectState.IDLE);
           if (_needReconnect) {
-            _connectServer();
+            connectServer();
           }
         },
         cancelOnError: false,
@@ -157,7 +170,7 @@ class YTIM {
   /// 检查连接状态
   void checkConnectStatus() {
     if (_connectState == IMConnectState.IDLE) {
-      _connectServer();
+      connectServer();
     } else {
       YTLog.d(_tag, 'IM连接状态：$_connectState');
     }

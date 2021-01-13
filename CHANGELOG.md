@@ -1,3 +1,6 @@
+## [1.2.0]
+* Add network change listener, auto connect when network is available.
+
 ## [1.1.0]
 * Optimize stability.
 
