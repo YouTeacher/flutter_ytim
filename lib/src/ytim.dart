@@ -107,11 +107,11 @@ class YTIM {
     _username = imUsername;
     _onIMUserCreatedCallback = imUserCreatedCallback;
     _onLoginSuccessCallback = imLoginSuccessCallback;
-    connectServer();
+    _connectServer();
     // 网络监听
     Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
       YTLog.d(_tag, '网络状态变化：$result');
-      connectServer();
+      _connectServer();
     });
   }
 
@@ -121,7 +121,7 @@ class YTIM {
   }
 
   /// 连接IM服务器
-  void connectServer() async {
+  void _connectServer() async {
     ConnectivityResult connectivityResult =
         await Connectivity().checkConnectivity();
     if (connectivityResult == ConnectivityResult.none) {
@@ -147,7 +147,7 @@ class YTIM {
           _connectState = IMConnectState.IDLE;
           _streamController?.sink?.add(IMConnectState.IDLE);
           if (_needReconnect) {
-            connectServer();
+            _connectServer();
           }
         },
         cancelOnError: false,
@@ -170,7 +170,7 @@ class YTIM {
   /// 检查连接状态
   void checkConnectStatus() {
     if (_connectState == IMConnectState.IDLE) {
-      connectServer();
+      _connectServer();
     } else {
       YTLog.d(_tag, 'IM连接状态：$_connectState');
     }
