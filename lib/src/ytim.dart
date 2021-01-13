@@ -116,7 +116,6 @@ class YTIM {
   /// 连接
   void _connectServer() {
     if (_connectState == IMConnectState.IDLE) {
-      release();
       _connectState = IMConnectState.CONNECTING;
       _streamController.sink.add(IMConnectState.CONNECTING);
       YTLog.d(_tag, 'connect sockets address: ${YTIMUrls.IM_SERVER_ADDRESS}');
@@ -143,15 +142,10 @@ class YTIM {
   void release() {
     if (_channel != null && _channel.sink != null) {
       YTLog.d(_tag, 'close sockets');
-      _channel.sink.close();
       _connectState = IMConnectState.IDLE;
       _streamController.sink.add(IMConnectState.IDLE);
       _needReconnect = false;
     }
-  }
-
-  void destroy() {
-    _streamController.close();
   }
 
   /// 检查连接状态

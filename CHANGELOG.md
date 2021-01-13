@@ -1,3 +1,6 @@
+## [1.0.6]
+* Optimize the opration of connect.
+
 ## [1.0.5]
 * Fix fired IMMessage data when receive IM message.
 
