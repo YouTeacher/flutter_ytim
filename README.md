@@ -20,9 +20,9 @@ YouTeacher IM 快速开发SDK。
 - UI定制
 
 ## 截屏
-| 联系人列表 | 1v1聊天 |
-|:---:|:---:|
-| ![](arts/user_list.png) | ![](arts/chat_1v1.png) |
+联系人列表 | 1v1聊天
+--- | ---
+![](arts/user_list.png) | ![](arts/chat_1v1.png)
 
 ## 使用方法
 
@@ -76,20 +76,20 @@ YTIM().release();
 ```
 
 ### 二、自定义集成。
-聊天功能核心API：
-| 功能 | 方法 |
-|:---:|:---:|
-| 初始化 | YTIM().init |
-| 检查连接状态 | YTIM().checkConnectStatus |
-| 释放连接 | YTIM().release |
-| 被踢回调 | YTIM().addKickOutCallback |
-| 发送IM消息 | YTIM().send |
-| 发送已读回执 | YTIM().sendACK |
-| 撤销消息 | YTIM().revokeMessage |
-| 获取联系人列表 | YTIM().getUserList |
-| 获取未读消息 | YTIM().getUnreadMessage |
-| 获取历史消息列表 | YTIM().getHistoryMessage |
-| 获取用户资料 | YTIM().getProfile |
+#### 聊天功能核心API：
+功能 | 方法
+--- | ---
+初始化 | YTIM().init
+检查连接状态 | YTIM().checkConnectStatus
+释放连接 | YTIM().release
+被踢回调 | YTIM().addKickOutCallback
+发送IM消息 | YTIM().send
+发送已读回执 | YTIM().sendACK
+撤销消息 | YTIM().revokeMessage
+获取联系人列表 | YTIM().getUserList
+获取未读消息 | YTIM().getUnreadMessage
+获取历史消息列表 | YTIM().getHistoryMessage
+获取用户资料 | YTIM().getProfile
 
 
 `YTIM`使用Dart Streams来跟踪侦听器。
@@ -104,33 +104,33 @@ YTIM().on().listen((event) {
 });
 ```
 
-一些事件类型
-| 事件 | 类名 |
-|:---:|:---:|
-| 消息 | IMMessage |
-| 用户信息 | IMUser |
-| 用户列表 | IMUserList |
-| 历史消息列表 | IMHistoryMsgList |
-| 未读消息列表 | IMUnreadMsgList |
-| 未读消息个数 | IMUnreadCount |
-| IM指令类型 | IMCommand |
+#### 一些事件类型
+事件 | 类名
+--- | ---
+消息 | IMMessage
+用户信息 | IMUser
+用户列表 | IMUserList
+历史消息列表 | IMHistoryMsgList
+未读消息列表 | IMUnreadMsgList
+未读消息个数 | IMUnreadCount
+IM指令类型 | IMCommand
 
 
-可用的全局变量
-| 功能 | 方法 |
-|:---:|:---:|
-| streamController | YTIM().streamController |
-| 自己的IM用户信息 | YTIM().mUser |
-| 当前正在与之聊天的用户id | YTIM().currentChatUserId |
+#### 可用的全局变量
+功能 | 方法
+--- | ---
+streamController | YTIM().streamController
+自己的IM用户信息 | YTIM().mUser
+当前正在与之聊天的用户id | YTIM().currentChatUserId
 
 
-用户信息操作接口
-| 功能 | 方法 |
-|:---:|:---:|
-| 创建用户 | YTIM().addUser |
-| 编辑用户 | YTIM().editUser |
-| 删除用户 | YTIM().deleteUser |
-| 获取未读消息数量 | YTIM().getUnreadMessageCount |
+#### 用户信息操作接口
+功能 | 方法
+--- | ---
+创建用户 | YTIM().addUser
+编辑用户 | YTIM().editUser
+删除用户 | YTIM().deleteUser
+获取未读消息数量 | YTIM().getUnreadMessageCount
 
 
 
