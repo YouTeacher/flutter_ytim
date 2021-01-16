@@ -1,3 +1,6 @@
+## [1.2.1]
+* Format README.
+
 ## [1.2.0]
 * Add network change listener, auto connect when network is available.
 

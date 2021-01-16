@@ -28,17 +28,7 @@ YouTeacher IM 快速开发SDK。
 
 ### 一、快速集成
 
-1. 添加依赖
-```
-dependencies:
-  flutter_ytim: ^1.2.0
-```
-2. 导包
-```
-import 'package:flutter_ytim/flutter_ytim.dart';
-```
-
-3. 国际化
+1. 内置界面国际化配置
 ```
 MaterialApp(
   localizationsDelegates: [
@@ -48,8 +38,7 @@ MaterialApp(
   home: HomePage(),
 )
 ```
-
-4. 初始化
+2. 初始化
 ```
 YTIM().init(
   imAppID: '8C5FA707436E824363ECF0172F408F2D',
@@ -66,11 +55,11 @@ YTIM().init(
   },
 );
 ```
-5. 在程序回到前台时，检查IM连接状态。
+3. 在程序回到前台时，检查IM连接状态。
 ```
 YTIM().checkConnectStatus();
 ```
-6. 断开连接，释放资源。
+4. 断开连接，释放资源。
 ```
 YTIM().release();
 ```
