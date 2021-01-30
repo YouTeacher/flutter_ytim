@@ -436,7 +436,7 @@ class YTIM {
         'account=$account',
         'password=000000',
         'status=1',
-        'username=$username}',
+        'username=$username',
       ]),
     );
   }

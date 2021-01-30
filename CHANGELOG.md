@@ -1,3 +1,6 @@
+## [1.2.2]
+* Fixed username error when create.
+
 ## [1.2.1]
 * Format README.
 
