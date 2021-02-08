@@ -394,6 +394,7 @@ class YTIM {
       'appId=$_appID',
       'timestamp=${DateTime.now().millisecondsSinceEpoch.toString().substring(0, 10)}',
       'userId=$userId',
+      'username=$username',
       'status=1',
     ];
     if (sex != null) {

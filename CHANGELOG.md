@@ -1,3 +1,6 @@
+## [1.2.3]
+* Fixed editUser.
+
 ## [1.2.2]
 * Fixed username error when create.
 
