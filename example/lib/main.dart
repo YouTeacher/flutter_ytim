@@ -83,7 +83,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     return Scaffold(
       body: PageView(
         physics: NeverScrollableScrollPhysics(),
-        children: [ContactsPage(showAppBar: true), AboutPage()],
+        children: [
+          IMContactsPage(
+            header: AppBar(title: Text('IM')),
+          ),
+          AboutPage()
+        ],
         controller: _pageController,
         onPageChanged: (index) {
           setState(() {

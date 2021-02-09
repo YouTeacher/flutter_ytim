@@ -9,9 +9,13 @@ import 'package:provider/provider.dart';
 
 /// IM 用户列表
 class IMUserListPage extends StatefulWidget {
-  final bool showAppBar;
+  /// [SliverPersistentHeader] or [AppBar]
+  final Widget header;
 
-  const IMUserListPage({Key key, this.showAppBar = false}) : super(key: key);
+  const IMUserListPage({
+    Key key,
+    @required this.header,
+  }) : super(key: key);
 
   @override
   _IMUserListPageState createState() => _IMUserListPageState();
@@ -82,45 +86,30 @@ class _IMUserListPageState extends State<IMUserListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: widget.showAppBar ? AppBar(title: _buildTitle()) : null,
-      body: ListView.builder(
-        itemBuilder: (c, i) {
-          Map<String, IMLastInfo> map = context.read<IMStore>().lastInfos;
-          return _buildItem(
-              _items[i], map[_items[i].userId.toString()]?.unreadCount ?? 0);
-        },
-        itemCount: _items.length,
-      ),
-    );
-  }
-
-  StreamBuilder<IMConnectState> _buildTitle() {
-    return StreamBuilder<IMConnectState>(
-      builder: (BuildContext context, AsyncSnapshot<IMConnectState> snapshot) {
-        if (snapshot.hasData) {
-          String state;
-          switch (snapshot.data) {
-            case IMConnectState.IDLE:
-              state = '离线';
-              break;
-            case IMConnectState.CONNECTING:
-              state = '连接中...';
-              break;
-            case IMConnectState.CONNECTED:
-              state = '在线';
-              break;
-            case IMConnectState.NETWORK_NONE:
-              state = '网络错误';
-              break;
-            default:
-              state = '离线';
-          }
-          return Text('YTIM - $state');
-        } else {
-          return Text('YTIM');
-        }
-      },
-      stream: YTIM().on<IMConnectState>(),
+      appBar: widget.header is AppBar ? widget.header : null,
+      body: widget.header is AppBar
+          ? ListView.builder(
+              itemBuilder: (c, i) {
+                Map<String, IMLastInfo> map = context.read<IMStore>().lastInfos;
+                return _buildItem(_items[i],
+                    map[_items[i].userId.toString()]?.unreadCount ?? 0);
+              },
+              itemCount: _items.length,
+            )
+          : CustomScrollView(slivers: <Widget>[
+              widget.header,
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (c, i) {
+                    Map<String, IMLastInfo> map =
+                        context.read<IMStore>().lastInfos;
+                    return _buildItem(_items[i],
+                        map[_items[i].userId.toString()]?.unreadCount ?? 0);
+                  },
+                  childCount: _items.length,
+                ),
+              )
+            ]),
     );
   }
 

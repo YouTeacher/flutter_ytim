@@ -5,16 +5,20 @@ import 'package:provider/provider.dart';
 
 /// IM 联系人列表界面。
 /// 使用 StatefulWidget 包裹一下，在界面切换时保持保持内部数据不丢失。
-class ContactsPage extends StatefulWidget {
-  final bool showAppBar;
+class IMContactsPage extends StatefulWidget {
+  /// [SliverPersistentHeader] or [AppBar]
+  final Widget header;
 
-  const ContactsPage({Key key, this.showAppBar = false}) : super(key: key);
+  const IMContactsPage({
+    Key key,
+    @required this.header,
+  }) : super(key: key);
 
   @override
-  _ContactsPageState createState() => _ContactsPageState();
+  _IMContactsPageState createState() => _IMContactsPageState();
 }
 
-class _ContactsPageState extends State<ContactsPage>
+class _IMContactsPageState extends State<IMContactsPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
@@ -27,7 +31,7 @@ class _ContactsPageState extends State<ContactsPage>
     super.build(context);
     return ChangeNotifierProvider.value(
       value: store,
-      child: IMUserListPage(showAppBar: widget.showAppBar),
+      child: IMUserListPage(header: widget.header),
     );
   }
 }
