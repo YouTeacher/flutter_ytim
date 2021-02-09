@@ -22,7 +22,9 @@ class IMUserAvatar extends StatelessWidget {
       width: size ?? defaultAvatarSize,
       height: size ?? defaultAvatarSize,
       child: ClipOval(
-        child: imUser.headImg == null || imUser.headImg == ''
+        child: imUser.headImg == null ||
+                imUser.headImg == '' ||
+                !imUser.headImg.startsWith('http')
             ? Container(
                 child: Center(
                   child: Text(
