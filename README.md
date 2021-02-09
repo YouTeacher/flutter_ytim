@@ -50,8 +50,8 @@ YTIM().init(
     // 创建IM用户成功，将IM用户信息与你自己的用户系统关联起来。
   },
   imLoginSuccessCallback: (IMUser value) {
-    // IM用户登陆成功，取联系人列表。
-    YTIM().getUserList(order: '4');
+    // IM用户登陆成功，取未读消息。
+    YTIM().getUnreadMessage();
   },
 );
 ```

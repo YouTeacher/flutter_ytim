@@ -8,10 +8,12 @@ import 'package:provider/provider.dart';
 class IMContactsPage extends StatefulWidget {
   /// [SliverPersistentHeader] or [AppBar]
   final Widget header;
+  final String order;
 
   const IMContactsPage({
     Key key,
     @required this.header,
+    this.order,
   }) : super(key: key);
 
   @override
@@ -31,7 +33,7 @@ class _IMContactsPageState extends State<IMContactsPage>
     super.build(context);
     return ChangeNotifierProvider.value(
       value: store,
-      child: IMUserListPage(header: widget.header),
+      child: IMUserListPage(header: widget.header, order: widget.order),
     );
   }
 }

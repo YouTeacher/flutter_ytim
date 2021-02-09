@@ -331,8 +331,9 @@ class YTIM {
 
   /// 获取联系人列表
   /// "order":"排序（1:按会话记录，2:按会话记录(只取有过会话的用户列表)，3:在线状态，4：按用户名称）"
-  void getUserList({String order = "2"}) {
-    _send(json.encode({"action": "get", "module": "userList", "order": order}));
+  void getUserList({String order}) {
+    _send(json.encode(
+        {"action": "get", "module": "userList", "order": order ?? "2"}));
   }
 
   /// 获取未读消息

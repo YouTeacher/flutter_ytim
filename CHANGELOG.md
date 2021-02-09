@@ -1,3 +1,6 @@
+## [1.3.1]
+* Get user list when contact page init.
+
 ## [1.3.0]
 * Support for custom head contact list layout.
 

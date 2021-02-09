@@ -11,10 +11,12 @@ import 'package:provider/provider.dart';
 class IMUserListPage extends StatefulWidget {
   /// [SliverPersistentHeader] or [AppBar]
   final Widget header;
+  final String order;
 
   const IMUserListPage({
     Key key,
     @required this.header,
+    this.order,
   }) : super(key: key);
 
   @override
@@ -73,6 +75,8 @@ class _IMUserListPageState extends State<IMUserListPage> {
         _setLastMsg();
       }
     });
+    // 取最近联系人。
+    YTIM().getUserList(order: widget.order);
   }
 
   /// 通知更新未读消息
