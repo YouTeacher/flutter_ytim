@@ -35,7 +35,7 @@ MaterialApp(
     // 这一行很重要，YTIM内置界面的文字国际化。
     YTIMLocalizations.delegate,
   ],
-  home: HomePage(),
+  home: IMContactsPage(header: AppBar(title: Text('YTIM'))),
 )
 ```
 2. 初始化

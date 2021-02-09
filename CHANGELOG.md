@@ -1,3 +1,6 @@
+## [1.3.0]
+* Support for custom head contact list layout.
+
 ## [1.2.3]
 * Fixed editUser.
 
