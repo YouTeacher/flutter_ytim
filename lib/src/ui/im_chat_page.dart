@@ -53,6 +53,7 @@ class _IMChatPageState extends State<IMChatPage> {
       }
     });
     YTIM().getProfile(widget.tid);
+    YTIM().sendACK(widget.tid);
     YTIM().on<IMUser>().listen((event) {
       if (mounted) {
         setState(() {

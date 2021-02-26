@@ -1,3 +1,6 @@
+## [1.3.2]
+* Return ACK to other IM user when start 1v1 chat.
+
 ## [1.3.1]
 * Get user list when contact page init.
 
