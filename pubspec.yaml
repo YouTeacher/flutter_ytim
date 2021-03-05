@@ -10,9 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  web_socket_channel: ^1.1.0
+  web_socket_channel: ^2.0.0
   dio: ^3.0.10
-  provider: ^4.3.2+2
-  shared_preferences: ^0.5.10
-  crypto: ^2.1.5
-  connectivity: ^2.0.2
+  provider: ^5.0.0
+  shared_preferences: ^2.0.3
+  crypto: ^3.0.0
+  connectivity: ^3.0.2
