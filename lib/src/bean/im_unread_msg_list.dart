@@ -2,9 +2,9 @@ import 'dart:convert';
 
 /// IM未读消息列表
 class IMUnreadMsgList {
-  String ack, module;
-  int code;
-  Map<String, dynamic> messageList;
+  String? ack, module;
+  int? code;
+  Map<String, dynamic>? messageList;
 
   IMUnreadMsgList({this.ack, this.module, this.code, this.messageList});
 

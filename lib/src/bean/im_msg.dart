@@ -2,7 +2,7 @@ import 'dart:convert';
 
 /// IM消息体
 class IMMessage {
-  String type,
+  String? type,
       read, // "0"：未读， "1"：已读
       from,
       fromName,
@@ -12,7 +12,7 @@ class IMMessage {
       content;
 
   // 本地保存的最后一条消息主键：对方的im_id
-  String pk;
+  String? pk;
 
   IMMessage({
     this.type,
@@ -27,9 +27,6 @@ class IMMessage {
   });
 
   factory IMMessage.fromJson(Map<String, dynamic> json) {
-    if (json == null) {
-      return null;
-    }
     return IMMessage(
       type: json['type'],
       from: json['from'],

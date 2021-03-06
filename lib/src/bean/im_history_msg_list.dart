@@ -4,9 +4,9 @@ import 'package:flutter_ytim/src/bean/im_msg.dart';
 
 /// 历史消息列表
 class IMHistoryMsgList {
-  String action, module, lastTimestamp;
-  int code, limit, userId;
-  List<IMMessage> messageList;
+  String? action, module, lastTimestamp;
+  int? code, limit, userId;
+  List<IMMessage>? messageList;
 
   IMHistoryMsgList({
     this.action,

@@ -21,9 +21,9 @@ class YTIMLocalizations {
 
   YTIMString get currentLocalization {
     if (values.containsKey(locale.languageCode)) {
-      return values[locale.languageCode];
+      return values[locale.languageCode]!;
     }
-    return values["en"];
+    return values["en"]!;
   }
 }
 
@@ -52,12 +52,12 @@ class YTIMLocalizationsDelegate
 }
 
 abstract class YTIMString {
-  String ok;
-  String cancel;
-  String read;
-  String unread;
-  String alertRevokeMessage;
-  String alertKickout;
+  late String ok;
+  late String cancel;
+  late String read;
+  late String unread;
+  late String alertRevokeMessage;
+  late String alertKickout;
 }
 
 class EnYTIMString extends YTIMString {

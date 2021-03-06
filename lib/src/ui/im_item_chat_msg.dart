@@ -10,16 +10,16 @@ enum IMChatItemType { Me, Other }
 /// 聊天消息item
 class IMItemChat extends StatelessWidget {
   final IMUser user;
-  final IMMessage preItem;
+  final IMMessage? preItem;
   final IMMessage item;
   final IMChatItemType type;
 
   const IMItemChat(
-      {Key key,
-      @required this.item,
-      @required this.user,
-      @required this.preItem,
-      @required this.type})
+      {Key? key,
+      required this.item,
+      required this.user,
+      required this.preItem,
+      required this.type})
       : super(key: key);
 
   @override
@@ -30,7 +30,7 @@ class IMItemChat extends StatelessWidget {
       time = YTUtils.millisecondsToString(item.timestamp);
     } else {
       // 两条消息时间差在5分钟之内的话，不显示。大于5分钟显示出来。
-      if (int.parse(item.timestamp) - int.parse(preItem.timestamp) >
+      if (int.parse(item.timestamp!) - int.parse(preItem!.timestamp!) >
           5 * 60 * 1000) {
         time = YTUtils.millisecondsToString(item.timestamp);
       } else {
@@ -40,7 +40,7 @@ class IMItemChat extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 15),
       child: Column(
-        children: <Widget>[
+        children: [
           Offstage(
             offstage: time.isEmpty,
             child: Container(
@@ -84,7 +84,7 @@ class IMItemChat extends StatelessWidget {
                     child: Container(
                         margin: EdgeInsets.only(left: 10, right: 10),
                         padding: EdgeInsets.all(10),
-                        child: Text(item.content),
+                        child: Text(item.content!),
                         decoration: BoxDecoration(
                             color: Colors.blue[100],
                             borderRadius: BorderRadius.all(
@@ -94,7 +94,7 @@ class IMItemChat extends StatelessWidget {
                 ],
               ),
             ),
-            IMUserAvatar(imUser: user),
+            IMUserAvatar(user),
           ],
         );
         break;
@@ -102,12 +102,12 @@ class IMItemChat extends StatelessWidget {
         widget = Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            IMUserAvatar(imUser: user),
+            IMUserAvatar(user),
             Flexible(
               child: Container(
                 margin: EdgeInsets.only(left: 16, right: 40),
                 padding: EdgeInsets.all(10),
-                child: Text(item.content),
+                child: Text(item.content!),
                 decoration: BoxDecoration(
                     color: Colors.grey[200],
                     borderRadius:

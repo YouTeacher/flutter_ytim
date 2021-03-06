@@ -2,9 +2,9 @@ import 'package:flutter_ytim/src/bean/im_user.dart';
 
 /// IM返回值
 class ImResponse {
-  int code;
-  String msg;
-  IMUser userInfo;
+  int? code;
+  String? msg;
+  IMUser? userInfo;
 
   ImResponse({this.code, this.msg, this.userInfo});
 

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_ytim/src/bean/im_command.dart';
 import 'package:flutter_ytim/src/bean/im_history_msg_list.dart';
 import 'package:flutter_ytim/src/bean/im_msg.dart';
@@ -26,7 +25,7 @@ typedef void KickOutCallback();
 class YTIM {
   String _tag = 'YTIM';
 
-  static YTIM _singleton;
+  static YTIM? _singleton;
 
   YTIM._internal() {
     _streamController = StreamController.broadcast();
@@ -37,20 +36,20 @@ class YTIM {
       _singleton = YTIM._internal();
       YTSPUtils.init();
     }
-    return _singleton;
+    return _singleton!;
   }
 
-  StreamController get streamController => _streamController;
+  StreamController? get streamController => _streamController;
 
   /// 当前正在与之聊天的用户id。
   String currentChatUserId = '';
 
   /// 自己的用户信息
-  IMUser mUser;
+  late IMUser mUser;
 
   IMConnectState _connectState = IMConnectState.IDLE;
-  IOWebSocketChannel _channel;
-  StreamController _streamController;
+  IOWebSocketChannel? _channel;
+  StreamController? _streamController;
 
   /// 临时保存发送消息内容。发送消息成功后，服务器成功响应体内没有消息内容，所以临时存一下。
   String _tempContent = '';
@@ -64,15 +63,15 @@ class YTIM {
   String _username = '';
 
   /// 回调
-  Callback<IMUser> _onIMUserCreatedCallback;
-  Callback<IMUser> _onLoginSuccessCallback;
-  KickOutCallback _kickOutCallback;
+  late Callback<IMUser?> _onIMUserCreatedCallback;
+  late Callback<IMUser?> _onLoginSuccessCallback;
+  KickOutCallback? _kickOutCallback;
 
   Stream<T> on<T>() {
     if (T == dynamic) {
-      return _streamController.stream;
+      return _streamController!.stream as Stream<T>;
     } else {
-      return _streamController.stream.where((event) => event is T).cast<T>();
+      return _streamController!.stream.where((event) => event is T).cast<T>();
     }
   }
 
@@ -85,17 +84,15 @@ class YTIM {
 
   /// IM初始化。
   void init({
-    @required String imAppID,
-    @required String imAppSecret,
-    @required String imAccount,
-    @required Callback<IMUser> imUserCreatedCallback,
-    @required Callback<IMUser> imLoginSuccessCallback,
+    required String imAppID,
+    required String imAppSecret,
+    required String imAccount,
+    required Callback<IMUser?> imUserCreatedCallback,
+    required Callback<IMUser?> imLoginSuccessCallback,
     String imUsername = '',
   }) {
     YTLog.i('YTIM.init');
-    if (imAppID == null ||
-        imAppID.isEmpty ||
-        imAppSecret == null ||
+    if (imAppID.isEmpty ||
         imAppSecret.isEmpty) {
       throw 'appID 或 appSecret 为空！\n'
           '''你可能需要先执行初始化操作：YTIM.instance.init('appID', 'appSecret);\n'''
@@ -125,7 +122,7 @@ class YTIM {
     ConnectivityResult connectivityResult =
         await Connectivity().checkConnectivity();
     if (connectivityResult == ConnectivityResult.none) {
-      _streamController.sink.add(IMConnectState.NETWORK_NONE);
+      _streamController!.sink.add(IMConnectState.NETWORK_NONE);
       YTLog.d(_tag, '网络错误');
       return;
     }
@@ -134,18 +131,18 @@ class YTIM {
       if (_streamController == null) {
         _streamController = StreamController.broadcast();
       }
-      _streamController.sink.add(IMConnectState.CONNECTING);
+      _streamController!.sink.add(IMConnectState.CONNECTING);
       YTLog.d(_tag, 'connect sockets address: ${YTIMUrls.IM_SERVER_ADDRESS}');
       _channel = IOWebSocketChannel.connect(YTIMUrls.IM_SERVER_ADDRESS);
       _needReconnect = true;
-      _channel.stream.listen(
+      _channel!.stream.listen(
         _handleMassage,
         onError: (err) =>
             YTLog.d(_tag, 'IM出错：${(err as WebSocketChannelException).message}'),
         onDone: () {
           YTLog.d(_tag, 'IM断开：${_channel?.closeReason}');
           _connectState = IMConnectState.IDLE;
-          _streamController?.sink?.add(IMConnectState.IDLE);
+          _streamController?.sink.add(IMConnectState.IDLE);
           if (_needReconnect) {
             _connectServer();
           }
@@ -159,9 +156,9 @@ class YTIM {
   void release() {
     YTLog.i('YTIM.release');
     _connectState = IMConnectState.IDLE;
-    _streamController?.sink?.add(IMConnectState.IDLE);
+    _streamController?.sink.add(IMConnectState.IDLE);
     _needReconnect = false;
-    _channel?.sink?.close();
+    _channel?.sink.close();
     _streamController?.close();
     _streamController = null;
     _singleton = null;
@@ -186,7 +183,7 @@ class YTIM {
       ImResponse ir = ImResponse.fromJson(json.decode(data));
       if (ir.code == 0 || ir.code == 50010) {
         YTLog.d(_tag,
-            '${ir.code == 0 ? 'IM账号创建成功' : 'IM账号已存在'}，IM id：${ir.userInfo.id}');
+            '${ir.code == 0 ? 'IM账号创建成功' : 'IM账号已存在'}，IM id：${ir.userInfo!.id}');
         _onIMUserCreatedCallback(ir.userInfo);
         _login();
       } else {
@@ -199,7 +196,7 @@ class YTIM {
   void _send(String message) {
     if (_connectState == IMConnectState.CONNECTED && _channel?.sink != null) {
       YTLog.d(_tag, '--> message:$message');
-      _channel.sink.add(message);
+      _channel!.sink.add(message);
     }
   }
 
@@ -212,7 +209,7 @@ class YTIM {
         case 'connect':
           YTLog.d(_tag, 'connect success');
           _connectState = IMConnectState.CONNECTED;
-          _streamController.sink.add(IMConnectState.CONNECTED);
+          _streamController!.sink.add(IMConnectState.CONNECTED);
           _login();
           break;
         case 'login':
@@ -231,18 +228,18 @@ class YTIM {
           _keepBeat();
           break;
         case 'userList':
-          _streamController.sink.add(IMUserList.fromJson(obj));
+          _streamController!.sink.add(IMUserList.fromJson(obj));
           break;
         case 'history':
-          _streamController.sink.add(IMHistoryMsgList.fromJson(obj));
+          _streamController!.sink.add(IMHistoryMsgList.fromJson(obj));
           break;
         case 'userInfo':
-          _streamController.sink.add(IMUser.fromJson(obj['userInfo']));
+          _streamController!.sink.add(IMUser.fromJson(obj['userInfo']));
           break;
         case 'message':
           // 发送消息，服务器回应
           if (obj['code'] == 0) {
-            _streamController.sink.add(
+            _streamController!.sink.add(
               IMMessage(
                 type: '1',
                 from: mUser.userId.toString(),
@@ -254,11 +251,11 @@ class YTIM {
           }
           break;
         case 'revokeMessage':
-          _streamController.sink.add(IMCommand.fromJson(obj));
+          _streamController!.sink.add(IMCommand.fromJson(obj));
           break;
         case 'unreadMessage':
           if (obj['messageList'] is Map) {
-            _streamController.sink.add(IMUnreadMsgList.fromJson(obj));
+            _streamController!.sink.add(IMUnreadMsgList.fromJson(obj));
           }
           break;
         default:
@@ -270,18 +267,18 @@ class YTIM {
         case 'kickOut':
           // 如果帐号已经在其它端登录，退出执行重新登陆
           if (_kickOutCallback != null) {
-            _kickOutCallback();
+            _kickOutCallback!();
           }
           release();
           break;
         case 'message':
-          _streamController.sink.add(IMMessage.fromJson(obj));
+          _streamController!.sink.add(IMMessage.fromJson(obj));
           break;
         case 'readMessage':
-          _streamController.sink.add(IMCommand.fromJson(obj));
+          _streamController!.sink.add(IMCommand.fromJson(obj));
           break;
         case 'revokeMessage':
-          _streamController.sink.add(IMCommand.fromJson(obj));
+          _streamController!.sink.add(IMCommand.fromJson(obj));
           break;
         default:
       }
@@ -299,7 +296,7 @@ class YTIM {
 
   /// 登陆IM
   void _login() async {
-    if (_account == null || _account.isEmpty) {
+    if (_account.isEmpty) {
       throw '登录操作：IM账号不能为空！';
     }
     _send(json.encode({
@@ -317,7 +314,7 @@ class YTIM {
   }
 
   /// 发送消息
-  void send(String tid, String tName, String content) {
+  void send(String tid, String? tName, String content) {
     _tempContent = content;
     _send(json.encode({
       "action": "add",
@@ -331,7 +328,7 @@ class YTIM {
 
   /// 获取联系人列表
   /// "order":"排序（1:按会话记录，2:按会话记录(只取有过会话的用户列表)，3:在线状态，4：按用户名称）"
-  void getUserList({String order}) {
+  void getUserList({String? order}) {
     _send(json.encode(
         {"action": "get", "module": "userList", "order": order ?? "2"}));
   }
@@ -355,7 +352,7 @@ class YTIM {
   /// 撤销消息
   /// [tIMId] 通知对方imid
   /// [timestamp] 消息时间戳
-  void revokeMessage(String tIMId, String timestamp) {
+  void revokeMessage(String tIMId, String? timestamp) {
     _send(json.encode({
       "action": "del",
       "module": "revokeMessage",
@@ -390,7 +387,7 @@ class YTIM {
 
   /// 修改IM用户信息
   Future<dynamic> editUser(String userId, String username,
-      {int sex, String headImg, String phone, String email}) async {
+      {int? sex, String? headImg, String? phone, String? email}) async {
     var params = [
       'appId=$_appID',
       'timestamp=${DateTime.now().millisecondsSinceEpoch.toString().substring(0, 10)}',

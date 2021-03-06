@@ -3,14 +3,13 @@ import 'package:flutter_ytim/src/bean/im_user.dart';
 
 /// 自定义圆形头像，显示圆形网络图片或本地图片。
 class IMUserAvatar extends StatelessWidget {
-  final double defaultAvatarSize = 40.0;
   final IMUser imUser;
-  final double size;
-  final EdgeInsetsGeometry margin;
+  final double defaultAvatarSize = 40.0;
+  final double? size;
+  final EdgeInsetsGeometry? margin;
 
-  const IMUserAvatar({
-    Key key,
-    @required this.imUser,
+  const IMUserAvatar(this.imUser,{
+    Key? key,
     this.size,
     this.margin,
   }) : super(key: key);
@@ -24,11 +23,11 @@ class IMUserAvatar extends StatelessWidget {
       child: ClipOval(
         child: imUser.headImg == null ||
                 imUser.headImg == '' ||
-                !imUser.headImg.startsWith('http')
+                !imUser.headImg!.startsWith('http')
             ? Container(
                 child: Center(
                   child: Text(
-                    imUser?.username?.substring(0, 1)?.toUpperCase() ?? '',
+                    imUser.username?.substring(0, 1).toUpperCase() ?? '',
                     style: TextStyle(color: Colors.white, fontSize: 22),
                   ),
                 ),
@@ -37,7 +36,7 @@ class IMUserAvatar extends StatelessWidget {
                 ),
               )
             : Image.network(
-                imUser.headImg,
+                imUser.headImg!,
                 fit: BoxFit.cover,
               ),
       ),

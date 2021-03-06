@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 class UnreadCountView extends StatelessWidget {
   final int count;
 
-  const UnreadCountView({Key key, this.count = 0}) : super(key: key);
+  const UnreadCountView({Key? key, this.count = 0}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Opacity(
-      opacity: count == 0 || count == null ? 0 : 1,
+      opacity: count == 0 ? 0 : 1,
       child: Container(
         constraints: BoxConstraints(
           minWidth: 20,
@@ -17,7 +17,7 @@ class UnreadCountView extends StatelessWidget {
         alignment: Alignment.center,
         padding: EdgeInsets.all(3),
         child: Text(
-          count?.toString() ?? '',
+          count.toString(),
           style: TextStyle(fontSize: 11, color: Colors.white),
         ),
         decoration: BoxDecoration(

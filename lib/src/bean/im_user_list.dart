@@ -4,9 +4,9 @@ import 'package:flutter_ytim/src/bean/im_user.dart';
 
 /// IM用户列表
 class IMUserList {
-  String action, module;
-  int code;
-  List<IMUser> userList;
+  String? action, module;
+  int? code;
+  List<IMUser>? userList;
 
   IMUserList({this.action, this.module, this.code, this.userList});
 

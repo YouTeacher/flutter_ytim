@@ -12,14 +12,14 @@ class YTHttp {
   static const String TAG = 'YTHttp';
 
   /// post form-data
-  static Future postFormData(String url, [Map<String, dynamic> data]) async {
+  static Future postFormData(String url, Map<String, dynamic> data) async {
     _dio.interceptors.add(HTTPInterceptors());
     try {
       Response response = await _dio.post(url, data: FormData.fromMap(data));
       return response.data;
     } on DioError catch (e) {
-      if (e.response.statusCode.toString().startsWith('5') ||
-          e.response.statusCode.toString().startsWith('4')) {
+      if (e.response!.statusCode.toString().startsWith('5') ||
+          e.response!.statusCode.toString().startsWith('4')) {
         return null;
       }
       return e.response?.data;
@@ -70,14 +70,14 @@ class HTTPInterceptors extends InterceptorsWrapper {
   @override
   Future onResponse(Response response) {
     YTLog.d(tag,
-        "<-- ${response?.statusCode} ${response?.request?.path} \nbody:${json.encode(response?.data ?? '')}");
+        "<-- ${response.statusCode} ${response.request.path} \nbody:${json.encode(response.data ?? '')}");
     return super.onResponse(response);
   }
 
   @override
   Future onError(DioError err) {
     YTLog.d(tag,
-        "<-- ${err?.response?.statusCode} ${err?.request?.path}\nbody:${json.encode(err?.response?.data ?? "")}");
+        "<-- ${err.response?.statusCode} ${err.request?.path}\nbody:${json.encode(err.response?.data ?? "")}");
     return super.onError(err);
   }
 }

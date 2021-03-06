@@ -5,7 +5,7 @@ import 'package:flutter_ytim/src/ytim.dart';
 /// 通用工具类
 class YTUtils {
   /// 将时间戳转换为本地格式化时间：1586182731897 -> 2020-04-07 11:35
-  static String millisecondsToString(String milliseconds) {
+  static String millisecondsToString(String? milliseconds) {
     if (milliseconds == null || milliseconds == '') {
       return '';
     }
@@ -30,7 +30,7 @@ class YTUtils {
     }
   }
 
-  static void updateUnreadCount(Map<String, IMLastInfo> map) {
+  static void updateUnreadCount(Map<String?, IMLastInfo> map) {
     List<IMLastInfo> values = map.values.toList();
     int count = 0;
     if (values.isNotEmpty) {
@@ -38,6 +38,6 @@ class YTUtils {
         count += element.unreadCount;
       });
     }
-    YTIM().streamController.sink.add(IMUnreadCount(count: count));
+    YTIM().streamController!.sink.add(IMUnreadCount(count: count));
   }
 }

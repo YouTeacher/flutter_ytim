@@ -3,18 +3,18 @@ import 'dart:convert';
 /// IM用户信息
 class IMUser {
   /// 注册时返回的用户id。
-  String id;
+  String? id;
 
   /// 联系人列表中用户id字段
-  int userId;
+  int? userId;
 
   /// 本地字段。 未读消息数，用于在聊天历史列表设置未读消息个数。
-  int unreadCount;
+  int? unreadCount;
 
   /// "online":"是否在线（0：离线，1：在线）"
-  int online;
+  int? online;
 
-  String companyId, account, password, username, headImg;
+  String? companyId, account, password, username, headImg;
 
   IMUser({
     this.id,

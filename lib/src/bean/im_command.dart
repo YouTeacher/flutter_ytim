@@ -3,7 +3,7 @@ import 'dart:convert';
 /// 指令消息，已读回执、撤回消息
 /// module：readMessage，revokeMessage，
 class IMCommand {
-  String action, module, from, to, timestamp;
+  String? action, module, from, to, timestamp;
 
   IMCommand({this.action, this.module, this.from, this.to, this.timestamp});
 

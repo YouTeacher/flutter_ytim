@@ -8,11 +8,11 @@ import 'package:provider/provider.dart';
 class IMContactsPage extends StatefulWidget {
   /// [SliverPersistentHeader] or [AppBar]
   final Widget header;
-  final String order;
+  final String? order;
 
   const IMContactsPage({
-    Key key,
-    @required this.header,
+    Key? key,
+    required this.header,
     this.order,
   }) : super(key: key);
 

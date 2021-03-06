@@ -2,7 +2,7 @@ import 'dart:convert';
 
 /// IM未读消息个数
 class IMUnreadCount {
-  int count;
+  int? count;
 
   IMUnreadCount({this.count});
 

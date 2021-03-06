@@ -11,11 +11,11 @@ import 'package:provider/provider.dart';
 class IMUserListPage extends StatefulWidget {
   /// [SliverPersistentHeader] or [AppBar]
   final Widget header;
-  final String order;
+  final String? order;
 
   const IMUserListPage({
-    Key key,
-    @required this.header,
+    Key? key,
+    required this.header,
     this.order,
   }) : super(key: key);
 
@@ -24,23 +24,23 @@ class IMUserListPage extends StatefulWidget {
 }
 
 class _IMUserListPageState extends State<IMUserListPage> {
-  List<IMUser> _items = [];
+  List<IMUser>? _items = [];
 
   @override
   void initState() {
     super.initState();
     // 未读消息列表
     YTIM().on<IMUnreadMsgList>().listen((event) {
-      Map<String, dynamic> messageList = event.messageList;
-      Map<String, IMLastInfo> map = context.read<IMStore>().lastInfos;
+      Map<String, dynamic> messageList = event.messageList!;
+      Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
       for (String imId in messageList.keys) {
-        List msgs = messageList[imId] as List;
+        List? msgs = messageList[imId] as List?;
         if (map[imId] == null) {
           map[imId] = IMLastInfo(
-              msg: IMMessage.fromJson(msgs.last), unreadCount: msgs.length);
+              msg: IMMessage.fromJson(msgs!.last), unreadCount: msgs.length);
         } else {
-          map[imId].msg = IMMessage.fromJson(msgs.last);
-          map[imId].unreadCount = msgs.length;
+          map[imId]!.msg = IMMessage.fromJson(msgs!.last);
+          map[imId]!.unreadCount = msgs.length;
         }
       }
       context.read<IMStore>().update(map);
@@ -48,12 +48,12 @@ class _IMUserListPageState extends State<IMUserListPage> {
     });
     // 新消息
     YTIM().on<IMMessage>().listen((event) {
-      Map<String, IMLastInfo> map = context.read<IMStore>().lastInfos;
+      Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
       if (map.keys.contains(event.from)) {
         if (YTIM().currentChatUserId != event.from) {
-          map[event.from].unreadCount += 1;
+          map[event.from]!.unreadCount += 1;
         }
-        map[event.from].msg = event;
+        map[event.from]!.msg = event;
       } else {
         if (event.from != YTIM().mUser.userId.toString()) {
           map[event.from] = IMLastInfo(
@@ -61,7 +61,7 @@ class _IMUserListPageState extends State<IMUserListPage> {
               unreadCount: YTIM().currentChatUserId != event.from ? 1 : 0);
         }
       }
-      YTSPUtils.saveLastMsg(event.from, event);
+      YTSPUtils.saveLastMsg(event.from!, event);
       context.read<IMStore>().update(map);
       _updateUnreadCount(map);
     });
@@ -80,7 +80,7 @@ class _IMUserListPageState extends State<IMUserListPage> {
   }
 
   /// 通知更新未读消息
-  void _updateUnreadCount(Map<String, IMLastInfo> map) {
+  void _updateUnreadCount(Map<String?, IMLastInfo> map) {
     YTUtils.updateUnreadCount(map);
     if (mounted) {
       setState(() {});
@@ -90,27 +90,30 @@ class _IMUserListPageState extends State<IMUserListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: widget.header is AppBar ? widget.header : null,
+      appBar: widget.header is AppBar
+          ? widget.header as PreferredSizeWidget?
+          : null,
       body: widget.header is AppBar
           ? ListView.builder(
               itemBuilder: (c, i) {
-                Map<String, IMLastInfo> map = context.read<IMStore>().lastInfos;
-                return _buildItem(_items[i],
-                    map[_items[i].userId.toString()]?.unreadCount ?? 0);
+                Map<String?, IMLastInfo> map =
+                    context.read<IMStore>().lastInfos;
+                return _buildItem(_items![i],
+                    map[_items![i].userId.toString()]?.unreadCount ?? 0);
               },
-              itemCount: _items.length,
+              itemCount: _items!.length,
             )
           : CustomScrollView(slivers: <Widget>[
               widget.header,
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (c, i) {
-                    Map<String, IMLastInfo> map =
+                    Map<String?, IMLastInfo> map =
                         context.read<IMStore>().lastInfos;
-                    return _buildItem(_items[i],
-                        map[_items[i].userId.toString()]?.unreadCount ?? 0);
+                    return _buildItem(_items![i],
+                        map[_items![i].userId.toString()]?.unreadCount ?? 0);
                   },
-                  childCount: _items.length,
+                  childCount: _items!.length,
                 ),
               )
             ]),
@@ -121,9 +124,9 @@ class _IMUserListPageState extends State<IMUserListPage> {
     return InkWell(
       onTap: () {
         // 重置对方的未读消息个数。
-        Map<String, IMLastInfo> map = context.read<IMStore>().lastInfos;
+        Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
         if (map.keys.contains(item.userId.toString())) {
-          map[item.userId.toString()].unreadCount = 0;
+          map[item.userId.toString()]!.unreadCount = 0;
           context.read<IMStore>().update(map);
         }
         YTUtils.updateUnreadCount(map);
@@ -145,7 +148,7 @@ class _IMUserListPageState extends State<IMUserListPage> {
         ),
         child: Row(
           children: [
-            IMUserAvatar(imUser: item),
+            IMUserAvatar(item),
             Expanded(
               child: Container(
                 margin: EdgeInsets.only(left: 10),
@@ -153,7 +156,7 @@ class _IMUserListPageState extends State<IMUserListPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     // 名字
-                    Text(item.username),
+                    Text(item.username!),
                     SizedBox(height: 3),
                     // 最后一条消息
                     Text(
@@ -196,14 +199,14 @@ class _IMUserListPageState extends State<IMUserListPage> {
 
   void _setLastMsg() {
     setState(() {
-      for (IMUser user in _items) {
-        IMMessage msg = YTSPUtils.getLastMsg(user.userId.toString());
+      for (IMUser user in _items!) {
+        IMMessage? msg = YTSPUtils.getLastMsg(user.userId.toString());
         if (msg != null) {
-          Map<String, IMLastInfo> map = context.read<IMStore>().lastInfos;
+          Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
           if (map[user.userId.toString()] == null) {
             map[user.userId.toString()] = IMLastInfo(msg: msg);
           } else {
-            map[user.userId.toString()].msg = msg;
+            map[user.userId.toString()]!.msg = msg;
           }
         }
       }

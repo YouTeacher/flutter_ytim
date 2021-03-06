@@ -14,7 +14,7 @@ class IMChatPage extends StatefulWidget {
   /// 对方的im id。
   final String tid;
 
-  const IMChatPage({Key key, @required this.tid}) : super(key: key);
+  const IMChatPage({Key? key, required this.tid}) : super(key: key);
 
   @override
   _IMChatPageState createState() => _IMChatPageState();
@@ -27,7 +27,7 @@ class _IMChatPageState extends State<IMChatPage> {
   List<IMMessage> _items = [];
   ScrollController _scrollController = ScrollController();
 
-  IMUser _tUser;
+  late IMUser _tUser;
 
   @override
   void dispose() {
@@ -45,8 +45,9 @@ class _IMChatPageState extends State<IMChatPage> {
       if (mounted) {
         setState(() {
           _items.clear();
-          event.messageList.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-          _items.addAll(event.messageList);
+          event.messageList!
+              .sort((a, b) => a.timestamp!.compareTo(b.timestamp!));
+          _items.addAll(event.messageList!);
         });
         _saveLastMsg();
         _jump2bottom();
@@ -183,7 +184,7 @@ class _IMChatPageState extends State<IMChatPage> {
         padding: EdgeInsets.all(16),
         itemBuilder: (context, index) {
           IMMessage msg = _items[index];
-          IMMessage preMsg;
+          IMMessage? preMsg;
           if (index != 0) {
             preMsg = _items[index - 1];
           }
@@ -220,7 +221,7 @@ class _IMChatPageState extends State<IMChatPage> {
     YTIM().send(widget.tid, _tUser.username, content);
   }
 
-  void _revokeMessage(String timestamp) {
+  void _revokeMessage(String? timestamp) {
     showDialog(
       barrierDismissible: false,
       context: context,
@@ -258,9 +259,9 @@ class _IMChatPageState extends State<IMChatPage> {
       String pk;
       if (lastMsg.from == YTIM().mUser.userId.toString()) {
         // 自己发给对方的消息
-        pk = lastMsg.to;
+        pk = lastMsg.to!;
       } else {
-        pk = lastMsg.from;
+        pk = lastMsg.from!;
       }
       YTSPUtils.saveLastMsg(pk, lastMsg);
     } else {
@@ -270,7 +271,7 @@ class _IMChatPageState extends State<IMChatPage> {
 
   /// 从界面删除消息
   /// 如果删除的是最后一条消息，需要同时更新本地记录。
-  void _remoteMsgFromMsgList(String timestamp) {
+  void _remoteMsgFromMsgList(String? timestamp) {
     if (_items.isNotEmpty) {
       _items.removeWhere((element) => element.timestamp == timestamp);
       if (_items.last.timestamp == timestamp) {
