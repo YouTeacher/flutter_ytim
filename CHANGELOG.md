@@ -1,3 +1,6 @@
+## [2.0.0]
+* Support null-safety.
+
 ## [1.3.2]
 * Return ACK to other IM user when start 1v1 chat.
 

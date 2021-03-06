@@ -33,18 +33,18 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
     // 1. IM初始化
     YTIM().init(
       imAppID: '8C5FA707436E824363ECF0172F408F2D',
       imAppSecret: '42C213D8A378EDA8034598CDF840823D',
       imAccount: 'and2long@gmail.com',
       imUsername: 'and2long',
-      imUserCreatedCallback: (IMUser value) {
+      imUserCreatedCallback: (IMUser? value) {
         print(value);
         // 创建IM用户成功，将IM用户信息与你自己的用户系统关联起来。
       },
-      imLoginSuccessCallback: (IMUser value) {
+      imLoginSuccessCallback: (IMUser? value) {
         // IM用户登陆成功，取未读消息。
         YTIM().getUnreadMessage();
       },
@@ -117,7 +117,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     builder: (BuildContext context,
                         AsyncSnapshot<IMUnreadCount> snapshot) {
                       if (snapshot.hasData) {
-                        return UnreadCountView(count: snapshot.data.count);
+                        return UnreadCountView(
+                            count: snapshot.data?.count ?? 0);
                       } else {
                         return Container();
                       }
