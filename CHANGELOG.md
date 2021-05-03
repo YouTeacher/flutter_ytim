@@ -1,3 +1,7 @@
+## [2.0.1]
+* Add log switch.
+* IMContactsPage no longer requies a header layout.
+
 ## [2.0.0]
 * Support null-safety.
 
