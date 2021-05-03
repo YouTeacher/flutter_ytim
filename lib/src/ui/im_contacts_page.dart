@@ -6,13 +6,13 @@ import 'package:provider/provider.dart';
 /// IM 联系人列表界面。
 /// 使用 StatefulWidget 包裹一下，在界面切换时保持保持内部数据不丢失。
 class IMContactsPage extends StatefulWidget {
-  /// [SliverPersistentHeader] or [AppBar]
-  final Widget header;
+  /// header: 头布局 [SliverPersistentHeader] or [AppBar] or 其他类型组件
+  final Widget? header;
   final String? order;
 
   const IMContactsPage({
     Key? key,
-    required this.header,
+    this.header,
     this.order,
   }) : super(key: key);
 

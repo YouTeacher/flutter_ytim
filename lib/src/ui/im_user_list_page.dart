@@ -9,8 +9,8 @@ import 'package:provider/provider.dart';
 
 /// IM 用户列表
 class IMUserListPage extends StatefulWidget {
-  /// [SliverPersistentHeader] or [AppBar]
-  final Widget header;
+  /// header: 头布局 [SliverPersistentHeader] or [AppBar] or 其他类型组件
+  final Widget? header;
   final String? order;
 
   const IMUserListPage({
@@ -89,34 +89,28 @@ class _IMUserListPageState extends State<IMUserListPage> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> children = [
+      SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (c, i) {
+            Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
+            return _buildItem(_items![i],
+                map[_items![i].userId.toString()]?.unreadCount ?? 0);
+          },
+          childCount: _items!.length,
+        ),
+      )
+    ];
+    if (widget.header != null && !(widget.header is AppBar)) {
+      if (widget.header is SliverPersistentHeader) {
+        children.insert(0, widget.header!);
+      } else {
+        children.insert(0, SliverToBoxAdapter(child: widget.header));
+      }
+    }
     return Scaffold(
-      appBar: widget.header is AppBar
-          ? widget.header as PreferredSizeWidget?
-          : null,
-      body: widget.header is AppBar
-          ? ListView.builder(
-              itemBuilder: (c, i) {
-                Map<String?, IMLastInfo> map =
-                    context.read<IMStore>().lastInfos;
-                return _buildItem(_items![i],
-                    map[_items![i].userId.toString()]?.unreadCount ?? 0);
-              },
-              itemCount: _items!.length,
-            )
-          : CustomScrollView(slivers: <Widget>[
-              widget.header,
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (c, i) {
-                    Map<String?, IMLastInfo> map =
-                        context.read<IMStore>().lastInfos;
-                    return _buildItem(_items![i],
-                        map[_items![i].userId.toString()]?.unreadCount ?? 0);
-                  },
-                  childCount: _items!.length,
-                ),
-              )
-            ]),
+      appBar: widget.header is AppBar ? widget.header as AppBar : null,
+      body: CustomScrollView(slivers: children),
     );
   }
 
