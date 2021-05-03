@@ -48,6 +48,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         // IM用户登陆成功，取未读消息。
         YTIM().getUnreadMessage();
       },
+      logEnabled: false,
     );
     YTIM().addKickOutCallback(() {
       print('被踢下线！');

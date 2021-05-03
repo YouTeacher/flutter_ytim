@@ -11,8 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
   web_socket_channel: ^2.0.0
-  dio: ^4.0.0-beta5
+  dio: ^4.0.0
   provider: ^5.0.0
-  shared_preferences: ^2.0.3
-  crypto: ^3.0.0
-  connectivity: ^3.0.2
+  shared_preferences: ^2.0.5
+  crypto: ^3.0.1
+  connectivity: ^3.0.3

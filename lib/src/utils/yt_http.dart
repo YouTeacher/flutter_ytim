@@ -49,7 +49,7 @@ class HTTPInterceptors extends InterceptorsWrapper {
   String tag = 'YTHttp';
 
   @override
-  Future onRequest(RequestOptions options) {
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     String data = "";
     if (options.data != null) {
       if (options.data is FormData) {
@@ -64,20 +64,20 @@ class HTTPInterceptors extends InterceptorsWrapper {
     }
     YTLog.d(tag,
         "--> ${options.method} ${options.path}\nheaders:${json.encode(options.headers)}$data");
-    return super.onRequest(options);
+    return super.onRequest(options, handler);
   }
 
   @override
-  Future onResponse(Response response) {
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
     YTLog.d(tag,
-        "<-- ${response.statusCode} ${response.request.path} \nbody:${json.encode(response.data ?? '')}");
-    return super.onResponse(response);
+        "<-- ${response.statusCode} ${response.requestOptions.path} \nbody:${json.encode(response.data ?? '')}");
+    return handler.next(response);
   }
 
   @override
-  Future onError(DioError err) {
+  void onError(DioError err, ErrorInterceptorHandler handler) {
     YTLog.d(tag,
-        "<-- ${err.response?.statusCode} ${err.request?.path}\nbody:${json.encode(err.response?.data ?? "")}");
-    return super.onError(err);
+        "<-- ${err.response?.statusCode} ${err.requestOptions.path}\nbody:${json.encode(err.response?.data ?? "")}");
+    return super.onError(err, handler);
   }
 }

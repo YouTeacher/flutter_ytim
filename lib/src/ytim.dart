@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter_ytim/flutter_ytim.dart';
 import 'package:flutter_ytim/src/bean/im_command.dart';
 import 'package:flutter_ytim/src/bean/im_history_msg_list.dart';
 import 'package:flutter_ytim/src/bean/im_msg.dart';
@@ -90,10 +91,11 @@ class YTIM {
     required Callback<IMUser?> imUserCreatedCallback,
     required Callback<IMUser?> imLoginSuccessCallback,
     String imUsername = '',
+    bool logEnabled = true,
   }) {
+    YTLog.logEnabled = logEnabled;
     YTLog.i('YTIM.init');
-    if (imAppID.isEmpty ||
-        imAppSecret.isEmpty) {
+    if (imAppID.isEmpty || imAppSecret.isEmpty) {
       throw 'appID 或 appSecret 为空！\n'
           '''你可能需要先执行初始化操作：YTIM.instance.init('appID', 'appSecret);\n'''
           '如果没有appID，请登录：https://im.youteacher.asia/admin/login 获取。';
