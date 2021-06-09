@@ -1,3 +1,6 @@
+## [2.0.2]
+* Support set page width in Pad.
+
 ## [2.0.1]
 * Add log switch.
 * IMContactsPage no longer requies a header layout.

@@ -9,11 +9,13 @@ class IMContactsPage extends StatefulWidget {
   /// header: 头布局 [SliverPersistentHeader] or [AppBar] or 其他类型组件
   final Widget? header;
   final String? order;
+  final double? widthInPad;
 
   const IMContactsPage({
     Key? key,
     this.header,
     this.order,
+    this.widthInPad,
   }) : super(key: key);
 
   @override
@@ -33,7 +35,33 @@ class _IMContactsPageState extends State<IMContactsPage>
     super.build(context);
     return ChangeNotifierProvider.value(
       value: store,
-      child: IMUserListPage(header: widget.header, order: widget.order),
+      child: Scaffold(
+        appBar: widget.header is AppBar ? widget.header as AppBar : null,
+        body: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            Widget child = IMUserListPage(
+              header: widget.header,
+              order: widget.order,
+              widthInPad: widget.widthInPad,
+            );
+            if (constraints.maxWidth > 600) {
+              if (widget.widthInPad == null) {
+                return child;
+              } else {
+                return Center(
+                  child: Container(
+                    color: Colors.white,
+                    width: widget.widthInPad,
+                    child: child,
+                  ),
+                );
+              }
+            } else {
+              return child;
+            }
+          },
+        ),
+      ),
     );
   }
 }

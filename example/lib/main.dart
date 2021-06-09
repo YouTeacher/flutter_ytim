@@ -89,6 +89,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           IMContactsPage(
             header: AppBar(title: Text('IM')),
             order: "2",
+            widthInPad: 500,
           ),
         ],
         controller: _pageController,

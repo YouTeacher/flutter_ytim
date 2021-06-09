@@ -13,8 +13,13 @@ import 'package:flutter_ytim/src/values/localizations.dart';
 class IMChatPage extends StatefulWidget {
   /// 对方的im id。
   final String tid;
+  final double? widthInPad;
 
-  const IMChatPage({Key? key, required this.tid}) : super(key: key);
+  const IMChatPage({
+    Key? key,
+    required this.tid,
+    this.widthInPad,
+  }) : super(key: key);
 
   @override
   _IMChatPageState createState() => _IMChatPageState();
@@ -104,17 +109,35 @@ class _IMChatPageState extends State<IMChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_tUser.username ?? ''),
-      ),
-      body: Column(
-        children: [
-          _buildMsgList(),
-          Divider(height: 1),
-          _buildInputPanel(),
-        ],
-      ),
-    );
+        appBar: AppBar(
+          title: Text(_tUser.username ?? ''),
+        ),
+        body: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            Widget child = Column(
+              children: [
+                _buildMsgList(),
+                Divider(height: 1),
+                _buildInputPanel(),
+              ],
+            );
+            if (constraints.maxWidth > 600) {
+              if (widget.widthInPad == null) {
+                return child;
+              } else {
+                return Center(
+                  child: Container(
+                    color: Colors.white,
+                    width: widget.widthInPad,
+                    child: child,
+                  ),
+                );
+              }
+            } else {
+              return child;
+            }
+          },
+        ));
   }
 
   /// 发送消息输入框

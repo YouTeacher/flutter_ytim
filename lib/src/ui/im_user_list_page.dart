@@ -12,11 +12,13 @@ class IMUserListPage extends StatefulWidget {
   /// header: 头布局 [SliverPersistentHeader] or [AppBar] or 其他类型组件
   final Widget? header;
   final String? order;
+  final double? widthInPad;
 
   const IMUserListPage({
     Key? key,
     required this.header,
     this.order,
+    this.widthInPad,
   }) : super(key: key);
 
   @override
@@ -109,8 +111,25 @@ class _IMUserListPageState extends State<IMUserListPage> {
       }
     }
     return Scaffold(
-      appBar: widget.header is AppBar ? widget.header as AppBar : null,
-      body: CustomScrollView(slivers: children),
+      body: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          Widget child = CustomScrollView(slivers: children);
+          if (constraints.maxWidth > 600) {
+            if (widget.widthInPad == null) {
+              return child;
+            } else {
+              return Center(
+                child: Container(
+                  width: widget.widthInPad,
+                  child: child,
+                ),
+              );
+            }
+          } else {
+            return child;
+          }
+        },
+      ),
     );
   }
 
@@ -127,9 +146,12 @@ class _IMUserListPageState extends State<IMUserListPage> {
         YTIM().currentChatUserId = item.userId.toString();
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => IMChatPage(tid: item.userId.toString()),
-          ),
+          MaterialPageRoute(builder: (context) {
+            return IMChatPage(
+              tid: item.userId.toString(),
+              widthInPad: widget.widthInPad,
+            );
+          }),
         ).then((value) {
           YTIM().currentChatUserId = '';
           _setLastMsg();
@@ -139,6 +161,7 @@ class _IMUserListPageState extends State<IMUserListPage> {
         padding: EdgeInsets.all(15),
         decoration: BoxDecoration(
           border: Border(bottom: Divider.createBorderSide(context)),
+          color: Colors.white,
         ),
         child: Row(
           children: [
