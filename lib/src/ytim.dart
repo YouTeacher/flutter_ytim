@@ -428,17 +428,22 @@ class YTIM {
   }
 
   /// 创建用户
-  Future<dynamic> addUser(String account, String username) async {
+  Future<dynamic> addUser(String account, String username,
+      {String? headImg}) async {
+    var params = [
+      'appId=$_appID',
+      'timestamp=${DateTime.now().millisecondsSinceEpoch.toString().substring(0, 10)}',
+      'account=$account',
+      'password=000000',
+      'status=1',
+      'username=$username',
+    ];
+    if (headImg != null) {
+      params.add('headImg=$headImg');
+    }
     return await YTHttp.postFormData(
       YTIMUrls.IM_USER_ADD,
-      YTHttp.getSignedParams([
-        'appId=$_appID',
-        'timestamp=${DateTime.now().millisecondsSinceEpoch.toString().substring(0, 10)}',
-        'account=$account',
-        'password=000000',
-        'status=1',
-        'username=$username',
-      ]),
+      YTHttp.getSignedParams(params),
     );
   }
 }
