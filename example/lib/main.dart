@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         // IM用户登陆成功，取未读消息。
         YTIM().getUnreadMessage();
       },
-      logEnabled: false,
+      logEnabled: true,
     );
     YTIM().addKickOutCallback(() {
       print('被踢下线！');
@@ -90,6 +90,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             header: AppBar(title: Text('IM')),
             order: "2",
             widthInPad: 500,
+            onMeAvatarTap: (IMUser user) {
+              print(user);
+            },
+            onOtherAvatarTap: (IMUser user) {
+              print(user);
+            },
           ),
         ],
         controller: _pageController,

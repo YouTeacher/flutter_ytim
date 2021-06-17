@@ -52,7 +52,6 @@ class IMUser {
       'password': password,
       'username': username,
       'headImg': headImg,
-      'unreadCount': unreadCount,
     };
   }
 

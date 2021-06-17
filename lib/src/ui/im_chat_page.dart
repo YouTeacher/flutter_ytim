@@ -15,10 +15,18 @@ class IMChatPage extends StatefulWidget {
   final String tid;
   final double? widthInPad;
 
+  /// 聊天界面中自己的头像被点击
+  final Callback<IMUser>? onMeAvatarTap;
+
+  /// 聊天界面中对方的头像被点击
+  final Callback<IMUser>? onOtherAvatarTap;
+
   const IMChatPage({
     Key? key,
     required this.tid,
     this.widthInPad,
+    this.onMeAvatarTap,
+    this.onOtherAvatarTap,
   }) : super(key: key);
 
   @override
@@ -215,17 +223,21 @@ class _IMChatPageState extends State<IMChatPage> {
             return GestureDetector(
               onLongPress: () => _revokeMessage(msg.timestamp),
               child: IMItemChat(
-                  preItem: preMsg,
-                  item: msg,
-                  user: YTIM().mUser,
-                  type: IMChatItemType.Me),
+                preItem: preMsg,
+                item: msg,
+                user: YTIM().mUser,
+                type: IMChatItemType.Me,
+                onAvatarTap: widget.onMeAvatarTap,
+              ),
             );
           } else {
             return IMItemChat(
-                preItem: preMsg,
-                item: msg,
-                user: _tUser,
-                type: IMChatItemType.Other);
+              preItem: preMsg,
+              item: msg,
+              user: _tUser,
+              type: IMChatItemType.Other,
+              onAvatarTap: widget.onOtherAvatarTap,
+            );
           }
         },
         itemCount: _items.length,

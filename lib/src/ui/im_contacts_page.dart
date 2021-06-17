@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ytim/flutter_ytim.dart';
 import 'package:flutter_ytim/src/bean/im_store.dart';
 import 'package:flutter_ytim/src/ui/im_user_list_page.dart';
 import 'package:provider/provider.dart';
@@ -11,11 +12,19 @@ class IMContactsPage extends StatefulWidget {
   final String? order;
   final double? widthInPad;
 
+  /// 聊天界面中自己的头像被点击
+  final Callback<IMUser>? onMeAvatarTap;
+
+  /// 聊天界面中对方的头像被点击
+  final Callback<IMUser>? onOtherAvatarTap;
+
   const IMContactsPage({
     Key? key,
     this.header,
     this.order,
     this.widthInPad,
+    this.onMeAvatarTap,
+    this.onOtherAvatarTap,
   }) : super(key: key);
 
   @override
@@ -43,6 +52,8 @@ class _IMContactsPageState extends State<IMContactsPage>
               header: widget.header,
               order: widget.order,
               widthInPad: widget.widthInPad,
+              onMeAvatarTap: widget.onMeAvatarTap,
+              onOtherAvatarTap: widget.onOtherAvatarTap,
             );
             if (constraints.maxWidth > 600) {
               if (widget.widthInPad == null) {

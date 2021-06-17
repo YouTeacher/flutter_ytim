@@ -14,13 +14,17 @@ class IMItemChat extends StatelessWidget {
   final IMMessage item;
   final IMChatItemType type;
 
-  const IMItemChat(
-      {Key? key,
-      required this.item,
-      required this.user,
-      required this.preItem,
-      required this.type})
-      : super(key: key);
+  /// 头像点击事件
+  final Callback<IMUser>? onAvatarTap;
+
+  const IMItemChat({
+    Key? key,
+    required this.item,
+    required this.user,
+    required this.preItem,
+    required this.type,
+    this.onAvatarTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +98,10 @@ class IMItemChat extends StatelessWidget {
                 ],
               ),
             ),
-            IMUserAvatar(user),
+            IMUserAvatar(
+              user,
+              onAvatarTap: onAvatarTap,
+            ),
           ],
         );
         break;
@@ -102,7 +109,10 @@ class IMItemChat extends StatelessWidget {
         widget = Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            IMUserAvatar(user),
+            IMUserAvatar(
+              user,
+              onAvatarTap: onAvatarTap,
+            ),
             Flexible(
               child: Container(
                 margin: EdgeInsets.only(left: 16, right: 40),

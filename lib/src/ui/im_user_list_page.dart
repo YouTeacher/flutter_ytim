@@ -14,11 +14,19 @@ class IMUserListPage extends StatefulWidget {
   final String? order;
   final double? widthInPad;
 
+  /// 聊天界面中自己的头像被点击
+  final Callback<IMUser>? onMeAvatarTap;
+
+  /// 聊天界面中对方的头像被点击
+  final Callback<IMUser>? onOtherAvatarTap;
+
   const IMUserListPage({
     Key? key,
     required this.header,
     this.order,
     this.widthInPad,
+    this.onMeAvatarTap,
+    this.onOtherAvatarTap,
   }) : super(key: key);
 
   @override
@@ -150,6 +158,8 @@ class _IMUserListPageState extends State<IMUserListPage> {
             return IMChatPage(
               tid: item.userId.toString(),
               widthInPad: widget.widthInPad,
+              onMeAvatarTap: widget.onMeAvatarTap,
+              onOtherAvatarTap: widget.onOtherAvatarTap,
             );
           }),
         ).then((value) {
