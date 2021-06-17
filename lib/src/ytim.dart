@@ -59,9 +59,10 @@ class YTIM {
   String _appID = '';
   String _appSecret = '';
 
-  /// 登录/注册时使用的账号和用户名。
+  /// 登录/注册时使用的账号、用户名、头像。
   String _account = '';
   String _username = '';
+  String _headImg = '';
 
   /// 回调
   late Callback<IMUser?> _onIMUserCreatedCallback;
@@ -91,6 +92,7 @@ class YTIM {
     required Callback<IMUser?> imUserCreatedCallback,
     required Callback<IMUser?> imLoginSuccessCallback,
     String imUsername = '',
+    String imHeadImg = '',
     bool logEnabled = true,
   }) {
     YTLog.logEnabled = logEnabled;
@@ -104,6 +106,7 @@ class YTIM {
     _appSecret = imAppSecret;
     _account = imAccount;
     _username = imUsername;
+    _headImg = imHeadImg;
     _onIMUserCreatedCallback = imUserCreatedCallback;
     _onLoginSuccessCallback = imLoginSuccessCallback;
     _connectServer();
@@ -177,8 +180,11 @@ class YTIM {
 
   /// 创建IM用户
   void _createIMUser() async {
-    final data =
-        await addUser(_account, _username.isEmpty ? _account : _username);
+    final data = await addUser(
+      _account,
+      _username.isEmpty ? _account : _username,
+      headImg: _headImg,
+    );
     if (data == null) {
       YTLog.d(_tag, 'createIMUser：请求出错。');
     } else {
@@ -438,7 +444,7 @@ class YTIM {
       'status=1',
       'username=$username',
     ];
-    if (headImg != null) {
+    if (headImg != null && headImg != '') {
       params.add('headImg=$headImg');
     }
     return await YTHttp.postFormData(
