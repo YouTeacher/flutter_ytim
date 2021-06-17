@@ -1,3 +1,7 @@
+## [2.0.3]
+* Support add click listener on avatar in chat page.
+* Add headImg filed when register new user.
+
 ## [2.0.2]
 * Support set page width in Pad.
 
