@@ -1,3 +1,6 @@
+## [2.0.5]
+* Support multiline input.
+
 ## [2.0.4]
 * Add headImg filed when YTIM init.
 

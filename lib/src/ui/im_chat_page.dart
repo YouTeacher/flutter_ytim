@@ -5,6 +5,7 @@ import 'package:flutter_ytim/flutter_ytim.dart';
 import 'package:flutter_ytim/src/bean/im_command.dart';
 import 'package:flutter_ytim/src/bean/im_history_msg_list.dart';
 import 'package:flutter_ytim/src/bean/im_msg.dart';
+import 'package:flutter_ytim/src/ui/im_edit_text.dart';
 import 'package:flutter_ytim/src/ui/im_item_chat_msg.dart';
 import 'package:flutter_ytim/src/utils/yt_sp_utils.dart';
 import 'package:flutter_ytim/src/values/localizations.dart';
@@ -162,22 +163,9 @@ class _IMChatPageState extends State<IMChatPage> {
               },
             ),
             Expanded(
-                child: TextField(
-              keyboardType: TextInputType.multiline,
-              cursorColor: Theme.of(context).primaryColor,
+                child: IMEditText(
+              noBorder: true,
               controller: _textController,
-              decoration: InputDecoration(
-                labelStyle: Theme.of(context).textTheme.caption,
-                isDense: true,
-                contentPadding:
-                    EdgeInsets.only(left: 15, right: 15, top: 8, bottom: 8),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.transparent),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.transparent),
-                ),
-              ),
               onChanged: (text) {
                 if (_btnDisabled != text.isEmpty) {
                   setState(() {
