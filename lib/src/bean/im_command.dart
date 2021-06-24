@@ -11,8 +11,8 @@ class IMCommand {
     return IMCommand(
       action: data['action'],
       module: data['module'],
-      from: data['from'],
-      to: data['to'],
+      from: data['from']?.toString(),
+      to: data['to']?.toString(),
       timestamp: data['timestamp'],
     );
   }

@@ -1,3 +1,6 @@
+## [2.1.0]
+* Fix user ID types.
+
 ## [2.0.5]
 * Support multiline input.
 

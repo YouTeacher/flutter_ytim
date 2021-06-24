@@ -6,7 +6,7 @@ class IMUser {
   String? id;
 
   /// 联系人列表中用户id字段
-  int? userId;
+  String? userId;
 
   /// 本地字段。 未读消息数，用于在聊天历史列表设置未读消息个数。
   int? unreadCount;
@@ -30,8 +30,8 @@ class IMUser {
 
   factory IMUser.fromJson(Map<String, dynamic> json) {
     return IMUser(
-      id: json['id'],
-      userId: json['userId'],
+      id: json['id']?.toString(),
+      userId: json['userId']?.toString(),
       online: json['online'],
       companyId: json['companyId'],
       account: json['account'],
