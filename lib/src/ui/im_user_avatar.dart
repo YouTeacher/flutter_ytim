@@ -22,37 +22,40 @@ class IMUserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        if (onAvatarTap != null) {
-          onAvatarTap!(imUser);
-        }
-      },
-      child: Container(
-        margin: margin,
-        width: size ?? defaultAvatarSize,
-        height: size ?? defaultAvatarSize,
-        child: ClipOval(
-          child: imUser.headImg == null ||
-                  imUser.headImg == '' ||
-                  !imUser.headImg!.startsWith('http')
-              ? Container(
-                  child: Center(
-                    child: Text(
-                      imUser.username?.substring(0, 1).toUpperCase() ?? '',
-                      style: TextStyle(color: Colors.white, fontSize: 22),
-                    ),
+    Widget child = Container(
+      margin: margin,
+      width: size ?? defaultAvatarSize,
+      height: size ?? defaultAvatarSize,
+      child: ClipOval(
+        child: imUser.headImg == null ||
+                imUser.headImg == '' ||
+                !imUser.headImg!.startsWith('http')
+            ? Container(
+                child: Center(
+                  child: Text(
+                    imUser.username?.substring(0, 1).toUpperCase() ?? '',
+                    style: TextStyle(color: Colors.white, fontSize: 22),
                   ),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                  ),
-                )
-              : Image.network(
-                  imUser.headImg!,
-                  fit: BoxFit.cover,
                 ),
-        ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                ),
+              )
+            : Image.network(
+                imUser.headImg!,
+                fit: BoxFit.cover,
+              ),
       ),
     );
+    return onAvatarTap == null
+        ? child
+        : GestureDetector(
+            onTap: () {
+              if (onAvatarTap != null) {
+                onAvatarTap!(imUser);
+              }
+            },
+            child: child,
+          );
   }
 }

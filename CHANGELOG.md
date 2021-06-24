@@ -1,3 +1,6 @@
+## [2.1.1]
+* Fix user avatar click listener.
+
 ## [2.1.0]
 * Fix user ID types.
 
