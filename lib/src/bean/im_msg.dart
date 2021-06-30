@@ -29,9 +29,9 @@ class IMMessage {
   factory IMMessage.fromJson(Map<String, dynamic> json) {
     return IMMessage(
       type: json['type'],
-      from: json['from'],
+      from: json['from']?.toString(),
+      to: json['to']?.toString(),
       fromName: json['fromName'],
-      to: json['to'],
       timestamp: json['timestamp'],
       time: json['time'],
       content: json['content'],

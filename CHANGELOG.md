@@ -1,3 +1,6 @@
+## [2.1.2]
+* Fix types of the from and to fields.
+
 ## [2.1.1]
 * Fix user avatar click listener.
 
