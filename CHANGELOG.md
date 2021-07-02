@@ -1,3 +1,6 @@
+## [2.1.3]
+* Support pull to refresh in user list page.
+
 ## [2.1.2]
 * Fix types of the from and to fields.
 

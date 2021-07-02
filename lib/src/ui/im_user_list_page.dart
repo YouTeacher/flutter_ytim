@@ -6,6 +6,7 @@ import 'package:flutter_ytim/src/ui/im_chat_page.dart';
 import 'package:flutter_ytim/src/utils/yt_sp_utils.dart';
 import 'package:flutter_ytim/src/utils/yt_utils.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 /// IM 用户列表
 class IMUserListPage extends StatefulWidget {
@@ -35,6 +36,8 @@ class IMUserListPage extends StatefulWidget {
 
 class _IMUserListPageState extends State<IMUserListPage> {
   List<IMUser>? _items = [];
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: true);
 
   @override
   void initState() {
@@ -77,6 +80,7 @@ class _IMUserListPageState extends State<IMUserListPage> {
     });
     // 联系人列表
     YTIM().on<IMUserList>().listen((event) {
+      _refreshController.refreshCompleted();
       if (mounted) {
         YTIM().getUnreadMessage();
         setState(() {
@@ -121,7 +125,11 @@ class _IMUserListPageState extends State<IMUserListPage> {
     return Scaffold(
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          Widget child = CustomScrollView(slivers: children);
+          Widget child = SmartRefresher(
+            controller: _refreshController,
+            onRefresh: () => YTIM().getUserList(order: widget.order),
+            child: CustomScrollView(slivers: children),
+          );
           if (constraints.maxWidth > 600) {
             if (widget.widthInPad == null) {
               return child;
