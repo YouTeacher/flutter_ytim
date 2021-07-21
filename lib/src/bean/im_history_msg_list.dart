@@ -26,9 +26,11 @@ class IMHistoryMsgList {
       code: data['code'],
       limit: data['limit'],
       userId: data['userId'],
-      messageList: (data['messageList'] as List)
-          .map((e) => IMMessage.fromJson(e))
-          .toList(),
+      messageList: data['messageList'] == null
+          ? null
+          : (data['messageList'] as List)
+              .map((e) => IMMessage.fromJson(e))
+              .toList(),
     );
   }
 

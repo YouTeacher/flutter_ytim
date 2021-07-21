@@ -1,3 +1,6 @@
+## [2.1.4]
+* Fixed exception when messageList is null.
+
 ## [2.1.3]
 * Support pull to refresh in user list page.
 
