@@ -242,7 +242,9 @@ class YTIM {
           _streamController!.sink.add(IMHistoryMsgList.fromJson(obj));
           break;
         case 'userInfo':
-          _streamController!.sink.add(IMUser.fromJson(obj['userInfo']));
+          if (obj['userInfo'] != null) {
+            _streamController!.sink.add(IMUser.fromJson(obj['userInfo']));
+          }
           break;
         case 'message':
           // 发送消息，服务器回应

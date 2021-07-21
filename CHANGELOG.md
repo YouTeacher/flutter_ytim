@@ -1,3 +1,6 @@
+## [2.1.5]
+* Fixed exception when userInfo is null.
+
 ## [2.1.4]
 * Fixed exception when messageList is null.
 * Export utils.

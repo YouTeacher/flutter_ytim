@@ -56,7 +56,7 @@ class _IMChatPageState extends State<IMChatPage> {
     _tUser = IMUser(id: widget.tid);
     YTIM().getHistoryMessage(widget.tid);
     YTIM().on<IMHistoryMsgList>().listen((event) {
-      if (mounted) {
+      if (mounted && event.messageList != null) {
         setState(() {
           _items.clear();
           event.messageList!
