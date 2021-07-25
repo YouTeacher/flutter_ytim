@@ -1,4 +1,7 @@
-## [2.1.5]
+## [2.1.7]
+* Fixed callback when login or register.
+
+## [2.1.6]
 * Add more button on contacts list item.
 
 ## [2.1.5]
