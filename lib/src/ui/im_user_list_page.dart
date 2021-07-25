@@ -21,6 +21,9 @@ class IMUserListPage extends StatefulWidget {
   /// 聊天界面中对方的头像被点击
   final Callback<IMUser>? onOtherAvatarTap;
 
+  /// 更多按钮点击事情
+  final Callback<IMUser>? onMoreTap;
+
   const IMUserListPage({
     Key? key,
     required this.header,
@@ -28,6 +31,7 @@ class IMUserListPage extends StatefulWidget {
     this.widthInPad,
     this.onMeAvatarTap,
     this.onOtherAvatarTap,
+    this.onMoreTap,
   }) : super(key: key);
 
   @override
@@ -176,11 +180,12 @@ class _IMUserListPageState extends State<IMUserListPage> {
         });
       },
       child: Container(
-        padding: EdgeInsets.all(15),
+        padding: EdgeInsets.only(left: 16, right: 16, bottom: 10, top: 6),
         decoration: BoxDecoration(
           border: Border(bottom: Divider.createBorderSide(context)),
           color: Colors.white,
         ),
+        constraints: BoxConstraints(minHeight: 72),
         child: Row(
           children: [
             IMUserAvatar(item),
@@ -212,6 +217,17 @@ class _IMUserListPageState extends State<IMUserListPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
+                Offstage(
+                  offstage: widget.onMoreTap == null,
+                  child: GestureDetector(
+                    child: Icon(Icons.more_horiz, color: Colors.grey),
+                    onTap: () {
+                      if (widget.onMoreTap != null) {
+                        widget.onMoreTap!(item);
+                      }
+                    },
+                  ),
+                ),
                 // 时间
                 Text(
                     YTUtils.millisecondsToString(context

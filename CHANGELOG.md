@@ -1,4 +1,7 @@
 ## [2.1.5]
+* Add more button on contacts list item.
+
+## [2.1.5]
 * Fixed exception when userInfo is null.
 
 ## [2.1.4]

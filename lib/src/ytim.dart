@@ -65,8 +65,8 @@ class YTIM {
   String _headImg = '';
 
   /// 回调
-  late Callback<IMUser?> _onIMUserCreatedCallback;
-  late Callback<IMUser?> _onLoginSuccessCallback;
+  late Callback<IMUser> _onIMUserCreatedCallback;
+  late Callback<IMUser> _onLoginSuccessCallback;
   KickOutCallback? _kickOutCallback;
 
   Stream<T> on<T>() {
@@ -192,7 +192,7 @@ class YTIM {
       if (ir.code == 0 || ir.code == 50010) {
         YTLog.d(_tag,
             '${ir.code == 0 ? 'IM账号创建成功' : 'IM账号已存在'}，IM id：${ir.userInfo!.id}');
-        _onIMUserCreatedCallback(ir.userInfo);
+        _onIMUserCreatedCallback(ir.userInfo!);
         _login();
       } else {
         YTLog.d(_tag, 'IM账号创建失败：${ir.msg}');
