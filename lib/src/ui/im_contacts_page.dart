@@ -18,9 +18,6 @@ class IMContactsPage extends StatefulWidget {
   /// 聊天界面中对方的头像被点击
   final Callback<IMUser>? onOtherAvatarTap;
 
-  /// 更多按钮点击事情
-  final Callback<IMUser>? onMoreTap;
-
   const IMContactsPage({
     Key? key,
     this.header,
@@ -28,7 +25,6 @@ class IMContactsPage extends StatefulWidget {
     this.widthInPad,
     this.onMeAvatarTap,
     this.onOtherAvatarTap,
-    this.onMoreTap,
   }) : super(key: key);
 
   @override
@@ -58,7 +54,6 @@ class _IMContactsPageState extends State<IMContactsPage>
               widthInPad: widget.widthInPad,
               onMeAvatarTap: widget.onMeAvatarTap,
               onOtherAvatarTap: widget.onOtherAvatarTap,
-              onMoreTap: widget.onMoreTap,
             );
             if (constraints.maxWidth > 600) {
               if (widget.widthInPad == null) {

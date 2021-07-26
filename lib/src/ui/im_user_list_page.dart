@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_ytim/flutter_ytim.dart';
 import 'package:flutter_ytim/src/bean/im_store.dart';
 import 'package:flutter_ytim/src/bean/im_unread_msg_list.dart';
@@ -21,9 +22,6 @@ class IMUserListPage extends StatefulWidget {
   /// 聊天界面中对方的头像被点击
   final Callback<IMUser>? onOtherAvatarTap;
 
-  /// 更多按钮点击事情
-  final Callback<IMUser>? onMoreTap;
-
   const IMUserListPage({
     Key? key,
     required this.header,
@@ -31,7 +29,6 @@ class IMUserListPage extends StatefulWidget {
     this.widthInPad,
     this.onMeAvatarTap,
     this.onOtherAvatarTap,
-    this.onMoreTap,
   }) : super(key: key);
 
   @override
@@ -66,16 +63,18 @@ class _IMUserListPageState extends State<IMUserListPage> {
     // 新消息
     YTIM().on<IMMessage>().listen((event) {
       Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
-      if (map.keys.contains(event.from)) {
-        if (YTIM().currentChatUserId != event.from) {
-          map[event.from]!.unreadCount += 1;
-        }
-        map[event.from]!.msg = event;
-      } else {
-        if (event.from != YTIM().mUser.userId.toString()) {
-          map[event.from] = IMLastInfo(
-              msg: event,
-              unreadCount: YTIM().currentChatUserId != event.from ? 1 : 0);
+      if (!YTSPUtils.getMuteList().contains(event.from)) {
+        if (map.keys.contains(event.from)) {
+          if (YTIM().currentChatUserId != event.from) {
+            map[event.from]!.unreadCount += 1;
+          }
+          map[event.from]!.msg = event;
+        } else {
+          if (event.from != YTIM().mUser.userId.toString()) {
+            map[event.from] = IMLastInfo(
+                msg: event,
+                unreadCount: YTIM().currentChatUserId != event.from ? 1 : 0);
+          }
         }
       }
       YTSPUtils.saveLastMsg(event.from!, event);
@@ -112,8 +111,8 @@ class _IMUserListPageState extends State<IMUserListPage> {
         delegate: SliverChildBuilderDelegate(
           (c, i) {
             Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
-            return _buildItem(_items[i],
-                map[_items[i].userId.toString()]?.unreadCount ?? 0);
+            return _buildItem(
+                _items[i], map[_items[i].userId.toString()]?.unreadCount ?? 0);
           },
           childCount: _items.length,
         ),
@@ -154,95 +153,128 @@ class _IMUserListPageState extends State<IMUserListPage> {
   }
 
   Widget _buildItem(IMUser item, int count) {
-    return InkWell(
-      onTap: () {
-        // 重置对方的未读消息个数。
-        Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
-        if (map.keys.contains(item.userId.toString())) {
-          map[item.userId.toString()]!.unreadCount = 0;
-          context.read<IMStore>().update(map);
-        }
-        YTUtils.updateUnreadCount(map);
-        YTIM().currentChatUserId = item.userId.toString();
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) {
-            return IMChatPage(
-              tid: item.userId.toString(),
-              widthInPad: widget.widthInPad,
-              onMeAvatarTap: widget.onMeAvatarTap,
-              onOtherAvatarTap: widget.onOtherAvatarTap,
-            );
-          }),
-        ).then((value) {
-          YTIM().currentChatUserId = '';
-          _setLastMsg();
-        });
-      },
-      child: Container(
-        padding: EdgeInsets.only(left: 16, right: 16, bottom: 10, top: 6),
-        decoration: BoxDecoration(
-          border: Border(bottom: Divider.createBorderSide(context)),
-          color: Colors.white,
+    return Slidable(
+      actionPane: SlidableDrawerActionPane(),
+      actionExtentRatio: 0.15,
+      secondaryActions: <Widget>[
+        IconSlideAction(
+          color: Colors.grey,
+          iconWidget: Icon(
+              YTSPUtils.getMuteList().contains(item.userId)
+                  ? Icons.notifications_none_outlined
+                  : Icons.notifications_off_outlined,
+              color: Colors.white),
+          onTap: () {
+            if (YTSPUtils.getMuteList().contains(item.userId)) {
+              YTSPUtils.remoteFromMuteList(item.userId!);
+              setState(() {});
+            } else {
+              _showDialogWithActions(
+                  YTIMLocalizations.of(context)
+                      .currentLocalization
+                      .muteConversation, () {
+                // 将当前会话对方id加入本地黑名单，收到消息直接将消息设置为已读。
+                YTSPUtils.insertMuteList(item.userId!);
+                Navigator.pop(context);
+                setState(() {});
+              });
+            }
+          },
         ),
-        constraints: BoxConstraints(minHeight: 72),
-        child: Row(
-          children: [
-            IMUserAvatar(item),
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.only(left: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // 名字
-                    Text(item.username!),
-                    SizedBox(height: 3),
-                    // 最后一条消息
-                    Text(
-                      context
-                              .read<IMStore>()
-                              .lastInfos[item.userId.toString()]
-                              ?.msg
-                              ?.content ??
-                          '',
-                      style: Theme.of(context).textTheme.caption,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Offstage(
-                  offstage: widget.onMoreTap == null,
-                  child: GestureDetector(
-                    child: Icon(Icons.more_horiz, color: Colors.grey),
-                    onTap: () {
-                      if (widget.onMoreTap != null) {
-                        widget.onMoreTap!(item);
-                      }
-                    },
+        IconSlideAction(
+          color: Colors.redAccent,
+          icon: Icons.delete,
+          onTap: () {
+            _showDialogWithActions(
+                YTIMLocalizations.of(context)
+                    .currentLocalization
+                    .deleteConversation, () {
+              // TODO: 2021/7/26 删除会话
+            });
+          },
+        ),
+      ],
+      child: InkWell(
+        onTap: () {
+          // 重置对方的未读消息个数。
+          Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
+          if (map.keys.contains(item.userId.toString())) {
+            map[item.userId.toString()]!.unreadCount = 0;
+            context.read<IMStore>().update(map);
+          }
+          YTUtils.updateUnreadCount(map);
+          YTIM().currentChatUserId = item.userId.toString();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) {
+              return IMChatPage(
+                tid: item.userId.toString(),
+                widthInPad: widget.widthInPad,
+                onMeAvatarTap: widget.onMeAvatarTap,
+                onOtherAvatarTap: widget.onOtherAvatarTap,
+              );
+            }),
+          ).then((value) {
+            YTIM().currentChatUserId = '';
+            _setLastMsg();
+          });
+        },
+        child: Container(
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            border: Border(bottom: Divider.createBorderSide(context)),
+            color: Colors.white,
+          ),
+          constraints: BoxConstraints(minHeight: 72),
+          child: Row(
+            children: [
+              IMUserAvatar(item),
+              Expanded(
+                child: Container(
+                  margin: EdgeInsets.only(left: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // 名字
+                      Text(item.username!),
+                      SizedBox(height: 3),
+                      // 最后一条消息
+                      Text(
+                        context
+                                .read<IMStore>()
+                                .lastInfos[item.userId.toString()]
+                                ?.msg
+                                ?.content ??
+                            '',
+                        style: Theme.of(context).textTheme.caption,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
                 ),
-                // 时间
-                Text(
-                    YTUtils.millisecondsToString(context
-                            .read<IMStore>()
-                            .lastInfos[item.userId.toString()]
-                            ?.msg
-                            ?.timestamp ??
-                        ''),
-                    style: Theme.of(context).textTheme.caption),
-                SizedBox(height: 3),
-                // 未读个数
-                UnreadCountView(count: count),
-              ],
-            )
-          ],
+              ),
+              YTSPUtils.getMuteList().contains(item.userId)
+                  ? Icon(Icons.notifications_off_outlined, color: Colors.grey)
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        // 时间
+                        Text(
+                            YTUtils.millisecondsToString(context
+                                    .read<IMStore>()
+                                    .lastInfos[item.userId.toString()]
+                                    ?.msg
+                                    ?.timestamp ??
+                                ''),
+                            style: Theme.of(context).textTheme.caption),
+                        SizedBox(height: 3),
+                        // 未读个数
+                        UnreadCountView(count: count),
+                      ],
+                    )
+            ],
+          ),
         ),
       ),
     );
@@ -262,5 +294,31 @@ class _IMUserListPageState extends State<IMUserListPage> {
         }
       }
     });
+  }
+
+  void _showDialogWithActions(String title, VoidCallback onOKPressed) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Text(title),
+          actions: <Widget>[
+            TextButton(
+                child: Text(
+                    YTIMLocalizations.of(context).currentLocalization.cancel,
+                    style: TextStyle(color: Theme.of(context).primaryColor)),
+                onPressed: () {
+                  Navigator.pop(context);
+                }),
+            TextButton(
+              child: Text(YTIMLocalizations.of(context).currentLocalization.ok,
+                  style: TextStyle(color: Theme.of(context).primaryColor)),
+              onPressed: onOKPressed,
+            ),
+          ],
+        );
+      },
+    );
   }
 }

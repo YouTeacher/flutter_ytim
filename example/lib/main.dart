@@ -96,9 +96,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             onOtherAvatarTap: (IMUser user) {
               print(user);
             },
-            onMoreTap: (IMUser user) {
-              print('more click:$user');
-            },
           ),
         ],
         controller: _pageController,
