@@ -1,3 +1,8 @@
+## [2.2.0]
+* Suport mute notification.
+* Suport delete conversation.
+* Optimize display of message list in chat page.
+
 ## [2.1.7]
 * Fixed callback when login or register.
 

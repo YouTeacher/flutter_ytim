@@ -189,7 +189,12 @@ class _IMUserListPageState extends State<IMUserListPage> {
                 YTIMLocalizations.of(context)
                     .currentLocalization
                     .deleteConversation, () {
-              // TODO: 2021/7/26 删除会话
+              // 2021/7/26 删除会话
+              YTIM().deleteSession(item.userId!);
+              Navigator.pop(context);
+              setState(() {
+                _items.removeWhere((element) => element.userId == item.userId);
+              });
             });
           },
         ),

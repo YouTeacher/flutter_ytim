@@ -318,6 +318,11 @@ class YTIM {
     }));
   }
 
+  /// 删除会话记录
+  void deleteSession(String tid) {
+    _send(json.encode({"action": "del", "module": "sessionDelete", "to": tid}));
+  }
+
   /// 返回已读回执
   void sendACK(String tid) {
     _send(json.encode({"action": "set", "module": "readMessage", "to": tid}));
