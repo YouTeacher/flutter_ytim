@@ -91,6 +91,6 @@ class JaYTIMString extends YTIMString {
   String unread = '未読';
   String alertRevokeMessage = 'メッセージを削除';
   String alertKickout = 'すでに他の端末にログインしています';
-  String muteConversation = 'この会話のミュート通知';
-  String deleteConversation = 'この会話を完全に削除してもよろしいですか？';
+  String muteConversation = 'このメッセージを無視する';
+  String deleteConversation = 'このメッセージを削除しても宜しいですか';
 }
