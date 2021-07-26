@@ -42,7 +42,7 @@ class IMItemChat extends StatelessWidget {
       }
     }
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 15),
+      margin: EdgeInsets.all(16),
       child: Column(
         children: [
           Offstage(

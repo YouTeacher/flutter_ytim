@@ -252,7 +252,7 @@ class YTIM {
             _streamController!.sink.add(
               IMMessage(
                 type: '1',
-                from: mUser.userId.toString(),
+                from: mUser.userId!,
                 to: obj['to'],
                 content: _tempContent,
                 timestamp: obj['timestamp'],

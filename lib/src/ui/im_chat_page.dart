@@ -1,14 +1,14 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_ytim/flutter_ytim.dart';
 import 'package:flutter_ytim/src/bean/im_command.dart';
 import 'package:flutter_ytim/src/bean/im_history_msg_list.dart';
 import 'package:flutter_ytim/src/bean/im_msg.dart';
+import 'package:flutter_ytim/src/ui/expanded_viewport.dart';
 import 'package:flutter_ytim/src/ui/im_edit_text.dart';
 import 'package:flutter_ytim/src/ui/im_item_chat_msg.dart';
 import 'package:flutter_ytim/src/utils/yt_sp_utils.dart';
 import 'package:flutter_ytim/src/values/localizations.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 /// IM 1v1聊天界面
 class IMChatPage extends StatefulWidget {
@@ -41,6 +41,8 @@ class _IMChatPageState extends State<IMChatPage> {
   List<IMMessage> _items = [];
   ScrollController _scrollController = ScrollController();
 
+  RefreshController _refreshController = RefreshController();
+
   late IMUser _tUser;
 
   @override
@@ -60,7 +62,7 @@ class _IMChatPageState extends State<IMChatPage> {
         setState(() {
           _items.clear();
           event.messageList!
-              .sort((a, b) => a.timestamp!.compareTo(b.timestamp!));
+              .sort((a, b) => b.timestamp!.compareTo(a.timestamp!));
           _items.addAll(event.messageList!);
         });
         _saveLastMsg();
@@ -81,7 +83,7 @@ class _IMChatPageState extends State<IMChatPage> {
         setState(() {
           if (event.from == widget.tid ||
               event.from == YTIM().mUser.userId.toString()) {
-            _items.add(event);
+            _items.insert(0, event);
           }
         });
         _saveLastMsg();
@@ -108,11 +110,8 @@ class _IMChatPageState extends State<IMChatPage> {
   }
 
   /// 列表滚动到底部
-  void _jump2bottom() {
-    Timer(
-        Duration(milliseconds: 200),
-        () => _scrollController
-            .jumpTo(_scrollController.position.maxScrollExtent));
+  _jump2bottom() {
+    _scrollController.jumpTo(0.0);
   }
 
   @override
@@ -198,37 +197,52 @@ class _IMChatPageState extends State<IMChatPage> {
   /// 消息列表
   Widget _buildMsgList() {
     return Expanded(
-      child: ListView.builder(
-        controller: _scrollController,
-        padding: EdgeInsets.all(16),
-        itemBuilder: (context, index) {
-          IMMessage msg = _items[index];
-          IMMessage? preMsg;
-          if (index != 0) {
-            preMsg = _items[index - 1];
-          }
-          if (msg.from == YTIM().mUser.userId.toString()) {
-            return GestureDetector(
-              onLongPress: () => _revokeMessage(msg.timestamp),
-              child: IMItemChat(
-                preItem: preMsg,
-                item: msg,
-                user: YTIM().mUser,
-                type: IMChatItemType.Me,
-                onAvatarTap: widget.onMeAvatarTap,
-              ),
+      child: SmartRefresher(
+        enablePullUp: false,
+        enablePullDown: false,
+        controller: _refreshController,
+        child: Scrollable(
+          controller: _scrollController,
+          axisDirection: AxisDirection.up,
+          viewportBuilder: (context, offset) {
+            return ExpandedViewport(
+              offset: offset as ScrollPosition,
+              axisDirection: AxisDirection.up,
+              slivers: <Widget>[
+                SliverExpanded(),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate((c, i) {
+                    IMMessage imsg = _items[i];
+                    IMMessage? preMsg;
+                    if (i != 0) {
+                      preMsg = _items[i - 1];
+                    }
+                    if (imsg.from == YTIM().mUser.userId.toString()) {
+                      return GestureDetector(
+                        onLongPress: () => _revokeMessage(imsg.timestamp),
+                        child: IMItemChat(
+                          preItem: preMsg,
+                          item: imsg,
+                          user: YTIM().mUser,
+                          type: IMChatItemType.Me,
+                          onAvatarTap: widget.onMeAvatarTap,
+                        ),
+                      );
+                    } else {
+                      return IMItemChat(
+                        preItem: preMsg,
+                        item: imsg,
+                        user: _tUser,
+                        type: IMChatItemType.Other,
+                        onAvatarTap: widget.onOtherAvatarTap,
+                      );
+                    }
+                  }, childCount: _items.length),
+                )
+              ],
             );
-          } else {
-            return IMItemChat(
-              preItem: preMsg,
-              item: msg,
-              user: _tUser,
-              type: IMChatItemType.Other,
-              onAvatarTap: widget.onOtherAvatarTap,
-            );
-          }
-        },
-        itemCount: _items.length,
+          },
+        ),
       ),
     );
   }
