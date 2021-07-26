@@ -39,7 +39,7 @@ class IMUserListPage extends StatefulWidget {
 }
 
 class _IMUserListPageState extends State<IMUserListPage> {
-  List<IMUser>? _items = [];
+  List<IMUser> _items = [];
   RefreshController _refreshController =
       RefreshController(initialRefresh: true);
 
@@ -85,16 +85,16 @@ class _IMUserListPageState extends State<IMUserListPage> {
     // 联系人列表
     YTIM().on<IMUserList>().listen((event) {
       _refreshController.refreshCompleted();
-      if (mounted) {
-        YTIM().getUnreadMessage();
-        setState(() {
-          _items = event.userList;
-        });
-        _setLastMsg();
+      if (event.userList != null) {
+        if (mounted) {
+          YTIM().getUnreadMessage();
+          setState(() {
+            _items = event.userList!;
+          });
+          _setLastMsg();
+        }
       }
     });
-    // 取最近联系人。
-    YTIM().getUserList(order: widget.order);
   }
 
   /// 通知更新未读消息
@@ -112,10 +112,10 @@ class _IMUserListPageState extends State<IMUserListPage> {
         delegate: SliverChildBuilderDelegate(
           (c, i) {
             Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
-            return _buildItem(_items![i],
-                map[_items![i].userId.toString()]?.unreadCount ?? 0);
+            return _buildItem(_items[i],
+                map[_items[i].userId.toString()]?.unreadCount ?? 0);
           },
-          childCount: _items!.length,
+          childCount: _items.length,
         ),
       )
     ];
@@ -250,7 +250,7 @@ class _IMUserListPageState extends State<IMUserListPage> {
 
   void _setLastMsg() {
     setState(() {
-      for (IMUser user in _items!) {
+      for (IMUser user in _items) {
         IMMessage? msg = YTSPUtils.getLastMsg(user.userId.toString());
         if (msg != null) {
           Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
