@@ -27,7 +27,10 @@ class YTSPUtils {
   }
 
   /// IM 读取与对方聊天的最后一条消息
-  static IMMessage? getLastMsg(String pk) {
+  static IMMessage? getLastMsg(String? pk) {
+    if (pk == null) {
+      return null;
+    }
     String? s = _spf!.getString('im_$pk');
     if (s == null) {
       return null;

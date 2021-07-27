@@ -70,7 +70,7 @@ class _IMUserListPageState extends State<IMUserListPage> {
           }
           map[event.from]!.msg = event;
         } else {
-          if (event.from != YTIM().mUser.userId.toString()) {
+          if (event.from != YTIM().mUser.userId) {
             map[event.from] = IMLastInfo(
                 msg: event,
                 unreadCount: YTIM().currentChatUserId != event.from ? 1 : 0);
@@ -116,7 +116,7 @@ class _IMUserListPageState extends State<IMUserListPage> {
           (c, i) {
             Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
             return _buildItem(
-                _items[i], map[_items[i].userId.toString()]?.unreadCount ?? 0);
+                _items[i], map[_items[i].userId]?.unreadCount ?? 0);
           },
           childCount: _items.length,
         ),
@@ -195,17 +195,7 @@ class _IMUserListPageState extends State<IMUserListPage> {
                     .deleteConversation, () {
               // 2021/7/26 删除会话
               YTIM().deleteSession(item.userId!);
-              // 这个会话的未读数置为0。
-              Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
-              if (map.containsKey(item.userId)) {
-                IMLastInfo lastInfo = map[item.userId!]!;
-                lastInfo.unreadCount = 0;
-                map[item.userId] = lastInfo;
-                context.read<IMStore>().update(map);
-                YTUtils.updateUnreadCount(map);
-              }
-              // 给对方发一条已读指令，不然会刷新到未读消息，最近联系人中却看不到。
-              YTIM().sendACK(item.userId!);
+              _resetUserReadCount(item.userId!);
               Navigator.pop(context);
               setState(() {
                 _items.removeWhere((element) => element.userId == item.userId);
@@ -214,15 +204,30 @@ class _IMUserListPageState extends State<IMUserListPage> {
           },
         ),
         IconSlideAction(
-          color: Colors.redAccent,
-          icon: Icons.block,
+          color: YTSPUtils.getBlockList().contains(item.userId)
+              ? Colors.grey
+              : Colors.redAccent,
+          iconWidget: Icon(
+              YTSPUtils.getBlockList().contains(item.userId)
+                  ? Icons.block
+                  : Icons.block,
+              color: Colors.white),
           onTap: () {
-            _showDialogWithActions(
-                YTIMLocalizations.of(context).currentLocalization.block, () {
-              // 2021/7/27 拉黑对方
-              YTSPUtils.insertBlockList(item.userId!);
-              Navigator.pop(context);
-            });
+            if (YTSPUtils.getBlockList().contains(item.userId)) {
+              // 取消拉黑
+              YTSPUtils.removeFromBlockList(item.userId!);
+              setState(() {});
+            } else {
+              // 拉黑
+              _showDialogWithActions(
+                  YTIMLocalizations.of(context).currentLocalization.block, () {
+                // 2021/7/27 拉黑对方
+                YTSPUtils.insertBlockList(item.userId!);
+                _resetUserReadCount(item.userId!);
+                Navigator.pop(context);
+                setState(() {});
+              });
+            }
           },
         ),
       ],
@@ -230,17 +235,17 @@ class _IMUserListPageState extends State<IMUserListPage> {
         onTap: () {
           // 重置对方的未读消息个数。
           Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
-          if (map.keys.contains(item.userId.toString())) {
-            map[item.userId.toString()]!.unreadCount = 0;
+          if (map.keys.contains(item.userId)) {
+            map[item.userId]!.unreadCount = 0;
             context.read<IMStore>().update(map);
           }
           YTUtils.updateUnreadCount(map);
-          YTIM().currentChatUserId = item.userId.toString();
+          YTIM().currentChatUserId = item.userId!;
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) {
               return IMChatPage(
-                tid: item.userId.toString(),
+                tid: item.userId!,
                 widthInPad: widget.widthInPad,
                 onMeAvatarTap: widget.onMeAvatarTap,
                 onOtherAvatarTap: widget.onOtherAvatarTap,
@@ -274,7 +279,7 @@ class _IMUserListPageState extends State<IMUserListPage> {
                       Text(
                         context
                                 .read<IMStore>()
-                                .lastInfos[item.userId.toString()]
+                                .lastInfos[item.userId]
                                 ?.msg
                                 ?.content ??
                             '',
@@ -286,25 +291,28 @@ class _IMUserListPageState extends State<IMUserListPage> {
                   ),
                 ),
               ),
-              YTSPUtils.getMuteList().contains(item.userId)
-                  ? Icon(Icons.notifications_off_outlined, color: Colors.grey)
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        // 时间
-                        Text(
-                            YTUtils.millisecondsToString(context
-                                    .read<IMStore>()
-                                    .lastInfos[item.userId.toString()]
-                                    ?.msg
-                                    ?.timestamp ??
-                                ''),
-                            style: Theme.of(context).textTheme.caption),
-                        SizedBox(height: 3),
-                        // 未读个数
-                        UnreadCountView(count: count),
-                      ],
-                    )
+              YTSPUtils.getBlockList().contains(item.userId)
+                  ? Icon(Icons.block, color: Colors.grey)
+                  : YTSPUtils.getMuteList().contains(item.userId)
+                      ? Icon(Icons.notifications_off_outlined,
+                          color: Colors.grey)
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            // 时间
+                            Text(
+                                YTUtils.millisecondsToString(context
+                                        .read<IMStore>()
+                                        .lastInfos[item.userId]
+                                        ?.msg
+                                        ?.timestamp ??
+                                    ''),
+                                style: Theme.of(context).textTheme.caption),
+                            SizedBox(height: 3),
+                            // 未读个数
+                            UnreadCountView(count: count),
+                          ],
+                        )
             ],
           ),
         ),
@@ -312,16 +320,29 @@ class _IMUserListPageState extends State<IMUserListPage> {
     );
   }
 
+  /// 重置对方的未读数，并且发送已读回执。
+  void _resetUserReadCount(String userId) {
+    // 这个会话的未读数置为0。
+    Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
+    if (map.keys.contains(userId)) {
+      map[userId]!.unreadCount = 0;
+      context.read<IMStore>().update(map);
+    }
+    YTUtils.updateUnreadCount(map);
+    // 给对方发一条已读指令，不然会刷新到未读消息，最近联系人中却看不到。
+    YTIM().sendACK(userId);
+  }
+
   void _setLastMsg() {
     setState(() {
       for (IMUser user in _items) {
-        IMMessage? msg = YTSPUtils.getLastMsg(user.userId.toString());
+        IMMessage? msg = YTSPUtils.getLastMsg(user.userId);
         if (msg != null) {
           Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
-          if (map[user.userId.toString()] == null) {
-            map[user.userId.toString()] = IMLastInfo(msg: msg);
+          if (map[user.userId] == null) {
+            map[user.userId] = IMLastInfo(msg: msg);
           } else {
-            map[user.userId.toString()]!.msg = msg;
+            map[user.userId]!.msg = msg;
           }
         }
       }
