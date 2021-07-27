@@ -195,6 +195,15 @@ class _IMUserListPageState extends State<IMUserListPage> {
                     .deleteConversation, () {
               // 2021/7/26 删除会话
               YTIM().deleteSession(item.userId!);
+              // 这个会话的未读数置为0。
+              Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
+              if (map.containsKey(item.userId)) {
+                IMLastInfo lastInfo = map[item.userId!]!;
+                lastInfo.unreadCount = 0;
+                map[item.userId] = lastInfo;
+                context.read<IMStore>().update(map);
+                YTUtils.updateUnreadCount(map);
+              }
               Navigator.pop(context);
               setState(() {
                 _items.removeWhere((element) => element.userId == item.userId);
