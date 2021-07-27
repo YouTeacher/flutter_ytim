@@ -77,6 +77,10 @@ class _IMUserListPageState extends State<IMUserListPage> {
           }
         }
       }
+      // 如果对方不在历史列表中，重新获取一次联系人列表。
+      if (!_items.map((e) => e.userId).contains(event.from)) {
+        YTIM().getUserList(order: widget.order);
+      }
       YTSPUtils.saveLastMsg(event.from!, event);
       context.read<IMStore>().update(map);
       _updateUnreadCount(map);
