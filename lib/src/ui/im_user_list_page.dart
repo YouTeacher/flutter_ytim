@@ -209,7 +209,7 @@ class _IMUserListPageState extends State<IMUserListPage> {
               : Colors.redAccent,
           iconWidget: Icon(
               YTSPUtils.getBlockList().contains(item.userId)
-                  ? Icons.block
+                  ? Icons.block_flipped
                   : Icons.block,
               color: Colors.white),
           onTap: () {

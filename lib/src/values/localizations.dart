@@ -96,5 +96,5 @@ class JaYTIMString extends YTIMString {
   String alertKickout = 'すでに他の端末にログインしています';
   String muteConversation = 'このメッセージを無視する';
   String deleteConversation = 'このメッセージを削除しても宜しいですか';
-  String block = '相手のメッセージをブロック';
+  String block = 'この方をブロックする';
 }
