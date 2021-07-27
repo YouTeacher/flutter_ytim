@@ -282,7 +282,15 @@ class YTIM {
           release();
           break;
         case 'message':
-          _streamController!.sink.add(IMMessage.fromJson(obj));
+          var message = IMMessage.fromJson(obj);
+          if (message.from != null) {
+            if (YTSPUtils.getBlockList().contains(message.from)) {
+              YTLog.d(_tag,
+                  'This user ${message.from}:${message.fromName} is in block list, ignore this message.');
+            } else {
+              _streamController!.sink.add(message);
+            }
+          }
           break;
         case 'readMessage':
           _streamController!.sink.add(IMCommand.fromJson(obj));

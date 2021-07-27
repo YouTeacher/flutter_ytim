@@ -48,7 +48,7 @@ class YTSPUtils {
   }
 
   /// 将用户从免打扰列表中移除。
-  static Future<bool> remoteFromMuteList(String id) async {
+  static Future<bool> removeFromMuteList(String id) async {
     List<String> list = getMuteList();
     if (list.contains(id)) {
       list.remove(id);
@@ -66,6 +66,39 @@ class YTSPUtils {
       return ids;
     } else {
       return s.split(',');
+    }
+  }
+
+  /// 获取黑名单
+  static List<String> getBlockList() {
+    List<String> ids = [];
+    String? s = _spf!.getString('im_block_list');
+    if (s == null) {
+      return ids;
+    } else {
+      return s.split(',');
+    }
+  }
+
+  /// 将用户加入黑名单
+  static Future<bool> insertBlockList(String id) async {
+    List<String> list = getBlockList();
+    if (list.contains(id)) {
+      return true;
+    } else {
+      list.add(id);
+      return _spf!.setString('im_block_list', list.join(','));
+    }
+  }
+
+  /// 将用户从黑名单中移除。
+  static Future<bool> removeFromBlockList(String id) async {
+    List<String> list = getBlockList();
+    if (list.contains(id)) {
+      list.remove(id);
+      return _spf!.setString('im_block_list', list.join(','));
+    } else {
+      return true;
     }
   }
 }

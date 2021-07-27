@@ -166,7 +166,7 @@ class _IMUserListPageState extends State<IMUserListPage> {
               color: Colors.white),
           onTap: () {
             if (YTSPUtils.getMuteList().contains(item.userId)) {
-              YTSPUtils.remoteFromMuteList(item.userId!);
+              YTSPUtils.removeFromMuteList(item.userId!);
               setState(() {});
             } else {
               _showDialogWithActions(
@@ -182,8 +182,8 @@ class _IMUserListPageState extends State<IMUserListPage> {
           },
         ),
         IconSlideAction(
-          color: Colors.redAccent,
-          icon: Icons.delete,
+          color: Colors.orange,
+          iconWidget: Icon(Icons.delete, color: Colors.white),
           onTap: () {
             _showDialogWithActions(
                 YTIMLocalizations.of(context)
@@ -195,6 +195,18 @@ class _IMUserListPageState extends State<IMUserListPage> {
               setState(() {
                 _items.removeWhere((element) => element.userId == item.userId);
               });
+            });
+          },
+        ),
+        IconSlideAction(
+          color: Colors.redAccent,
+          icon: Icons.block,
+          onTap: () {
+            _showDialogWithActions(
+                YTIMLocalizations.of(context).currentLocalization.block, () {
+              // 2021/7/27 拉黑对方
+              YTSPUtils.insertBlockList(item.userId!);
+              Navigator.pop(context);
             });
           },
         ),
