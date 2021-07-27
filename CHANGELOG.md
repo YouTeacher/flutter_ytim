@@ -1,3 +1,7 @@
+## [2.3.0]
+* Support block messages.
+* Bug fixed.
+
 ## [2.2.0]
 * Suport mute notification.
 * Suport delete conversation.
