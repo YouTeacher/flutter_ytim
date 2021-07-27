@@ -292,7 +292,7 @@ class _IMChatPageState extends State<IMChatPage> {
   /// 保存最后一条消息到本地，用于展示在聊天历史界面。
   void _saveLastMsg() {
     if (_items.isNotEmpty) {
-      IMMessage lastMsg = _items.last;
+      IMMessage lastMsg = _items.first;
       String pk;
       if (lastMsg.from == YTIM().mUser.userId.toString()) {
         // 自己发给对方的消息
