@@ -204,6 +204,8 @@ class _IMUserListPageState extends State<IMUserListPage> {
                 context.read<IMStore>().update(map);
                 YTUtils.updateUnreadCount(map);
               }
+              // 给对方发一条已读指令，不然会刷新到未读消息，最近联系人中却看不到。
+              YTIM().sendACK(item.userId!);
               Navigator.pop(context);
               setState(() {
                 _items.removeWhere((element) => element.userId == item.userId);
