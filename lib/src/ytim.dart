@@ -287,6 +287,8 @@ class YTIM {
             if (YTSPUtils.getBlockList().contains(message.from)) {
               YTLog.d(_tag,
                   'This user ${message.from}:${message.fromName} is in block list, ignore this message.');
+              // 直接返回已读指令，不然会刷新到对方的未读消息。
+              sendACK(message.from!);
             } else {
               _streamController!.sink.add(message);
             }
