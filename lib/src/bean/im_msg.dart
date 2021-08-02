@@ -28,14 +28,14 @@ class IMMessage {
 
   factory IMMessage.fromJson(Map<String, dynamic> json) {
     return IMMessage(
-      type: json['type'],
+      type: json['type']?.toString(),
       from: json['from']?.toString(),
       to: json['to']?.toString(),
       fromName: json['fromName'],
       timestamp: json['timestamp'],
       time: json['time'],
       content: json['content'],
-      read: json['read'],
+      read: json['read']?.toString(),
       pk: json['pk'],
     );
   }

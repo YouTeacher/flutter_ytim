@@ -1,4 +1,8 @@
 # flutter_ytim
+[![pub package](https://img.shields.io/pub/v/flutter_ytim.svg)](https://pub.dartlang.org/packages/flutter_ytim)
+[![pub package](https://img.shields.io/github/license/YouTeacher/ytim_sdk_flutter.svg?style=flat)](https://github.com/YouTeacher/ytim_sdk_flutter)
+[![pub package](https://img.shields.io/badge/platform-flutter-blue.svg)](https://github.com/YouTeacher/ytim_sdk_flutter)
+
 ## 概要
 YouTeacher IM 快速开发SDK。
 支持两种集成方式：

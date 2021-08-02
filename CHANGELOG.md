@@ -1,3 +1,25 @@
+## [2.3.0]
+* Support block messages.
+* Bug fixed.
+
+## [2.2.0]
+* Suport mute notification.
+* Suport delete conversation.
+* Optimize display of message list in chat page.
+
+## [2.1.7]
+* Fixed callback when login or register.
+
+## [2.1.6]
+* Add more button on contacts list item.
+
+## [2.1.5]
+* Fixed exception when userInfo is null.
+
+## [2.1.4]
+* Fixed exception when messageList is null.
+* Export utils.
+
 ## [2.1.3]
 * Support pull to refresh in user list page.
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_ytim/flutter_ytim.dart';
 import 'package:flutter_ytim/src/bean/im_store.dart';
 import 'package:flutter_ytim/src/bean/im_unread_msg_list.dart';
@@ -35,7 +36,7 @@ class IMUserListPage extends StatefulWidget {
 }
 
 class _IMUserListPageState extends State<IMUserListPage> {
-  List<IMUser>? _items = [];
+  List<IMUser> _items = [];
   RefreshController _refreshController =
       RefreshController(initialRefresh: true);
 
@@ -62,17 +63,23 @@ class _IMUserListPageState extends State<IMUserListPage> {
     // 新消息
     YTIM().on<IMMessage>().listen((event) {
       Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
-      if (map.keys.contains(event.from)) {
-        if (YTIM().currentChatUserId != event.from) {
-          map[event.from]!.unreadCount += 1;
+      if (!YTSPUtils.getMuteList().contains(event.from)) {
+        if (map.keys.contains(event.from)) {
+          if (YTIM().currentChatUserId != event.from) {
+            map[event.from]!.unreadCount += 1;
+          }
+          map[event.from]!.msg = event;
+        } else {
+          if (event.from != YTIM().mUser.userId) {
+            map[event.from] = IMLastInfo(
+                msg: event,
+                unreadCount: YTIM().currentChatUserId != event.from ? 1 : 0);
+          }
         }
-        map[event.from]!.msg = event;
-      } else {
-        if (event.from != YTIM().mUser.userId.toString()) {
-          map[event.from] = IMLastInfo(
-              msg: event,
-              unreadCount: YTIM().currentChatUserId != event.from ? 1 : 0);
-        }
+      }
+      // 如果对方不在历史列表中，重新获取一次联系人列表。
+      if (!_items.map((e) => e.userId).contains(event.from)) {
+        YTIM().getUserList(order: widget.order);
       }
       YTSPUtils.saveLastMsg(event.from!, event);
       context.read<IMStore>().update(map);
@@ -81,16 +88,16 @@ class _IMUserListPageState extends State<IMUserListPage> {
     // 联系人列表
     YTIM().on<IMUserList>().listen((event) {
       _refreshController.refreshCompleted();
-      if (mounted) {
-        YTIM().getUnreadMessage();
-        setState(() {
-          _items = event.userList;
-        });
-        _setLastMsg();
+      if (event.userList != null) {
+        if (mounted) {
+          YTIM().getUnreadMessage();
+          setState(() {
+            _items = event.userList!;
+          });
+          _setLastMsg();
+        }
       }
     });
-    // 取最近联系人。
-    YTIM().getUserList(order: widget.order);
   }
 
   /// 通知更新未读消息
@@ -108,10 +115,10 @@ class _IMUserListPageState extends State<IMUserListPage> {
         delegate: SliverChildBuilderDelegate(
           (c, i) {
             Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
-            return _buildItem(_items![i],
-                map[_items![i].userId.toString()]?.unreadCount ?? 0);
+            return _buildItem(
+                _items[i], map[_items[i].userId]?.unreadCount ?? 0);
           },
-          childCount: _items!.length,
+          childCount: _items.length,
         ),
       )
     ];
@@ -150,101 +157,221 @@ class _IMUserListPageState extends State<IMUserListPage> {
   }
 
   Widget _buildItem(IMUser item, int count) {
-    return InkWell(
-      onTap: () {
-        // 重置对方的未读消息个数。
-        Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
-        if (map.keys.contains(item.userId.toString())) {
-          map[item.userId.toString()]!.unreadCount = 0;
-          context.read<IMStore>().update(map);
-        }
-        YTUtils.updateUnreadCount(map);
-        YTIM().currentChatUserId = item.userId.toString();
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) {
-            return IMChatPage(
-              tid: item.userId.toString(),
-              widthInPad: widget.widthInPad,
-              onMeAvatarTap: widget.onMeAvatarTap,
-              onOtherAvatarTap: widget.onOtherAvatarTap,
-            );
-          }),
-        ).then((value) {
-          YTIM().currentChatUserId = '';
-          _setLastMsg();
-        });
-      },
-      child: Container(
-        padding: EdgeInsets.all(15),
-        decoration: BoxDecoration(
-          border: Border(bottom: Divider.createBorderSide(context)),
-          color: Colors.white,
+    return Slidable(
+      actionPane: SlidableDrawerActionPane(),
+      actionExtentRatio: 0.15,
+      secondaryActions: <Widget>[
+        IconSlideAction(
+          color: Colors.grey,
+          iconWidget: Icon(
+              YTSPUtils.getMuteList().contains(item.userId)
+                  ? Icons.notifications_none_outlined
+                  : Icons.notifications_off_outlined,
+              color: Colors.white),
+          onTap: () {
+            if (YTSPUtils.getMuteList().contains(item.userId)) {
+              YTSPUtils.removeFromMuteList(item.userId!);
+              setState(() {});
+            } else {
+              _showDialogWithActions(
+                  YTIMLocalizations.of(context)
+                      .currentLocalization
+                      .muteConversation, () {
+                // 将当前会话对方id加入本地黑名单，收到消息直接将消息设置为已读。
+                YTSPUtils.insertMuteList(item.userId!);
+                Navigator.pop(context);
+                setState(() {});
+              });
+            }
+          },
         ),
-        child: Row(
-          children: [
-            IMUserAvatar(item),
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.only(left: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // 名字
-                    Text(item.username!),
-                    SizedBox(height: 3),
-                    // 最后一条消息
-                    Text(
-                      context
-                              .read<IMStore>()
-                              .lastInfos[item.userId.toString()]
-                              ?.msg
-                              ?.content ??
-                          '',
-                      style: Theme.of(context).textTheme.caption,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+        IconSlideAction(
+          color: Colors.orange,
+          iconWidget: Icon(Icons.delete, color: Colors.white),
+          onTap: () {
+            _showDialogWithActions(
+                YTIMLocalizations.of(context)
+                    .currentLocalization
+                    .deleteConversation, () {
+              // 2021/7/26 删除会话
+              YTIM().deleteSession(item.userId!);
+              _resetUserReadCount(item.userId!);
+              Navigator.pop(context);
+              setState(() {
+                _items.removeWhere((element) => element.userId == item.userId);
+              });
+            });
+          },
+        ),
+        IconSlideAction(
+          color: YTSPUtils.getBlockList().contains(item.userId)
+              ? Colors.grey
+              : Colors.redAccent,
+          iconWidget: Icon(
+              YTSPUtils.getBlockList().contains(item.userId)
+                  ? Icons.block_flipped
+                  : Icons.block,
+              color: Colors.white),
+          onTap: () {
+            if (YTSPUtils.getBlockList().contains(item.userId)) {
+              // 取消拉黑
+              YTSPUtils.removeFromBlockList(item.userId!);
+              setState(() {});
+            } else {
+              // 拉黑
+              _showDialogWithActions(
+                  YTIMLocalizations.of(context).currentLocalization.block, () {
+                // 2021/7/27 拉黑对方
+                YTSPUtils.insertBlockList(item.userId!);
+                _resetUserReadCount(item.userId!);
+                Navigator.pop(context);
+                setState(() {});
+              });
+            }
+          },
+        ),
+      ],
+      child: InkWell(
+        onTap: () {
+          // 重置对方的未读消息个数。
+          Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
+          if (map.keys.contains(item.userId)) {
+            map[item.userId]!.unreadCount = 0;
+            context.read<IMStore>().update(map);
+          }
+          YTUtils.updateUnreadCount(map);
+          YTIM().currentChatUserId = item.userId!;
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) {
+              return IMChatPage(
+                tid: item.userId!,
+                widthInPad: widget.widthInPad,
+                onMeAvatarTap: widget.onMeAvatarTap,
+                onOtherAvatarTap: widget.onOtherAvatarTap,
+              );
+            }),
+          ).then((value) {
+            YTIM().currentChatUserId = '';
+            _setLastMsg();
+          });
+        },
+        child: Container(
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            border: Border(bottom: Divider.createBorderSide(context)),
+            color: Colors.white,
+          ),
+          constraints: BoxConstraints(minHeight: 72),
+          child: Row(
+            children: [
+              IMUserAvatar(item),
+              Expanded(
+                child: Container(
+                  margin: EdgeInsets.only(left: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // 名字
+                      Text(item.username!),
+                      SizedBox(height: 3),
+                      // 最后一条消息
+                      Text(
+                        context
+                                .read<IMStore>()
+                                .lastInfos[item.userId]
+                                ?.msg
+                                ?.content ??
+                            '',
+                        style: Theme.of(context).textTheme.caption,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                // 时间
-                Text(
-                    YTUtils.millisecondsToString(context
-                            .read<IMStore>()
-                            .lastInfos[item.userId.toString()]
-                            ?.msg
-                            ?.timestamp ??
-                        ''),
-                    style: Theme.of(context).textTheme.caption),
-                SizedBox(height: 3),
-                // 未读个数
-                UnreadCountView(count: count),
-              ],
-            )
-          ],
+              YTSPUtils.getBlockList().contains(item.userId)
+                  ? Icon(Icons.block, color: Colors.grey)
+                  : YTSPUtils.getMuteList().contains(item.userId)
+                      ? Icon(Icons.notifications_off_outlined,
+                          color: Colors.grey)
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            // 时间
+                            Text(
+                                YTUtils.millisecondsToString(context
+                                        .read<IMStore>()
+                                        .lastInfos[item.userId]
+                                        ?.msg
+                                        ?.timestamp ??
+                                    ''),
+                                style: Theme.of(context).textTheme.caption),
+                            SizedBox(height: 3),
+                            // 未读个数
+                            UnreadCountView(count: count),
+                          ],
+                        )
+            ],
+          ),
         ),
       ),
     );
   }
 
+  /// 重置对方的未读数，并且发送已读回执。
+  void _resetUserReadCount(String userId) {
+    // 这个会话的未读数置为0。
+    Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
+    if (map.keys.contains(userId)) {
+      map[userId]!.unreadCount = 0;
+      context.read<IMStore>().update(map);
+    }
+    YTUtils.updateUnreadCount(map);
+    // 给对方发一条已读指令，不然会刷新到未读消息，最近联系人中却看不到。
+    YTIM().sendACK(userId);
+  }
+
   void _setLastMsg() {
     setState(() {
-      for (IMUser user in _items!) {
-        IMMessage? msg = YTSPUtils.getLastMsg(user.userId.toString());
+      for (IMUser user in _items) {
+        IMMessage? msg = YTSPUtils.getLastMsg(user.userId);
         if (msg != null) {
           Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
-          if (map[user.userId.toString()] == null) {
-            map[user.userId.toString()] = IMLastInfo(msg: msg);
+          if (map[user.userId] == null) {
+            map[user.userId] = IMLastInfo(msg: msg);
           } else {
-            map[user.userId.toString()]!.msg = msg;
+            map[user.userId]!.msg = msg;
           }
         }
       }
     });
+  }
+
+  void _showDialogWithActions(String title, VoidCallback onOKPressed) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Text(title),
+          actions: <Widget>[
+            TextButton(
+                child: Text(
+                    YTIMLocalizations.of(context).currentLocalization.cancel,
+                    style: TextStyle(color: Theme.of(context).primaryColor)),
+                onPressed: () {
+                  Navigator.pop(context);
+                }),
+            TextButton(
+              child: Text(YTIMLocalizations.of(context).currentLocalization.ok,
+                  style: TextStyle(color: Theme.of(context).primaryColor)),
+              onPressed: onOKPressed,
+            ),
+          ],
+        );
+      },
+    );
   }
 }

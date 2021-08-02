@@ -58,6 +58,9 @@ abstract class YTIMString {
   late String unread;
   late String alertRevokeMessage;
   late String alertKickout;
+  late String muteConversation;
+  late String deleteConversation;
+  late String block;
 }
 
 class EnYTIMString extends YTIMString {
@@ -67,6 +70,9 @@ class EnYTIMString extends YTIMString {
   String unread = 'unread';
   String alertRevokeMessage = 'Confirm revoke this message.';
   String alertKickout = 'You are already logged in to another device.';
+  String muteConversation = 'Mute notification for this conversation';
+  String deleteConversation = 'Are you sure you want to permanently delete this conversation?';
+  String block = 'Block Messages';
 }
 
 class ZhYTIMString extends YTIMString {
@@ -76,6 +82,9 @@ class ZhYTIMString extends YTIMString {
   String unread = '未读';
   String alertRevokeMessage = '确认撤回消息';
   String alertKickout = '您已在另一个设备登陆。';
+  String muteConversation = '关闭这个对话的通知';
+  String deleteConversation = '确定要永久删除这个对话？';
+  String block = '屏蔽对方消息';
 }
 
 class JaYTIMString extends YTIMString {
@@ -85,4 +94,7 @@ class JaYTIMString extends YTIMString {
   String unread = '未読';
   String alertRevokeMessage = 'メッセージを削除';
   String alertKickout = 'すでに他の端末にログインしています';
+  String muteConversation = 'このメッセージを無視する';
+  String deleteConversation = 'このメッセージを削除しても宜しいですか';
+  String block = 'この方をブロックする';
 }

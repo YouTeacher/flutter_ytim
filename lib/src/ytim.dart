@@ -65,8 +65,8 @@ class YTIM {
   String _headImg = '';
 
   /// 回调
-  late Callback<IMUser?> _onIMUserCreatedCallback;
-  late Callback<IMUser?> _onLoginSuccessCallback;
+  late Callback<IMUser> _onIMUserCreatedCallback;
+  late Callback<IMUser> _onLoginSuccessCallback;
   KickOutCallback? _kickOutCallback;
 
   Stream<T> on<T>() {
@@ -89,8 +89,8 @@ class YTIM {
     required String imAppID,
     required String imAppSecret,
     required String imAccount,
-    required Callback<IMUser?> imUserCreatedCallback,
-    required Callback<IMUser?> imLoginSuccessCallback,
+    required Callback<IMUser> imUserCreatedCallback,
+    required Callback<IMUser> imLoginSuccessCallback,
     String imUsername = '',
     String imHeadImg = '',
     bool logEnabled = true,
@@ -192,7 +192,7 @@ class YTIM {
       if (ir.code == 0 || ir.code == 50010) {
         YTLog.d(_tag,
             '${ir.code == 0 ? 'IM账号创建成功' : 'IM账号已存在'}，IM id：${ir.userInfo!.id}');
-        _onIMUserCreatedCallback(ir.userInfo);
+        _onIMUserCreatedCallback(ir.userInfo!);
         _login();
       } else {
         YTLog.d(_tag, 'IM账号创建失败：${ir.msg}');
@@ -242,7 +242,9 @@ class YTIM {
           _streamController!.sink.add(IMHistoryMsgList.fromJson(obj));
           break;
         case 'userInfo':
-          _streamController!.sink.add(IMUser.fromJson(obj['userInfo']));
+          if (obj['userInfo'] != null) {
+            _streamController!.sink.add(IMUser.fromJson(obj['userInfo']));
+          }
           break;
         case 'message':
           // 发送消息，服务器回应
@@ -250,7 +252,7 @@ class YTIM {
             _streamController!.sink.add(
               IMMessage(
                 type: '1',
-                from: mUser.userId.toString(),
+                from: mUser.userId!,
                 to: obj['to'],
                 content: _tempContent,
                 timestamp: obj['timestamp'],
@@ -280,7 +282,17 @@ class YTIM {
           release();
           break;
         case 'message':
-          _streamController!.sink.add(IMMessage.fromJson(obj));
+          var message = IMMessage.fromJson(obj);
+          if (message.from != null) {
+            if (YTSPUtils.getBlockList().contains(message.from)) {
+              YTLog.d(_tag,
+                  'This user ${message.from}:${message.fromName} is in block list, ignore this message.');
+              // 直接返回已读指令，不然会刷新到对方的未读消息。
+              sendACK(message.from!);
+            } else {
+              _streamController!.sink.add(message);
+            }
+          }
           break;
         case 'readMessage':
           _streamController!.sink.add(IMCommand.fromJson(obj));
@@ -314,6 +326,11 @@ class YTIM {
       "account": _account,
       "password": "000000"
     }));
+  }
+
+  /// 删除会话记录
+  void deleteSession(String tid) {
+    _send(json.encode({"action": "del", "module": "sessionDelete", "to": tid}));
   }
 
   /// 返回已读回执

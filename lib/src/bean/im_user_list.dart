@@ -15,8 +15,9 @@ class IMUserList {
       action: data['action'],
       module: data['module'],
       code: data['code'],
-      userList:
-          (data['userList'] as List).map((e) => IMUser.fromJson(e)).toList(),
+      userList: data['userList'] == null
+          ? null
+          : (data['userList'] as List).map((e) => IMUser.fromJson(e)).toList(),
     );
   }
 

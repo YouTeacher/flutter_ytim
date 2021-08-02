@@ -4,8 +4,8 @@ import 'package:flutter_ytim/src/bean/im_msg.dart';
 
 /// 历史消息列表
 class IMHistoryMsgList {
-  String? action, module, lastTimestamp;
-  int? code, limit, userId;
+  String? action, module, lastTimestamp, userId;
+  int? code, limit;
   List<IMMessage>? messageList;
 
   IMHistoryMsgList({
@@ -25,10 +25,12 @@ class IMHistoryMsgList {
       lastTimestamp: data['lastTimestamp'],
       code: data['code'],
       limit: data['limit'],
-      userId: data['userId'],
-      messageList: (data['messageList'] as List)
-          .map((e) => IMMessage.fromJson(e))
-          .toList(),
+      userId: data['userId']?.toString(),
+      messageList: data['messageList'] == null
+          ? null
+          : (data['messageList'] as List)
+              .map((e) => IMMessage.fromJson(e))
+              .toList(),
     );
   }
 
