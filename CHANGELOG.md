@@ -1,3 +1,6 @@
+## [2.3.1]
+- Migrated from the deprecated connectivity plugin to connectivity_plus.
+
 ## [2.3.0]
 * Support block messages.
 * Bug fixed.

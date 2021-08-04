@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_ytim/flutter_ytim.dart';
 import 'package:flutter_ytim/src/bean/im_command.dart';
 import 'package:flutter_ytim/src/bean/im_history_msg_list.dart';
