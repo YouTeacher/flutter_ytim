@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ytim/flutter_ytim.dart';
-import 'package:flutter_ytim/src/bean/im_store.dart';
 import 'package:flutter_ytim/src/ui/im_user_list_page.dart';
 import 'package:provider/provider.dart';
 
