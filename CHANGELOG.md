@@ -1,3 +1,6 @@
+## [2.4.0]
+* update all direct dependencies.
+
 ## [2.3.0]
 * Support block messages.
 * Bug fixed.
