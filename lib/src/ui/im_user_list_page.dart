@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_ytim/flutter_ytim.dart';
-import 'package:flutter_ytim/src/bean/im_store.dart';
-import 'package:flutter_ytim/src/bean/im_unread_msg_list.dart';
-import 'package:flutter_ytim/src/ui/im_chat_page.dart';
-import 'package:flutter_ytim/src/utils/yt_sp_utils.dart';
-import 'package:flutter_ytim/src/utils/yt_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -158,79 +153,66 @@ class _IMUserListPageState extends State<IMUserListPage> {
 
   Widget _buildItem(IMUser item, int count) {
     return Slidable(
-      actionPane: SlidableDrawerActionPane(),
-      actionExtentRatio: 0.15,
-      secondaryActions: <Widget>[
-        IconSlideAction(
-          color: Colors.grey,
-          iconWidget: Icon(
-              YTSPUtils.getMuteList().contains(item.userId)
-                  ? Icons.notifications_none_outlined
-                  : Icons.notifications_off_outlined,
-              color: Colors.white),
-          onTap: () {
-            if (YTSPUtils.getMuteList().contains(item.userId)) {
-              YTSPUtils.removeFromMuteList(item.userId!);
-              setState(() {});
-            } else {
-              _showDialogWithActions(
+      endActionPane: ActionPane(
+        motion: const ScrollMotion(),
+        children: [
+          SlidableAction(
+            backgroundColor: Colors.grey,
+            foregroundColor: Colors.white,
+            icon: YTSPUtils.getMuteList().contains(item.userId)
+                ? Icons.notifications_none_outlined
+                : Icons.notifications_off_outlined,
+            onPressed: (context) {
+              if (YTSPUtils.getMuteList().contains(item.userId)) {
+                YTSPUtils.removeFromMuteList(item.userId!);
+                setState(() {});
+              } else {
+                _showDialogWithActions(
                   YTIMLocalizations.of(context)
                       .currentLocalization
-                      .muteConversation, () {
-                // 将当前会话对方id加入本地黑名单，收到消息直接将消息设置为已读。
-                YTSPUtils.insertMuteList(item.userId!);
-                Navigator.pop(context);
-                setState(() {});
-              });
-            }
-          },
-        ),
-        IconSlideAction(
-          color: Colors.orange,
-          iconWidget: Icon(Icons.delete, color: Colors.white),
-          onTap: () {
-            _showDialogWithActions(
+                      .muteConversation,
+                  () => _muteMsg(item.userId!),
+                );
+              }
+            },
+          ),
+          SlidableAction(
+            backgroundColor: Colors.orange,
+            foregroundColor: Colors.white,
+            icon: Icons.delete,
+            onPressed: (context) {
+              _showDialogWithActions(
                 YTIMLocalizations.of(context)
                     .currentLocalization
-                    .deleteConversation, () {
-              // 2021/7/26 删除会话
-              YTIM().deleteSession(item.userId!);
-              _resetUserReadCount(item.userId!);
-              Navigator.pop(context);
-              setState(() {
-                _items.removeWhere((element) => element.userId == item.userId);
-              });
-            });
-          },
-        ),
-        IconSlideAction(
-          color: YTSPUtils.getBlockList().contains(item.userId)
-              ? Colors.grey
-              : Colors.redAccent,
-          iconWidget: Icon(
-              YTSPUtils.getBlockList().contains(item.userId)
-                  ? Icons.block_flipped
-                  : Icons.block,
-              color: Colors.white),
-          onTap: () {
-            if (YTSPUtils.getBlockList().contains(item.userId)) {
-              // 取消拉黑
-              YTSPUtils.removeFromBlockList(item.userId!);
-              setState(() {});
-            } else {
-              // 拉黑
-              _showDialogWithActions(
-                  YTIMLocalizations.of(context).currentLocalization.block, () {
-                // 2021/7/27 拉黑对方
-                YTSPUtils.insertBlockList(item.userId!);
-                _resetUserReadCount(item.userId!);
-                Navigator.pop(context);
+                    .deleteConversation,
+                () => _deleteMsg(item.userId!),
+              );
+            },
+          ),
+          SlidableAction(
+            backgroundColor: YTSPUtils.getBlockList().contains(item.userId)
+                ? Colors.grey
+                : Colors.redAccent,
+            foregroundColor: Colors.white,
+            icon: YTSPUtils.getBlockList().contains(item.userId)
+                ? Icons.block_flipped
+                : Icons.block,
+            onPressed: (context) {
+              if (YTSPUtils.getBlockList().contains(item.userId)) {
+                // 取消拉黑
+                YTSPUtils.removeFromBlockList(item.userId!);
                 setState(() {});
-              });
-            }
-          },
-        ),
-      ],
+              } else {
+                // 拉黑
+                _showDialogWithActions(
+                  YTIMLocalizations.of(context).currentLocalization.block,
+                  () => _blockMsg(item.userId!),
+                );
+              }
+            },
+          ),
+        ],
+      ),
       child: InkWell(
         onTap: () {
           // 重置对方的未读消息个数。
@@ -318,6 +300,31 @@ class _IMUserListPageState extends State<IMUserListPage> {
         ),
       ),
     );
+  }
+
+  /// 将当前会话对方id加入本地黑名单，收到消息直接将消息设置为已读。
+  void _muteMsg(String uID) {
+    YTSPUtils.insertMuteList(uID);
+    Navigator.pop(context);
+    setState(() {});
+  }
+
+  /// 2021/7/26 删除会话
+  void _deleteMsg(String uID) {
+    YTIM().deleteSession(uID);
+    _resetUserReadCount(uID);
+    Navigator.pop(context);
+    setState(() {
+      _items.removeWhere((element) => element.userId == uID);
+    });
+  }
+
+  /// 2021/7/27 拉黑对方
+  void _blockMsg(String uID) {
+    YTSPUtils.insertBlockList(uID);
+    _resetUserReadCount(uID);
+    Navigator.pop(context);
+    setState(() {});
   }
 
   /// 重置对方的未读数，并且发送已读回执。

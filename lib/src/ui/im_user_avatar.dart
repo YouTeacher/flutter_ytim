@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ytim/flutter_ytim.dart';
-import 'package:flutter_ytim/src/bean/im_user.dart';
 
 /// 自定义圆形头像，显示圆形网络图片或本地图片。
 class IMUserAvatar extends StatelessWidget {

@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ytim/flutter_ytim.dart';
-import 'package:flutter_ytim/src/bean/im_command.dart';
-import 'package:flutter_ytim/src/bean/im_history_msg_list.dart';
-import 'package:flutter_ytim/src/bean/im_msg.dart';
-import 'package:flutter_ytim/src/ui/expanded_viewport.dart';
 import 'package:flutter_ytim/src/ui/im_edit_text.dart';
-import 'package:flutter_ytim/src/ui/im_item_chat_msg.dart';
-import 'package:flutter_ytim/src/utils/yt_sp_utils.dart';
-import 'package:flutter_ytim/src/values/localizations.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 /// IM 1v1聊天界面

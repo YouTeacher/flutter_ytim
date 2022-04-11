@@ -3,17 +3,9 @@ import 'dart:convert';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_ytim/flutter_ytim.dart';
-import 'package:flutter_ytim/src/bean/im_command.dart';
-import 'package:flutter_ytim/src/bean/im_history_msg_list.dart';
-import 'package:flutter_ytim/src/bean/im_msg.dart';
 import 'package:flutter_ytim/src/bean/im_response.dart';
-import 'package:flutter_ytim/src/bean/im_unread_msg_list.dart';
-import 'package:flutter_ytim/src/bean/im_user.dart';
-import 'package:flutter_ytim/src/bean/im_user_list.dart';
 import 'package:flutter_ytim/src/utils/yt_http.dart';
 import 'package:flutter_ytim/src/utils/yt_log.dart';
-import 'package:flutter_ytim/src/utils/yt_sp_utils.dart';
-import 'package:flutter_ytim/src/values/urls.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
