@@ -1,3 +1,6 @@
+## [2.5.0]
+* fix error [#3](https://github.com/YouTeacher/flutter_ytim/issues/3): Looking up a deactivated widget's ancestor is unsafe. 
+
 ## [2.4.0]
 * update all direct dependencies.
 

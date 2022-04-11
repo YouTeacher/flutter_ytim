@@ -168,14 +168,11 @@ class _IMUserListPageState extends State<IMUserListPage> {
                 setState(() {});
               } else {
                 _showDialogWithActions(
-                    YTIMLocalizations.of(context)
-                        .currentLocalization
-                        .muteConversation, () {
-                  // 将当前会话对方id加入本地黑名单，收到消息直接将消息设置为已读。
-                  YTSPUtils.insertMuteList(item.userId!);
-                  Navigator.pop(context);
-                  setState(() {});
-                });
+                  YTIMLocalizations.of(context)
+                      .currentLocalization
+                      .muteConversation,
+                  () => _muteMsg(item.userId!),
+                );
               }
             },
           ),
@@ -185,18 +182,11 @@ class _IMUserListPageState extends State<IMUserListPage> {
             icon: Icons.delete,
             onPressed: (context) {
               _showDialogWithActions(
-                  YTIMLocalizations.of(context)
-                      .currentLocalization
-                      .deleteConversation, () {
-                // 2021/7/26 删除会话
-                YTIM().deleteSession(item.userId!);
-                _resetUserReadCount(item.userId!);
-                Navigator.pop(context);
-                setState(() {
-                  _items
-                      .removeWhere((element) => element.userId == item.userId);
-                });
-              });
+                YTIMLocalizations.of(context)
+                    .currentLocalization
+                    .deleteConversation,
+                () => _deleteMsg(item.userId!),
+              );
             },
           ),
           SlidableAction(
@@ -215,14 +205,9 @@ class _IMUserListPageState extends State<IMUserListPage> {
               } else {
                 // 拉黑
                 _showDialogWithActions(
-                    YTIMLocalizations.of(context).currentLocalization.block,
-                    () {
-                  // 2021/7/27 拉黑对方
-                  YTSPUtils.insertBlockList(item.userId!);
-                  _resetUserReadCount(item.userId!);
-                  Navigator.pop(context);
-                  setState(() {});
-                });
+                  YTIMLocalizations.of(context).currentLocalization.block,
+                  () => _blockMsg(item.userId!),
+                );
               }
             },
           ),
@@ -315,6 +300,31 @@ class _IMUserListPageState extends State<IMUserListPage> {
         ),
       ),
     );
+  }
+
+  /// 将当前会话对方id加入本地黑名单，收到消息直接将消息设置为已读。
+  void _muteMsg(String uID) {
+    YTSPUtils.insertMuteList(uID);
+    Navigator.pop(context);
+    setState(() {});
+  }
+
+  /// 2021/7/26 删除会话
+  void _deleteMsg(String uID) {
+    YTIM().deleteSession(uID);
+    _resetUserReadCount(uID);
+    Navigator.pop(context);
+    setState(() {
+      _items.removeWhere((element) => element.userId == uID);
+    });
+  }
+
+  /// 2021/7/27 拉黑对方
+  void _blockMsg(String uID) {
+    YTSPUtils.insertBlockList(uID);
+    _resetUserReadCount(uID);
+    Navigator.pop(context);
+    setState(() {});
   }
 
   /// 重置对方的未读数，并且发送已读回执。
