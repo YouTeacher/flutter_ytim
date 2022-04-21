@@ -208,7 +208,11 @@ class _IMChatPageState extends State<IMChatPage> {
                     IMMessage imsg = _items[i];
                     IMMessage? preMsg;
                     if (i != 0) {
-                      preMsg = _items[i - 1];
+                      preMsg = _items[i + 1];
+                    }else{
+                      if(_items.length >1){
+                        preMsg = _items[1];
+                      }
                     }
                     if (imsg.from == YTIM().mUser.userId.toString()) {
                       return GestureDetector(

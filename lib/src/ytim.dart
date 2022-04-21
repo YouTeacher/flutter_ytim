@@ -246,6 +246,7 @@ class YTIM {
                 type: '1',
                 from: mUser.userId!,
                 to: obj['to'],
+                time: obj['time'],
                 content: _tempContent,
                 timestamp: obj['timestamp'],
               ),
