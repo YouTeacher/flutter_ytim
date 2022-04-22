@@ -55,14 +55,14 @@ class _IMChatPageState extends State<IMChatPage> {
     YTIM().on<IMHistoryMsgList>().listen((event) {
       if (mounted && event.messageList != null) {
         setState(() {
-          if(event.limit == 100){
+          if (event.limit == 100) {
             _items.clear();
           }
-            event.messageList!
-                .sort((a, b) => b.timestamp!.compareTo(a.timestamp!));
-            _items.addAll(event.messageList!);
+          event.messageList!
+              .sort((a, b) => b.timestamp!.compareTo(a.timestamp!));
+          _items.addAll(event.messageList!);
         });
-        if(event.limit == 100){
+        if (event.limit == 100) {
           _saveLastMsg();
           _jump2bottom();
         }
@@ -201,8 +201,11 @@ class _IMChatPageState extends State<IMChatPage> {
         enablePullUp: true,
         enablePullDown: false,
         controller: _refreshController,
-        onLoading: (){
-          YTIM().getTimeHistoryMessage(widget.tid,_items[_items.length-1].timestamp!);
+        onLoading: () {
+          if (_items.length > 1) {
+            YTIM().getTimeHistoryMessage(
+                widget.tid, _items[_items.length - 1].timestamp!);
+          }
         },
         child: Scrollable(
           controller: _scrollController,
@@ -215,38 +218,39 @@ class _IMChatPageState extends State<IMChatPage> {
                 SliverExpanded(),
                 SliverList(
                   delegate: SliverChildBuilderDelegate((c, i) {
-                      if(i<_items.length -1){
+                    print(_items.length);
 
-                        print("DD$i");
-                        IMMessage imsg = _items[i];
-                        IMMessage? preMsg;
-                        if (i != 0) {
-                          preMsg = _items[i + 1];
-                        }else{
-                          if(_items.length >1){
-                            preMsg = _items[1];
-                          }
-                        }
-                        if (imsg.from == YTIM().mUser.userId.toString()) {
-                          return GestureDetector(
-                            onLongPress: () => _revokeMessage(imsg.timestamp),
-                            child: IMItemChat(
-                              preItem: preMsg,
-                              item: imsg,
-                              user: YTIM().mUser,
-                              type: IMChatItemType.Me,
-                              onAvatarTap: widget.onMeAvatarTap,
-                            ),
-                          );
-                        } else {
-                          return IMItemChat(
-                            preItem: preMsg,
-                            item: imsg,
-                            user: _tUser,
-                            type: IMChatItemType.Other,
-                            onAvatarTap: widget.onOtherAvatarTap,
-                          );
-                        }}
+                    IMMessage imsg = _items[i];
+                    IMMessage? preMsg;
+                    if (i != 0) {
+                      if (i < _items.length - 1) {
+                        preMsg = _items[i + 1];
+                      }
+                    } else {
+                      if (_items.length > 1) {
+                        preMsg = _items[1];
+                      }
+                    }
+                    if (imsg.from == YTIM().mUser.userId.toString()) {
+                      return GestureDetector(
+                        onLongPress: () => _revokeMessage(imsg.timestamp),
+                        child: IMItemChat(
+                          preItem: preMsg,
+                          item: imsg,
+                          user: YTIM().mUser,
+                          type: IMChatItemType.Me,
+                          onAvatarTap: widget.onMeAvatarTap,
+                        ),
+                      );
+                    } else {
+                      return IMItemChat(
+                        preItem: preMsg,
+                        item: imsg,
+                        user: _tUser,
+                        type: IMChatItemType.Other,
+                        onAvatarTap: widget.onOtherAvatarTap,
+                      );
+                    }
                   }, childCount: _items.length),
                 )
               ],
