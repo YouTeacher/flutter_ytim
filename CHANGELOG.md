@@ -1,3 +1,6 @@
+## [2.5.3]
+* fix errors when delete last message.
+
 ## [2.5.2]
 * fix errors when there are more than 100 messages.
 * support loading the next page.
