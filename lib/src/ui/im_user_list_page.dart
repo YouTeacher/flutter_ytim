@@ -89,6 +89,7 @@ class _IMUserListPageState extends State<IMUserListPage> {
           setState(() {
             _items = event.userList!;
           });
+          print("tehemrmrmemrem3333333333r");
           _setLastMsg();
         }
       }
@@ -351,6 +352,14 @@ class _IMUserListPageState extends State<IMUserListPage> {
           } else {
             map[user.userId]!.msg = msg;
           }
+        } else {
+          Map<String?, IMLastInfo> map = context.read<IMStore>().lastInfos;
+          if (map[user.userId] == null) {
+            map[user.userId] = IMLastInfo(msg: null);
+          } else {
+            map[user.userId]!.msg = null;
+          }
+          context.read<IMStore>().update(map);
         }
       }
     });

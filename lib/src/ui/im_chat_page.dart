@@ -218,8 +218,6 @@ class _IMChatPageState extends State<IMChatPage> {
                 SliverExpanded(),
                 SliverList(
                   delegate: SliverChildBuilderDelegate((c, i) {
-                    print(_items.length);
-
                     IMMessage imsg = _items[i];
                     IMMessage? preMsg;
                     if (i != 0) {
@@ -325,7 +323,18 @@ class _IMChatPageState extends State<IMChatPage> {
   void _remoteMsgFromMsgList(String? timestamp) {
     if (_items.isNotEmpty) {
       _items.removeWhere((element) => element.timestamp == timestamp);
-      if (_items.last.timestamp == timestamp) {
+      /**
+       * 如果是最后提条的话上面remove下一步的话就是null了不会执行
+       * 如果_items是空的话也就是说已经删除了最后一条了
+       * 直接把本地保存的清除了
+       *
+       */
+      /*if (_items.last.timestamp == timestamp) {
+        _saveLastMsg();
+      }*/
+      if (_items.isEmpty) {
+        YTSPUtils.saveLastMsg(widget.tid, null);
+      } else {
         _saveLastMsg();
       }
     }
