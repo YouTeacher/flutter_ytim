@@ -1,3 +1,7 @@
+## [2.5.2]
+* fix errors when there are more than 100 messages.
+* support loading the next page.
+
 ## [2.5.1]
 * fix time error in MSG list.
 
