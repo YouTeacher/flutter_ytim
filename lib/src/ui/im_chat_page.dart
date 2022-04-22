@@ -202,7 +202,7 @@ class _IMChatPageState extends State<IMChatPage> {
         enablePullDown: false,
         controller: _refreshController,
         onLoading: () {
-          if (_items.length > 1) {
+          if (_items.length >= 1) {
             YTIM().getTimeHistoryMessage(
                 widget.tid, _items[_items.length - 1].timestamp!);
           }
