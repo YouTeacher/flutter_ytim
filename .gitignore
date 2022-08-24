@@ -31,6 +31,7 @@
 build/
 pubspec.lock
 .vscode
+coverage/
 
 # Android related
 **/android/**/gradle-wrapper.jar
