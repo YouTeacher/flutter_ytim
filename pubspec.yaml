@@ -19,3 +19,9 @@ dependencies:
   connectivity_plus: ^4.0.1
   pull_to_refresh: ^2.0.0
   flutter_slidable: ^3.0.0
+
+dev_dependencies:
+  test: ^1.21.4
+
+flutter:
+  uses-material-design: true
