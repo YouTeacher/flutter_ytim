@@ -1,3 +1,6 @@
+## [2.5.4]
+* Upgrade deps version.
+
 ## [2.5.3]
 * fix errors when delete last message.
 
