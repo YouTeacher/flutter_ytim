@@ -14,7 +14,7 @@ class AboutPage extends StatelessWidget {
           children: [
             Text(
               '简介',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             Text('YouTeacher IM 示例代码。')
           ],

@@ -266,7 +266,7 @@ class _IMUserListPageState extends State<IMUserListPage> {
                                 ?.msg
                                 ?.content ??
                             '',
-                        style: Theme.of(context).textTheme.caption,
+                        style: Theme.of(context).textTheme.bodySmall,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -290,7 +290,7 @@ class _IMUserListPageState extends State<IMUserListPage> {
                                         ?.msg
                                         ?.timestamp ??
                                     ''),
-                                style: Theme.of(context).textTheme.caption),
+                                style: Theme.of(context).textTheme.bodySmall),
                             SizedBox(height: 3),
                             // 未读个数
                             UnreadCountView(count: count),

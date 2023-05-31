@@ -366,8 +366,9 @@ class YTIM {
       "limit": "100"
     }));
   }
+
   /// 获取最后一条时间内历史消息列表  默认获取50条
-  void getTimeHistoryMessage(String tid,String time) {
+  void getTimeHistoryMessage(String tid, String time) {
     _send(json.encode({
       "action": "get",
       "module": "history",

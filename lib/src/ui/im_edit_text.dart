@@ -37,7 +37,7 @@ class IMEditText extends StatelessWidget {
       margin: margin,
       child: TextField(
         autocorrect: false,
-        style: Theme.of(context).textTheme.bodyText2,
+        style: Theme.of(context).textTheme.bodyMedium,
         inputFormatters: inputFormatters,
         keyboardType: TextInputType.multiline,
         maxLines: maxLines,
@@ -46,7 +46,7 @@ class IMEditText extends StatelessWidget {
         decoration: InputDecoration(
           labelText: labelText,
           hintText: hintText,
-          labelStyle: Theme.of(context).textTheme.caption,
+          labelStyle: Theme.of(context).textTheme.bodySmall,
           isDense: true,
           contentPadding:
               EdgeInsets.only(left: 15, right: 15, top: 8, bottom: 8),

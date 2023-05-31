@@ -31,10 +31,10 @@ class IMItemChat extends StatelessWidget {
       time = YTUtils.millisecondsToString(item.timestamp);
     } else {
       // 两条消息时间差在5分钟之内的话，不显示。大于5分钟显示出来。
-      if (int.parse(item.timestamp!) - int.parse(preItem!.timestamp!)   >
+      if (int.parse(item.timestamp!) - int.parse(preItem!.timestamp!) >
           5 * 60 * 1000) {
         time = YTUtils.millisecondsToString(item.timestamp);
-      }else {
+      } else {
         time = '';
       }
     }
@@ -45,7 +45,7 @@ class IMItemChat extends StatelessWidget {
           Offstage(
             offstage: time.isEmpty,
             child: Container(
-              child: Text(time, style: Theme.of(context).textTheme.caption),
+              child: Text(time, style: Theme.of(context).textTheme.bodySmall),
               margin: preItem == null
                   ? EdgeInsets.only(top: 30, bottom: 5)
                   : EdgeInsets.only(bottom: 5),

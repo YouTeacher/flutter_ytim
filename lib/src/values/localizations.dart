@@ -71,7 +71,8 @@ class EnYTIMString extends YTIMString {
   String alertRevokeMessage = 'Confirm revoke this message.';
   String alertKickout = 'You are already logged in to another device.';
   String muteConversation = 'Mute notification for this conversation';
-  String deleteConversation = 'Are you sure you want to permanently delete this conversation?';
+  String deleteConversation =
+      'Are you sure you want to permanently delete this conversation?';
   String block = 'Block Messages';
 }
 

@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     // 1. IM初始化
     YTIM().init(
       imAppID: '8C5FA707436E824363ECF0172F408F2D',
