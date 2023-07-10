@@ -56,6 +56,9 @@ class YTIM {
   String _username = '';
   String _headImg = '';
 
+  /// 密码
+  String _password = '';
+
   /// 回调
   late Callback<IMUser> _onIMUserCreatedCallback;
   late Callback<IMUser> _onLoginSuccessCallback;
@@ -85,6 +88,7 @@ class YTIM {
     required Callback<IMUser> imLoginSuccessCallback,
     String imUsername = '',
     String imHeadImg = '',
+    String password = '000000',
     bool logEnabled = true,
   }) {
     YTLog.logEnabled = logEnabled;
@@ -99,6 +103,7 @@ class YTIM {
     _account = imAccount;
     _username = imUsername;
     _headImg = imHeadImg;
+    _password = password;
     _onIMUserCreatedCallback = imUserCreatedCallback;
     _onLoginSuccessCallback = imLoginSuccessCallback;
     _connectServer();
@@ -317,7 +322,7 @@ class YTIM {
       "module": "login",
       "appId": _appID,
       "account": _account,
-      "password": "000000"
+      "password": _password
     }));
   }
 
@@ -461,7 +466,7 @@ class YTIM {
       'appId=$_appID',
       'timestamp=${DateTime.now().millisecondsSinceEpoch.toString().substring(0, 10)}',
       'account=$account',
-      'password=000000',
+      'password=$_password',
       'status=1',
       'username=$username',
     ];

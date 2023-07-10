@@ -1,3 +1,6 @@
+## [2.5.5]
+* Support for set custom password.
+
 ## [2.5.4]
 * Upgrade deps version.
 
