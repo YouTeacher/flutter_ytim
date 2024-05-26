@@ -1,148 +1,47 @@
-import 'package:example/about.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ytim/flutter_ytim.dart';
+import 'package:flutter_ytim_example/ui/page/im_home_page.dart';
+import 'package:flutter_ytim_example/values/localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      localizationsDelegates: [
-        // 这一行很重要，YTIM内置界面的文字国际化。
-        YTIMLocalizations.delegate,
-      ],
-      home: HomePage(),
-    );
-  }
+  State<MyApp> createState() => _MyAppState();
 }
 
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
-  String tag = '_HomePageState';
-
-  int _tabIndex = 0;
-  final _pageController = PageController();
-
+class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    // 1. IM初始化
-    YTIM().init(
-      imAppID: '8C5FA707436E824363ECF0172F408F2D',
-      imAppSecret: '42C213D8A378EDA8034598CDF840823D',
-      imAccount: 'and2long@gmail.com',
-      imUsername: 'and2long',
-      imUserCreatedCallback: (IMUser? value) {
-        print(value);
-        // 创建IM用户成功，将IM用户信息与你自己的用户系统关联起来。
-      },
-      imLoginSuccessCallback: (IMUser? value) {
-        // IM用户登陆成功，取未读消息。
-        YTIM().getUnreadMessage();
-      },
-      logEnabled: true,
-    );
-    YTIM().addKickOutCallback(() {
-      print('被踢下线！');
-    });
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (state) {
-      case AppLifecycleState.inactive:
-        break;
-      case AppLifecycleState.resumed:
-        // 2. 在程序回到前台时，检查IM连接状态。
-        YTIM().checkConnectStatus();
-        break;
-      case AppLifecycleState.paused:
-        break;
-      case AppLifecycleState.detached:
-        break;
-    }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    // 3. 断开连接，释放资源。
-    YTIM().release();
-    _pageController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: PageView(
-        physics: NeverScrollableScrollPhysics(),
-        children: [
-          AboutPage(),
-          IMContactsPage(
-            header: AppBar(title: Text('IM')),
-            order: "2",
-            widthInPad: 500,
-            onMeAvatarTap: (IMUser user) {
-              print(user);
-            },
-            onOtherAvatarTap: (IMUser user) {
-              print(user);
-            },
-          ),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+            create: (context) => IMStore({}, {}, {}, [], [], [], [])),
+      ],
+      child: MaterialApp(
+        localizationsDelegates: [
+          IMLocalizations.delegate,
+          ...GlobalMaterialLocalizations.delegates,
         ],
-        controller: _pageController,
-        onPageChanged: (index) {
-          setState(() {
-            _tabIndex = index;
-          });
-        },
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: '个人中心',
+        supportedLocales: [Locale('zh'), Locale('ja')],
+        locale: Locale('zh'),
+        home: Scaffold(
+          appBar: AppBar(
+            title: const Text('IM Example'),
           ),
-          BottomNavigationBarItem(
-            icon: Stack(
-              children: [
-                Container(
-                  child: Icon(Icons.message),
-                  padding: EdgeInsets.only(left: 10, right: 10, top: 7),
-                ),
-                Positioned(
-                  top: 0.0,
-                  right: 0.0,
-                  child: StreamBuilder<IMUnreadCount>(
-                    builder: (BuildContext context,
-                        AsyncSnapshot<IMUnreadCount> snapshot) {
-                      if (snapshot.hasData) {
-                        return UnreadCountView(
-                            count: snapshot.data?.count ?? 0);
-                      } else {
-                        return Container();
-                      }
-                    },
-                    stream: YTIM().on<IMUnreadCount>(),
-                  ),
-                ),
-              ],
-            ),
-            label: 'IM消息',
-          ),
-        ],
-        currentIndex: _tabIndex,
-        onTap: (index) {
-          _pageController.jumpToPage(index);
-        },
+          body: const IMHomePage(),
+        ),
       ),
     );
   }
