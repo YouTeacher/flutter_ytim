@@ -1,8 +1,6 @@
 import 'dart:convert';
+
 import 'package:flutter_ytim/flutter_ytim.dart';
-import 'package:flutter_ytim/src/model/im_group_message.dart';
-import 'package:flutter_ytim/src/model/im_message.dart';
-import 'package:flutter_ytim/src/model/im_store_message.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class IMSPUtils {
@@ -30,7 +28,7 @@ class IMSPUtils {
     if (s == null) {
       return null;
     } else {
-      return IMMessage.fromJson(json.decode(s),ChatType.user);
+      return IMMessage.fromJson(json.decode(s), ChatType.user);
     }
   }
 
@@ -54,7 +52,7 @@ class IMSPUtils {
     if (s == null) {
       return null;
     } else {
-      return IMGroupMessage.fromJson(json.decode(s),ChatType.groups);
+      return IMGroupMessage.fromJson(json.decode(s), ChatType.groups);
     }
   }
 
@@ -62,7 +60,6 @@ class IMSPUtils {
   static Future<bool> removeGroupLastMsg(String? groupId) {
     return _spf!.remove('im_group_$groupId');
   }
-
 
   /// IM 客服保存与对方聊天的最后一条消息
   static Future<bool> saveStoreLastMsg(String? pk, String? msg) {
@@ -79,17 +76,17 @@ class IMSPUtils {
     if (s == null) {
       return null;
     } else {
-      return IMStoreMessage.fromJson(json.decode(s),ChatType.store);
+      return IMStoreMessage.fromJson(json.decode(s), ChatType.store);
     }
   }
 
   /// 获取所有保存记录
-  static Set<String> getIMKeys(){
+  static Set<String> getIMKeys() {
     return _spf!.getKeys();
   }
 
   /// 按key删除数据
-  static void removeByKey(String name){
+  static void removeByKey(String name) {
     _spf!.remove(name);
   }
 

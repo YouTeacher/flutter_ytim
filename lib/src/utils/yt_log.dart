@@ -5,13 +5,13 @@ import 'package:flutter_ytim/flutter_ytim.dart';
 class YTLog {
   YTLog._();
 
-  static void d(String tag, Object content) {
+  static void d(String tag, Object? content) {
     if ((kDebugMode || kProfileMode) && YTIM().logEnabled) {
       print('$tag : $content');
     }
   }
 
-  static void i(Object content) {
+  static void i(Object? content) {
     if ((kDebugMode || kProfileMode) && YTIM().logEnabled) {
       print('$content');
     }

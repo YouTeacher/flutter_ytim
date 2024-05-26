@@ -1,11 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter_ytim/flutter_ytim.dart';
-import 'package:flutter_ytim/src/model/im_base_message.dart';
 
 // "groupId":10002,"time":"1700465977534","isRecall":1,"from":7,"to":[0],"type":1,"content":"该消息已经撤回"
 /// IM群组消息体
-class IMGroupMessage extends IMBaseMessage{
+class IMGroupMessage extends IMBaseMessage {
   String? groupId;
   List<int>? at;
 
@@ -23,10 +22,10 @@ class IMGroupMessage extends IMBaseMessage{
     super.type,
   });
 
-  factory IMGroupMessage.fromJson(Map<String, dynamic> json,ChatType chatType) {
-
+  factory IMGroupMessage.fromJson(
+      Map<String, dynamic> json, ChatType chatType) {
     return IMGroupMessage(
-      chatType: chatType,
+        chatType: chatType,
         groupId: json['groupId']?.toString(),
         type: json['type']?.toString(),
         from: json['from']?.toString(),

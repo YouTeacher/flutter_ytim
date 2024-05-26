@@ -1,10 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter_ytim/flutter_ytim.dart';
-import 'package:flutter_ytim/src/model/im_group.dart';
-import 'package:flutter_ytim/src/model/im_message.dart';
-import 'package:flutter_ytim/src/model/im_user.dart';
-import 'package:flutter_ytim/src/utils/im_utils.dart';
 
 /// IM用户信息
 class IMChatModel {
@@ -42,7 +38,11 @@ class IMChatModel {
 
   factory IMChatModel.fromJson(Map<String, dynamic> json) {
     return IMChatModel(
-      chatType: json['type']?.toString() == '1' ? ChatType.user : json['type']?.toString() == '2' ? ChatType.groups : ChatType.store,
+      chatType: json['type']?.toString() == '1'
+          ? ChatType.user
+          : json['type']?.toString() == '2'
+              ? ChatType.groups
+              : ChatType.store,
       groupId: json['groupId'].toString(),
       storeId: json['storeId'].toString(),
       userId: json['userId'].toString(),
@@ -51,7 +51,7 @@ class IMChatModel {
       unreadMessageList: json['unreadMessageList'] == null
           ? null
           : (json['unreadMessageList'] as List)
-              .map((e) => IMMessage.fromJson(e,ChatType.user))
+              .map((e) => IMMessage.fromJson(e, ChatType.user))
               .toList(),
       userInfo: json['userInfo'] == null
           ? null

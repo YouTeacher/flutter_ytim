@@ -1,15 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter_ytim/flutter_ytim.dart';
-import 'package:flutter_ytim/src/model/im_base_message.dart';
 
 /// IM消息体
-class IMMessage extends IMBaseMessage{
-  String?
-      fromName,
-      to,
-      at,
-      groupId;
+class IMMessage extends IMBaseMessage {
+  String? fromName, to, at, groupId;
 
   // 本地保存的最后一条消息主键：对方的im_id
   String? pk;
@@ -30,7 +25,7 @@ class IMMessage extends IMBaseMessage{
     super.status,
   });
 
-  factory IMMessage.fromJson(Map<String, dynamic> json,ChatType chatType) {
+  factory IMMessage.fromJson(Map<String, dynamic> json, ChatType chatType) {
     return IMMessage(
       chatType: chatType,
       type: json['type']?.toString(),

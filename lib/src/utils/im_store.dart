@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ytim/flutter_ytim.dart';
-import 'package:flutter_ytim/src/model/im_chat_model.dart';
-import 'package:flutter_ytim/src/model/im_group.dart';
-import 'package:flutter_ytim/src/model/im_sys_msg.dart';
-import 'package:flutter_ytim/src/model/im_user.dart';
 
 /// 全局IM信息
 class IMLastInfo {
@@ -28,12 +24,15 @@ class IMStore with ChangeNotifier {
       this._firends, this._chats, this._groups, this._sysMessages);
 
   List<IMUser> get firends => _firends;
+
   List<IMChatModel> get chats => _chats;
+
   List<IMSysMessage> get sysMessages => _sysMessages;
+
   List<IMGroup> get groups => _groups;
 
-  void updateLastInfo(ChatType chatType,Map<String?, IMLastInfo> map){
-    switch(chatType){
+  void updateLastInfo(ChatType chatType, Map<String?, IMLastInfo> map) {
+    switch (chatType) {
       case ChatType.user:
         _lastInfo = map;
         break;
@@ -47,8 +46,8 @@ class IMStore with ChangeNotifier {
     notifyListeners();
   }
 
-  Map<String?, IMLastInfo> getLastInfo(ChatType chatType){
-    switch(chatType){
+  Map<String?, IMLastInfo> getLastInfo(ChatType chatType) {
+    switch (chatType) {
       case ChatType.user:
         return _lastInfo;
       case ChatType.groups:

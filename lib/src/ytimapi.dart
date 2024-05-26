@@ -66,8 +66,8 @@ class YTIMApi {
 
   ///设置已读
   static String readGroupMessageApi(
-      String groupId,
-      ) {
+    String groupId,
+  ) {
     return json.encode(
         {"action": "set", "module": "groupMessage", "groupId": groupId});
   }
@@ -207,9 +207,9 @@ class YTIMApi {
   ///取群信息
   ///getGroupUser表示是否取群用户，请灵活运用
   static String getGroupDataApi(
-      String groupId, {
-        int? getGroupUser,
-      }) {
+    String groupId, {
+    int? getGroupUser,
+  }) {
     return json.encode({
       "action": "get",
       "module": "group",
@@ -266,9 +266,9 @@ class YTIMApi {
 
   ///群成员编辑自己信息
   static String setGroupMineUserDataApi(
-      String groupId,
-      String nickname,
-      ) {
+    String groupId,
+    String nickname,
+  ) {
     return json.encode({
       "action": "set",
       "module": "groupUser",
@@ -280,9 +280,9 @@ class YTIMApi {
   ///删除群成员
   ///
   static String deleteGroupUserApi(
-      String groupId,
-      List<String> userIds,
-      ) {
+    String groupId,
+    List<String> userIds,
+  ) {
     return json.encode({
       "action": "del",
       "module": "groupUser",
@@ -301,9 +301,9 @@ class YTIMApi {
   ///同意入群申请
   ///messageId 系统消息id
   static String agreeJoinGroupApi(
-      String groupId,
-      String messageId,
-      ) {
+    String groupId,
+    String messageId,
+  ) {
     return json.encode({
       "action": "add",
       "module": "joinGroup",
@@ -315,9 +315,9 @@ class YTIMApi {
   ///拒绝入群申请
   ///messageId 系统消息id
   static String rejectJoinGroupApi(
-      String groupId,
-      String messageId,
-      ) {
+    String groupId,
+    String messageId,
+  ) {
     return json.encode({
       "action": "ref",
       "module": "joinGroup",
@@ -328,8 +328,8 @@ class YTIMApi {
 
   ///退出群组
   static String exitGroupApi(
-      String groupId,
-      ) {
+    String groupId,
+  ) {
     return json
         .encode({"action": "del", "module": "joinGroup", "groupId": groupId});
   }
@@ -366,9 +366,9 @@ class YTIMApi {
   ///撤回群组消息
   ///time 群消息时间（"1700465977534"）
   static String revokeGroupMessageApi(
-      String groupId,
-      String time,
-      ) {
+    String groupId,
+    String time,
+  ) {
     return json.encode({
       "action": "cnl",
       "module": "groupMessage",
@@ -395,9 +395,9 @@ class YTIMApi {
 
   //客服消息撤回
   static String revokeStoreMessageApi(
-      String storeId,
-      String? time,
-      ) {
+    String storeId,
+    String? time,
+  ) {
     return json.encode({
       "action": "cnl",
       "module": "storeMessage",

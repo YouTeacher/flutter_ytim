@@ -1,14 +1,11 @@
-
 import 'package:flutter_ytim/flutter_ytim.dart';
 
-class IMBaseMessage{
-
+class IMBaseMessage {
   /// status 0发送成功 1发送中 2发送失败
   /// isRead, "0"：未读， "1"：已读
   /// isRecall,"0"：未撤回， "1"：已撤回
 
-
-  String? type,status,content,filePath,time,isRecall,isRead,uuid,from;
+  String? type, status, content, filePath, time, isRecall, isRead, uuid, from;
   ChatType chatType;
 
   IMBaseMessage({
@@ -24,14 +21,14 @@ class IMBaseMessage{
     this.from,
   });
 
-  factory IMBaseMessage.fromJson(Map<String, dynamic> json,ChatType chatType) {
-    switch(chatType){
+  factory IMBaseMessage.fromJson(Map<String, dynamic> json, ChatType chatType) {
+    switch (chatType) {
       case ChatType.user:
-        return IMMessage.fromJson(json,chatType);
+        return IMMessage.fromJson(json, chatType);
       case ChatType.groups:
-        return IMGroupMessage.fromJson(json,chatType);
+        return IMGroupMessage.fromJson(json, chatType);
       case ChatType.store:
-        return IMStoreMessage.fromJson(json,chatType);
+        return IMStoreMessage.fromJson(json, chatType);
     }
   }
 }

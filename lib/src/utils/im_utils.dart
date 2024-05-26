@@ -1,16 +1,9 @@
 import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ytim/flutter_ytim.dart';
-import 'package:flutter_ytim/src/model/im_chat_model.dart';
-import 'package:flutter_ytim/src/model/im_group.dart';
-import 'package:flutter_ytim/src/model/im_group_message.dart';
-import 'package:flutter_ytim/src/model/im_message.dart';
-import 'package:flutter_ytim/src/model/im_store_message.dart';
-import 'package:flutter_ytim/src/model/im_sys_msg.dart';
-import 'package:flutter_ytim/src/model/im_user.dart';
 import 'package:flutter_ytim/src/utils/im_sp_utils.dart';
-import 'package:flutter_ytim/src/utils/im_store.dart';
 import 'package:provider/provider.dart';
 
 class IMUtils {
@@ -827,7 +820,8 @@ class IMUtils {
   }
 
   /// 获取最后一条消息，用于展示列表
-  static Map<String?, IMLastInfo> getLastInfo(BuildContext context,ChatType chatType){
+  static Map<String?, IMLastInfo> getLastInfo(
+      BuildContext context, ChatType chatType) {
     return context.read<IMStore>().getLastInfo(chatType);
   }
 

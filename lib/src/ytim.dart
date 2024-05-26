@@ -1,18 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_ytim/flutter_ytim.dart';
-import 'package:flutter_ytim/src/model/im_command.dart';
-import 'package:flutter_ytim/src/model/im_group_control.dart';
-import 'package:flutter_ytim/src/model/im_group_message.dart';
-import 'package:flutter_ytim/src/model/im_message.dart';
-import 'package:flutter_ytim/src/model/im_store_message.dart';
-import 'package:flutter_ytim/src/model/im_sys_msg.dart';
-import 'package:flutter_ytim/src/model/im_user.dart';
 import 'package:flutter_ytim/src/utils/im_sp_utils.dart';
-import 'package:flutter_ytim/src/utils/im_utils.dart';
-import 'package:flutter_ytim/src/utils/yt_log.dart';
 import 'package:flutter_ytim/src/ytimapi.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -21,10 +13,13 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 enum IMConnectState {
   /// 初始化状态
   idle,
+
   /// 连接中
   connecting,
+
   /// 已连接
   connected,
+
   /// 无网络
   networkNone
 }
@@ -33,8 +28,10 @@ enum IMConnectState {
 enum IMMessageSendState {
   /// 发送中
   sending,
+
   /// 发送失败
   sendError,
+
   /// 发送成功
   sendSuccess
 }
@@ -43,20 +40,25 @@ enum IMMessageSendState {
 enum ChatType {
   /// 群组
   groups,
+
   /// 单聊
   user,
+
   /// 店铺客服
   store,
 }
 
 /// 设置消息已读
-enum MessageTypeRead{
+enum MessageTypeRead {
   /// 系统消息
   sysMsg,
+
   /// 单聊消息
   chatMsg,
+
   /// 群组消息
   groupMsg,
+
   /// 店铺客服消息
   storeMsg
 }
@@ -94,9 +96,7 @@ class YTIM {
   IOWebSocketChannel? _channel;
 
   /// 私有构造方法
-  YTIM._instance() {
-
-  }
+  YTIM._instance() {}
 
   /// 连接IM服务器
   void _connectServer() async {
@@ -158,7 +158,7 @@ class YTIM {
       mUser = IMUser.fromJson(obj['data']);
       imLoginSuccessCallback(mUser);
     }).onError((error, stackTrace) {
-      YTLog.d(_tag, error!);
+      YTLog.d(_tag, error);
       if (error != null) {
         final res = error as Map<String, dynamic>;
         if (res['code'] == 412) {
@@ -223,7 +223,7 @@ class YTIM {
       case 'message':
         if (obj['event'] == 'add') {
           //收到新消息
-          IMMessage msg = IMMessage.fromJson(obj['data'],ChatType.user);
+          IMMessage msg = IMMessage.fromJson(obj['data'], ChatType.user);
           if (msg.from != null) {
             if (IMSPUtils.getBlockList().contains(msg.from)) {
               YTLog.d(_tag, ' ${msg.from}:${msg.fromName} 在屏蔽列表中，忽略此消息');
@@ -240,45 +240,47 @@ class YTIM {
           }
         } else if (obj['event'] == "cnl") {
           //撤回消息 消息已撤回
-          revokeMsgCallback(IMCommand.fromJson(obj,ChatType.user));
+          revokeMsgCallback(IMCommand.fromJson(obj, ChatType.user));
         } else if (obj['event'] == 'set') {
           //消息已读
-          if(readMsgCallback != null){
-            readMsgCallback!(IMCommand.fromJson(obj,ChatType.user));
+          if (readMsgCallback != null) {
+            readMsgCallback!(IMCommand.fromJson(obj, ChatType.user));
           }
         }
         break;
       case 'groupMessage':
         if (obj['event'] == 'add') {
           //收到新群组消息
-          IMGroupMessage msg = IMGroupMessage.fromJson(obj['data'],ChatType.groups);
+          IMGroupMessage msg =
+              IMGroupMessage.fromJson(obj['data'], ChatType.groups);
           if (msg.groupId != null) {
             chatMessageCallback(msg);
           }
         } else if (obj['event'] == "cnl") {
           //撤回消息 消息已撤回
-          revokeMsgCallback(IMCommand.fromJson(obj,ChatType.groups));
+          revokeMsgCallback(IMCommand.fromJson(obj, ChatType.groups));
         }
         break;
       case 'storeMessage':
         if (obj['event'] == 'add') {
           //收到新群组消息
-          IMStoreMessage msg = IMStoreMessage.fromJson(obj['data'],ChatType.store);
+          IMStoreMessage msg =
+              IMStoreMessage.fromJson(obj['data'], ChatType.store);
           if (msg.storeId != null) {
             chatMessageCallback(msg);
           }
         } else if (obj['event'] == "cnl") {
           //撤回消息 消息已撤回
-          revokeMsgCallback(IMCommand.fromJson(obj,ChatType.store));
-        }
-        else if (obj['event'] == 'set') {
+          revokeMsgCallback(IMCommand.fromJson(obj, ChatType.store));
+        } else if (obj['event'] == 'set') {
           //消息已读
-          if(readMsgCallback != null){
-            readMsgCallback!(IMCommand.fromJson(obj,ChatType.store));
+          if (readMsgCallback != null) {
+            readMsgCallback!(IMCommand.fromJson(obj, ChatType.store));
           }
         }
         break;
       case 'friend':
+
         /// 收到好友添加请求
         if (obj['event'] == 'add') {
           IMSysMessage msg = IMSysMessage.fromJson(obj['data']);
@@ -305,6 +307,7 @@ class YTIM {
         }
         break;
       case 'groupUser':
+
         /// 邀请加入群聊
         if (obj['event'] == 'add') {
           IMGroupControl msg = IMGroupControl.fromJson(obj['data']);
@@ -312,6 +315,7 @@ class YTIM {
           msg.event = 'add';
           groupControlCallback(msg);
         }
+
         /// 群成员退出或者被踢出
         if (obj['event'] == 'del') {
           IMGroupControl msg = IMGroupControl.fromJson(obj['data']);
@@ -321,6 +325,7 @@ class YTIM {
         }
         break;
       case 'group':
+
         /// 群聊解散
         if (obj['event'] == 'del') {
           IMGroupControl msg = IMGroupControl.fromJson(obj['data']);
@@ -330,12 +335,14 @@ class YTIM {
         }
         break;
       case 'joinGroup':
+
         /// 收到申请入群通知
         if (obj['event'] == 'set') {
           IMSysMessage msg = IMSysMessage.fromJson(obj['data']);
           msg.event = 'add';
           sysMsgCallback(msg);
         }
+
         /// 同意入群的通知
         if (obj['event'] == 'add') {
           IMSysMessage msg = IMSysMessage.fromJson(obj['data']);
@@ -347,6 +354,7 @@ class YTIM {
           msg1.event = 'add';
           groupControlCallback(msg1);
         }
+
         /// 拒绝入群的通知
         if (obj['event'] == 'ref') {
           IMSysMessage msg = IMSysMessage.fromJson(obj['data']);
@@ -511,26 +519,27 @@ class YTIM {
   }
 
   /// 添加未读数量的回调
-  void addUnreadCountCallback(Callback<int> callback){
+  void addUnreadCountCallback(Callback<int> callback) {
     unreadCountCallback = callback;
   }
 
   /// 添加消息已读的回调
-  void addMsgReadCallback(Callback<IMCommand> callback){
+  void addMsgReadCallback(Callback<IMCommand> callback) {
     readMsgCallback = callback;
   }
 
   /// 获取IM总数据，包括会话、好友、群组、系统消息
   /// 成功回调中返回全部数据 类型为IMUserList
   /// 失败回调中返回error 类型为Map
-  void getIMTotalData(BuildContext context,Callback<IMUserList> resultCallback,FailCallback<Map> failCallback) async {
-   _sendMessageAndReceive(YTIMApi.getTotalListApi()).then((value) {
-     IMUtils.processTotalData(context, value, (value) {
-       resultCallback(value);
-     });
-   }).onError<Map>((error, stackTrace) {
-     failCallback(error);
-   });
+  void getIMTotalData(BuildContext context, Callback<IMUserList> resultCallback,
+      FailCallback<Map> failCallback) async {
+    _sendMessageAndReceive(YTIMApi.getTotalListApi()).then((value) {
+      IMUtils.processTotalData(context, value, (value) {
+        resultCallback(value);
+      });
+    }).onError<Map>((error, stackTrace) {
+      failCallback(error);
+    });
   }
 
   /// 获取某个会话的聊天记录
@@ -538,13 +547,14 @@ class YTIM {
   /// id  用户ID、群组ID、店铺ID
   /// nextTime 获取截止时间 可为空，为空表示获取最近的
   /// 成功回调 数据格式为 IMHistoryMsgList
-  void getChatHistoryMessage(ChatType chatType,String id,String? nextTime,Callback<IMHistoryMsgList> resultCallback)async{
-    switch(chatType){
+  void getChatHistoryMessage(ChatType chatType, String id, String? nextTime,
+      Callback<IMHistoryMsgList> resultCallback) async {
+    switch (chatType) {
       case ChatType.user:
-        _sendMessageAndReceive(YTIMApi.historyMessageApi(
-            id, nextTime)).then((value) {
+        _sendMessageAndReceive(YTIMApi.historyMessageApi(id, nextTime))
+            .then((value) {
           Map<String, dynamic> obj = json.decode(value);
-          final model = IMHistoryMsgList.fromJson(obj['data'],ChatType.user);
+          final model = IMHistoryMsgList.fromJson(obj['data'], ChatType.user);
           List<IMBaseMessage> msgList = model.messageList ?? [];
           msgList.sort((a, b) => b.time!.compareTo(a.time!));
           model.messageList = msgList;
@@ -552,10 +562,10 @@ class YTIM {
         });
         break;
       case ChatType.groups:
-        _sendMessageAndReceive(YTIMApi.getGroupMessageListApi(
-            id, nextTime)).then((value) {
+        _sendMessageAndReceive(YTIMApi.getGroupMessageListApi(id, nextTime))
+            .then((value) {
           Map<String, dynamic> obj = json.decode(value);
-          final model = IMHistoryMsgList.fromJson(obj['data'],ChatType.groups);
+          final model = IMHistoryMsgList.fromJson(obj['data'], ChatType.groups);
           List<IMBaseMessage> msgList = model.messageList ?? [];
           msgList.sort((a, b) => b.time!.compareTo(a.time!));
           model.messageList = msgList;
@@ -563,10 +573,10 @@ class YTIM {
         });
         break;
       case ChatType.store:
-        _sendMessageAndReceive(YTIMApi.historyStoreMessageApi(
-            id, nextTime)).then((value) {
+        _sendMessageAndReceive(YTIMApi.historyStoreMessageApi(id, nextTime))
+            .then((value) {
           Map<String, dynamic> obj = json.decode(value);
-          final model = IMHistoryMsgList.fromJson(obj['data'],ChatType.store);
+          final model = IMHistoryMsgList.fromJson(obj['data'], ChatType.store);
           List<IMBaseMessage> msgList = model.messageList ?? [];
           msgList.sort((a, b) => b.time!.compareTo(a.time!));
           model.messageList = msgList;
@@ -581,19 +591,18 @@ class YTIM {
   /// headUrl 头像URL
   /// desc 群描述 可为空
   /// 成功回调中返回 IMGroup
-  void createGroup(String name,String headUrl,Callback<IMGroup> resultCallback,FailCallback<Map> failCallback,{String? desc})async{
-    _sendMessageAndReceive(YTIMApi.creatGroupApi(
-        name, headUrl,
-        desc: desc)).then((value) {
+  void createGroup(String name, String headUrl,
+      Callback<IMGroup> resultCallback, FailCallback<Map> failCallback,
+      {String? desc}) async {
+    _sendMessageAndReceive(YTIMApi.creatGroupApi(name, headUrl, desc: desc))
+        .then((value) {
       Map<String, dynamic> creatGroupObj = json.decode(value);
       if (creatGroupObj['code'] == 200) {
         final model = IMGroup.fromJson(creatGroupObj['data']);
         resultCallback(model);
-      }
-      else{
+      } else {
         failCallback({});
       }
-
     }).onError<Map>((error, stackTrace) {
       failCallback(error);
     });
@@ -605,7 +614,14 @@ class YTIM {
   /// headUrl 群头像URL
   /// desc 群描述 可为空
   /// 成功回调中返回 IMGroup
-  void setGroupInfo(BuildContext context,IMGroup group,String name,String headUrl,Callback<IMGroup> resultCallback,FailCallback<Map> failCallback,{String? desc})async{
+  void setGroupInfo(
+      BuildContext context,
+      IMGroup group,
+      String name,
+      String headUrl,
+      Callback<IMGroup> resultCallback,
+      FailCallback<Map> failCallback,
+      {String? desc}) async {
     _sendMessageAndReceive(YTIMApi.setGroupDataApi(
       group.groupId!,
       name,
@@ -622,8 +638,7 @@ class YTIM {
         IMUtils.updateGroupInfoForChatsAndFriends(context, group);
 
         resultCallback(group);
-      }
-      else{
+      } else {
         failCallback({});
       }
     }).onError<Map>((error, stackTrace) {
@@ -635,12 +650,14 @@ class YTIM {
   /// groupID 群ID
   /// type 0----删除  1---退出
   /// 成功回调中返回 json str
-  void deleteOrExitGroup(String groupId,int type,Callback<String> resultCallback){
-    if(type == 0){
-      _sendMessageAndReceive(YTIMApi.deleteGroupApi(groupId.toString())).then((value) => resultCallback(value));
-    }
-    else {
-      _sendMessageAndReceive(YTIMApi.exitGroupApi(groupId.toString())).then((value) => resultCallback(value));
+  void deleteOrExitGroup(
+      String groupId, int type, Callback<String> resultCallback) {
+    if (type == 0) {
+      _sendMessageAndReceive(YTIMApi.deleteGroupApi(groupId.toString()))
+          .then((value) => resultCallback(value));
+    } else {
+      _sendMessageAndReceive(YTIMApi.exitGroupApi(groupId.toString()))
+          .then((value) => resultCallback(value));
     }
   }
 
@@ -649,11 +666,14 @@ class YTIM {
   /// userIds 用户ID列表
   /// type 0--添加  1--删除
   /// 成功回调中返回json string
-  void groupUsersOperations(String groupId,List<String> userIds,int type,Callback<String> resultCallback)async{
-    if(type == 0){
-      _sendMessageAndReceive(YTIMApi.setGroupUsersApi(groupId, userIds)).then((value) => resultCallback(value));
-    }else{
-      _sendMessageAndReceive(YTIMApi.deleteGroupUserApi(groupId,userIds)).then((value) => resultCallback(value));
+  void groupUsersOperations(String groupId, List<String> userIds, int type,
+      Callback<String> resultCallback) async {
+    if (type == 0) {
+      _sendMessageAndReceive(YTIMApi.setGroupUsersApi(groupId, userIds))
+          .then((value) => resultCallback(value));
+    } else {
+      _sendMessageAndReceive(YTIMApi.deleteGroupUserApi(groupId, userIds))
+          .then((value) => resultCallback(value));
     }
   }
 
@@ -661,8 +681,11 @@ class YTIM {
   /// groupId 群ID
   /// getGroupUser 表示是否取群用户，请灵活运用
   /// 成功回调中返回 IMGroup
-  void getGroupInfo(BuildContext context,String groupId,int getGroupUser,Callback<IMGroup> resultCallback)async{
-    _sendMessageAndReceive(YTIMApi.getGroupDataApi(groupId, getGroupUser: getGroupUser)).then((value) {
+  void getGroupInfo(BuildContext context, String groupId, int getGroupUser,
+      Callback<IMGroup> resultCallback) async {
+    _sendMessageAndReceive(
+            YTIMApi.getGroupDataApi(groupId, getGroupUser: getGroupUser))
+        .then((value) {
       IMUtils.processGroupInfoAndAddToChatsAndFriends(context, value, (value) {
         resultCallback(value);
       });
@@ -676,21 +699,36 @@ class YTIM {
   /// contentType 内容类型 1文本 2图片 3语音文件 4视频文件 5其他文件 6地图
   /// 成功回调中返回数据 类型为json string
   /// 失败回调中返回error 类型为Map
-  void sendChatMessage(ChatType chatType, String userId, String content,
-      String contentType, String uuid, Callback<String> resultCallback,FailCallback<Map> failCallback,
+  void sendChatMessage(
+      ChatType chatType,
+      String userId,
+      String content,
+      String contentType,
+      String uuid,
+      Callback<String> resultCallback,
+      FailCallback<Map> failCallback,
       {String? userName}) async {
     switch (chatType) {
       case ChatType.user:
-        _sendMessageAndReceive(YTIMApi.sendMessage(userId,
-            userName, content, contentType),uuid: uuid).then((value) => resultCallback(value)).onError<Map>((error, stackTrace) => failCallback(error));
+        _sendMessageAndReceive(
+                YTIMApi.sendMessage(userId, userName, content, contentType),
+                uuid: uuid)
+            .then((value) => resultCallback(value))
+            .onError<Map>((error, stackTrace) => failCallback(error));
         break;
       case ChatType.groups:
-        _sendMessageAndReceive(YTIMApi.sendGroupMessageApi(
-            userId, contentType, content),uuid: uuid).then((value) => resultCallback(value)).onError<Map>((error, stackTrace) => failCallback(error));
+        _sendMessageAndReceive(
+                YTIMApi.sendGroupMessageApi(userId, contentType, content),
+                uuid: uuid)
+            .then((value) => resultCallback(value))
+            .onError<Map>((error, stackTrace) => failCallback(error));
         break;
       case ChatType.store:
-        _sendMessageAndReceive(YTIMApi.sendStoreMessage(
-            userId, content, contentType),uuid: uuid).then((value) => resultCallback(value)).onError<Map>((error, stackTrace) => failCallback(error));
+        _sendMessageAndReceive(
+                YTIMApi.sendStoreMessage(userId, content, contentType),
+                uuid: uuid)
+            .then((value) => resultCallback(value))
+            .onError<Map>((error, stackTrace) => failCallback(error));
         break;
       default:
         break;
@@ -700,7 +738,8 @@ class YTIM {
   /// 搜索好友
   /// keyword 关键词
   /// 成功回调中返回数据 类型为List<IMUser>
-  void searchFriend(String keyword,BuildContext context,Callback<List<IMUser>> resultCallback)async{
+  void searchFriend(String keyword, BuildContext context,
+      Callback<List<IMUser>> resultCallback) async {
     _sendMessageAndReceive(YTIMApi.searchFriendApi(keyword)).then((value) {
       IMUtils.filterFriends(context, value, (value) {
         resultCallback(value);
@@ -711,16 +750,19 @@ class YTIM {
   /// 添加好友
   /// userid 好友ID
   /// 成功回调中返回数据 类型为json string
-  void addFriend(String userid,Callback<String> resultCallback)async{
-    _sendMessageAndReceive(YTIMApi.addFriendApi(userid)).then((value) => resultCallback(value));
+  void addFriend(String userid, Callback<String> resultCallback) async {
+    _sendMessageAndReceive(YTIMApi.addFriendApi(userid))
+        .then((value) => resultCallback(value));
   }
 
   /// 删除好友
   /// userid 用户ID
   /// status 0删除 1双方同时删除
   /// 成功回调中返回数据 类型为json string
-  void deleteFriend(BuildContext context,String userId,String status,Callback<String> resultCallback)async{
-    _sendMessageAndReceive(YTIMApi.deleteFriendApi(userId, status)).then((value) {
+  void deleteFriend(BuildContext context, String userId, String status,
+      Callback<String> resultCallback) async {
+    _sendMessageAndReceive(YTIMApi.deleteFriendApi(userId, status))
+        .then((value) {
       resultCallback(value);
     });
   }
@@ -728,7 +770,8 @@ class YTIM {
   /// 获取用户信息
   /// userid 用户ID
   /// 成功回调中返回数据 类型为IMUser
-  void getUserInfoByUserId(String userId,Callback<IMUser> resultCallback)async{
+  void getUserInfoByUserId(
+      String userId, Callback<IMUser> resultCallback) async {
     _sendMessageAndReceive(YTIMApi.getUserDataApi(userId)).then((value) {
       Map<String, dynamic> obj = json.decode(value);
       var data = obj['data'];
@@ -741,7 +784,8 @@ class YTIM {
   /// 搜索群
   /// keyword 关键词
   /// 成功回调中返回数据 类型为List<IMGroup>
-  void searchGroup(String keyword,BuildContext context,Callback<List<IMGroup>> resultCallback)async{
+  void searchGroup(String keyword, BuildContext context,
+      Callback<List<IMGroup>> resultCallback) async {
     _sendMessageAndReceive(YTIMApi.searchGroupApi(keyword)).then((value) {
       IMUtils.filterGroups(context, value, (value) {
         resultCallback(value);
@@ -752,35 +796,45 @@ class YTIM {
   /// 申请入群
   /// groupId 群ID
   /// 成功回调中返回数据 类型为json string
-  void addGroup(String groupId,Callback<String> resultCallback)async{
-    _sendMessageAndReceive(YTIMApi.joinGroupApi(groupId)).then((value) => resultCallback(value));
+  void addGroup(String groupId, Callback<String> resultCallback) async {
+    _sendMessageAndReceive(YTIMApi.joinGroupApi(groupId))
+        .then((value) => resultCallback(value));
   }
 
   /// 设置好友备注
   /// userId 用户ID
   /// nickName  昵称
   /// 成功回调中返回数据 类型为json string
-  void setFriendNickName(String userId,String? nickName,Callback<String> resultCallback)async{
-    _sendMessageAndReceive(YTIMApi.setFriendNickNameApi(userId,nickname:nickName,)).then((value) => resultCallback(value));
+  void setFriendNickName(
+      String userId, String? nickName, Callback<String> resultCallback) async {
+    _sendMessageAndReceive(YTIMApi.setFriendNickNameApi(
+      userId,
+      nickname: nickName,
+    )).then((value) => resultCallback(value));
   }
 
   /// 设置消息已读
   /// messageType 消息类型
   /// id 消息ID 或者是用户ID
   /// 成功回调中返回数据 类型为json string
-  void setMessageRead(MessageTypeRead typeRead,String id,Callback<String> resultCallback)async{
-    switch(typeRead){
+  void setMessageRead(MessageTypeRead typeRead, String id,
+      Callback<String> resultCallback) async {
+    switch (typeRead) {
       case MessageTypeRead.sysMsg:
-        _sendMessageAndReceive(YTIMApi.readSysMessageApi(id)).then((value) => resultCallback(value));
+        _sendMessageAndReceive(YTIMApi.readSysMessageApi(id))
+            .then((value) => resultCallback(value));
         break;
       case MessageTypeRead.chatMsg:
-        _sendMessageAndReceive(YTIMApi.readMessageApi(id)).then((value) => resultCallback(value));
+        _sendMessageAndReceive(YTIMApi.readMessageApi(id))
+            .then((value) => resultCallback(value));
         break;
       case MessageTypeRead.groupMsg:
-        _sendMessageAndReceive(YTIMApi.readGroupMessageApi(id)).then((value) => resultCallback(value));
+        _sendMessageAndReceive(YTIMApi.readGroupMessageApi(id))
+            .then((value) => resultCallback(value));
         break;
       case MessageTypeRead.storeMsg:
-        _sendMessageAndReceive(YTIMApi.sendStoreReadMessage(id)).then((value) => resultCallback(value));
+        _sendMessageAndReceive(YTIMApi.sendStoreReadMessage(id))
+            .then((value) => resultCallback(value));
         break;
     }
   }
@@ -790,34 +844,35 @@ class YTIM {
   /// id 对应的用户ID、群组ID、店铺ID
   /// timestamp 该消息的时间戳
   /// 成功回调中返回 IMCommand
-  void revokeMessage(ChatType chatType,String id,String timestamp,Callback<IMCommand> resultCallback)async{
-    switch(chatType){
+  void revokeMessage(ChatType chatType, String id, String timestamp,
+      Callback<IMCommand> resultCallback) async {
+    switch (chatType) {
       case ChatType.user:
-        _sendMessageAndReceive(YTIMApi.revokeMessageApi(
-            id, timestamp)).then((value) {
+        _sendMessageAndReceive(YTIMApi.revokeMessageApi(id, timestamp))
+            .then((value) {
           Map<String, dynamic> obj = json.decode(value);
           //消息撤回成功
-          IMCommand msg = IMCommand.fromJson(obj,ChatType.user);
+          IMCommand msg = IMCommand.fromJson(obj, ChatType.user);
           resultCallback(msg);
         });
         break;
       case ChatType.groups:
-        _sendMessageAndReceive(YTIMApi.revokeGroupMessageApi(
-            id, timestamp)).then((value) {
+        _sendMessageAndReceive(YTIMApi.revokeGroupMessageApi(id, timestamp))
+            .then((value) {
           Map<String, dynamic> obj = json.decode(value);
           //消息撤回成功
-          IMCommand msg = IMCommand.fromJson(obj,ChatType.groups);
+          IMCommand msg = IMCommand.fromJson(obj, ChatType.groups);
           resultCallback(msg);
         });
         break;
       case ChatType.store:
-      _sendMessageAndReceive(YTIMApi.revokeStoreMessageApi(
-          id, timestamp)).then((value) {
-        Map<String, dynamic> obj = json.decode(value);
-        //消息撤回成功
-        IMCommand msg = IMCommand.fromJson(obj,ChatType.store);
-        resultCallback(msg);
-      });
+        _sendMessageAndReceive(YTIMApi.revokeStoreMessageApi(id, timestamp))
+            .then((value) {
+          Map<String, dynamic> obj = json.decode(value);
+          //消息撤回成功
+          IMCommand msg = IMCommand.fromJson(obj, ChatType.store);
+          resultCallback(msg);
+        });
         break;
     }
   }
@@ -828,13 +883,17 @@ class YTIM {
   /// nickName 好友备注，可空，同意好友申请时，可能有值
   /// 成功回调中返回数据 类型为json string
   /// 失败回调中返回error 类型为Map
-  void operationFriendRequest(String userId,int type,Callback<String> resultCallback,FailCallback<Map> failCallback,{String? nickName})async{
-    if(type == 1){
-      _sendMessageAndReceive(YTIMApi.agreeFriendAddApi(userId,
-          name: nickName)).then((value) => resultCallback(value)).onError<Map>((error, stackTrace) => failCallback(error));
-    }
-    else{
-      _sendMessageAndReceive(YTIMApi.rejectFriendAddApi(userId)).then((value) => resultCallback(value)).onError<Map>((error, stackTrace) => failCallback(error));
+  void operationFriendRequest(String userId, int type,
+      Callback<String> resultCallback, FailCallback<Map> failCallback,
+      {String? nickName}) async {
+    if (type == 1) {
+      _sendMessageAndReceive(YTIMApi.agreeFriendAddApi(userId, name: nickName))
+          .then((value) => resultCallback(value))
+          .onError<Map>((error, stackTrace) => failCallback(error));
+    } else {
+      _sendMessageAndReceive(YTIMApi.rejectFriendAddApi(userId))
+          .then((value) => resultCallback(value))
+          .onError<Map>((error, stackTrace) => failCallback(error));
     }
   }
 
@@ -844,14 +903,16 @@ class YTIM {
   /// type 0---拒绝  1---同意
   /// 成功回调中返回数据 类型为json string
   /// 失败回调中返回error 类型为Map
-  void operationGroupRequest(String groupId,String messageId,int type,Callback<String> resultCallback,FailCallback<Map> failCallback)async{
-    if(type == 1){
-      _sendMessageAndReceive(YTIMApi.agreeJoinGroupApi(
-          groupId, messageId)).then((value) => resultCallback(value)).onError<Map>((error, stackTrace) => failCallback(error));
-    }
-    else{
-      _sendMessageAndReceive(YTIMApi.rejectJoinGroupApi(
-          groupId, messageId)).then((value) => resultCallback(value)).onError<Map>((error, stackTrace) => failCallback(error));
+  void operationGroupRequest(String groupId, String messageId, int type,
+      Callback<String> resultCallback, FailCallback<Map> failCallback) async {
+    if (type == 1) {
+      _sendMessageAndReceive(YTIMApi.agreeJoinGroupApi(groupId, messageId))
+          .then((value) => resultCallback(value))
+          .onError<Map>((error, stackTrace) => failCallback(error));
+    } else {
+      _sendMessageAndReceive(YTIMApi.rejectJoinGroupApi(groupId, messageId))
+          .then((value) => resultCallback(value))
+          .onError<Map>((error, stackTrace) => failCallback(error));
     }
   }
 

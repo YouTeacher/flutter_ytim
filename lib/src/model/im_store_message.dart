@@ -1,15 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter_ytim/flutter_ytim.dart';
-import 'package:flutter_ytim/src/model/im_base_message.dart';
-import 'package:flutter_ytim/src/model/im_user.dart';
-import 'package:flutter_ytim/src/model/im_chat_model.dart';
 
 //{"storeId":1000,"userId":7,"time":"1704943193313","consultationId":4,"isRead":"000","isRecall":"001","from":4,"type":1,"content":"你也好"}/// IM群组消息体
-class IMStoreMessage extends IMBaseMessage{
-  String? storeId,
-      userId,
-      consultationId;
+class IMStoreMessage extends IMBaseMessage {
+  String? storeId, userId, consultationId;
   List<int>? at;
   String? lastTalkAt;
   StoreModel? store;
@@ -28,10 +23,12 @@ class IMStoreMessage extends IMBaseMessage{
     super.filePath,
     super.uuid,
     super.status,
-    this.fromUser, required super.chatType,
+    this.fromUser,
+    required super.chatType,
   });
 
-  factory IMStoreMessage.fromJson(Map<String, dynamic> json,ChatType chatType) {
+  factory IMStoreMessage.fromJson(
+      Map<String, dynamic> json, ChatType chatType) {
     Map<String, dynamic> fromJson;
     if (json['formUser'] != null) {
       fromJson = json['formUser'];

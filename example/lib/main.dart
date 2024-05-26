@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_ytim/flutter_ytim.dart';
 import 'package:flutter_ytim_example/ui/page/im_home_page.dart';
 import 'package:flutter_ytim_example/values/localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,7 +29,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(
             create: (context) => IMStore({}, {}, {}, [], [], [], [])),
       ],
-      child: MaterialApp(
+      child: const MaterialApp(
         localizationsDelegates: [
           IMLocalizations.delegate,
           ...GlobalMaterialLocalizations.delegates,
@@ -37,10 +37,7 @@ class _MyAppState extends State<MyApp> {
         supportedLocales: [Locale('zh'), Locale('ja')],
         locale: Locale('zh'),
         home: Scaffold(
-          appBar: AppBar(
-            title: const Text('IM Example'),
-          ),
-          body: const IMHomePage(),
+          body: IMHomePage(),
         ),
       ),
     );

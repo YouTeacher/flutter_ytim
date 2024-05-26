@@ -30,16 +30,14 @@ class IMGroupControl {
 
   List<IMUser>? userList;
 
-
-  IMGroupControl({
-    this.groupId,
-    this.groupName,
-    this.groupAvatar,
-    this.from,
-    this.fromName,
-    this.content,
-    this.userList
-  });
+  IMGroupControl(
+      {this.groupId,
+      this.groupName,
+      this.groupAvatar,
+      this.from,
+      this.fromName,
+      this.content,
+      this.userList});
 
   factory IMGroupControl.fromJson(Map<String, dynamic> json) {
     return IMGroupControl(

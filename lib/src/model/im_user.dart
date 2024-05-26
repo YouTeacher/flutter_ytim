@@ -27,6 +27,7 @@ class IMUser {
 
   ///群组成员时模型字段
   String? groupId;
+
   // 1创建者，2管理员，3普通群员
   String? userType;
   String? nickname;
