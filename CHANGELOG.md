@@ -1,3 +1,6 @@
+## [2.5.6]
+* Upgrade `flutter_slidable` lib version to `3.1.0`.
+
 ## [2.5.5]
 * Support for set custom password.
 
