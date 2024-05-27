@@ -24,9 +24,8 @@ class IMUtils {
   /// 根据全局IM信息 更新IM未读消息。
   static void updateUnreadCount(BuildContext context) {
     int count = 0;
-    List<ChatType> typeList = [ChatType.user, ChatType.groups, ChatType.store];
-    for(ChatType type in typeList){
-      Map<String?, IMLastInfo> map = context.read<IMStore>().getLastInfo(type);
+    [ChatType.user, ChatType.groups, ChatType.store].forEach((e) {
+      Map<String?, IMLastInfo> map = context.read<IMStore>().getLastInfo(e);
       map.removeWhere((key, value) => key == 'null');
       List<IMLastInfo> values = map.values.toList();
       if (values.isNotEmpty) {
@@ -34,7 +33,7 @@ class IMUtils {
           count += element.unreadCount;
         }
       }
-    }
+    });
     if (YTIM().unreadCountCallback != null) {
       YTIM().unreadCountCallback!(count);
     }
