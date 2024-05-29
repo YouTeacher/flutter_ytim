@@ -13,7 +13,6 @@ import 'package:flutter_ytim_example/utils/ythttp.dart';
 import 'package:flutter_ytim_example/values/localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_ytim/src/ytim.dart';
-import 'package:flutter_ytim/src/ytimapi.dart';
 import 'package:flutter_ytim/src/model/im_group.dart';
 import 'package:flutter_ytim/src/model/im_group_message.dart';
 import 'package:flutter_ytim/src/model/im_message.dart';

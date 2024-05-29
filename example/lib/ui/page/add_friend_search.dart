@@ -3,15 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_ytim/src/ytim.dart';
-import 'package:flutter_ytim/src/ytimapi.dart';
 import 'package:flutter_ytim/src/model/im_user.dart';
-import 'package:flutter_ytim/src/utils/im_store.dart';
 import 'package:flutter_ytim_example/ui/view/search_view.dart';
 import 'package:flutter_ytim_example/ui/view/user_cell.dart';
 import 'package:flutter_ytim_example/utils/im_theme.dart';
 import 'package:flutter_ytim_example/utils/yt_utils.dart';
 import 'package:flutter_ytim_example/values/localizations.dart';
-import 'package:provider/provider.dart';
 
 //搜索添加好友
 class AddFriendSearchPage extends StatefulWidget {

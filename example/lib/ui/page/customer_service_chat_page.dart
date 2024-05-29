@@ -7,7 +7,6 @@ import 'package:flutter_ytim/src/utils/im_utils.dart';
 import 'package:flutter_ytim/src/ytim.dart';
 import 'package:flutter_ytim/src/model/im_chat_model.dart';
 import 'package:flutter_ytim/src/model/im_user.dart';
-import 'package:flutter_ytim/src/utils/im_store.dart';
 import 'package:flutter_ytim_example/ui/view/expanded_viewport.dart';
 import 'package:flutter_ytim_example/ui/view/full_screen_image_gallery.dart';
 import 'package:flutter_ytim_example/ui/view/im_refresh_header.dart';
@@ -16,7 +15,6 @@ import 'package:flutter_ytim_example/ui/view/item_chat_msg.dart';
 import 'package:flutter_ytim_example/utils/im_event_bus.dart';
 import 'package:flutter_ytim_example/utils/yt_utils.dart';
 import 'package:flutter_ytim_example/values/localizations.dart';
-import 'package:provider/provider.dart';
 
 //客服会话页面
 class CustomerServiceChatPage extends StatefulWidget {

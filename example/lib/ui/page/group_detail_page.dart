@@ -4,7 +4,6 @@ import 'package:flutter_ytim/flutter_ytim.dart';
 import 'package:flutter_ytim/src/model/im_group.dart';
 import 'package:flutter_ytim/src/model/im_user.dart';
 import 'package:flutter_ytim/src/utils/im_utils.dart';
-import 'package:flutter_ytim/src/ytimapi.dart';
 import 'package:flutter_ytim_example/ui/page/group_edit_page.dart';
 import 'package:flutter_ytim_example/ui/page/group_friend_list_page.dart';
 import 'package:flutter_ytim_example/ui/view/chat_avatar.dart';

@@ -3,7 +3,6 @@ import 'package:flutter_ytim/flutter_ytim.dart';
 import 'package:flutter_ytim/src/model/im_sys_msg.dart';
 import 'package:flutter_ytim/src/utils/im_store.dart';
 import 'package:flutter_ytim/src/utils/im_utils.dart';
-import 'package:flutter_ytim/src/ytimapi.dart';
 import 'package:flutter_ytim_example/ui/page/system_message_detail.dart';
 import 'package:flutter_ytim_example/ui/view/chat_sys_msg_cell.dart';
 import 'package:flutter_ytim_example/ui/widget/im_empty_view.dart';

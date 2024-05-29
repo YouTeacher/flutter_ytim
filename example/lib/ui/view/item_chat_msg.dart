@@ -1,12 +1,8 @@
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ytim/flutter_ytim.dart';
-import 'package:flutter_ytim/src/model/im_group_message.dart';
-import 'package:flutter_ytim/src/model/im_message.dart';
-import 'package:flutter_ytim/src/model/im_store_message.dart';
 import 'package:flutter_ytim/src/model/im_user.dart';
 import 'package:flutter_ytim/src/model/im_chat_model.dart';
 import 'package:flutter_ytim_example/ui/view/chat_avatar.dart';

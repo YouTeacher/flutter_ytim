@@ -1,16 +1,10 @@
-import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_ytim/flutter_ytim.dart';
-import 'package:flutter_ytim/src/model/im_chat_model.dart';
 import 'package:flutter_ytim/src/model/im_group.dart';
-import 'package:flutter_ytim/src/utils/im_store.dart';
-import 'package:flutter_ytim/src/utils/im_utils.dart';
 import 'package:flutter_ytim/src/utils/yt_log.dart';
-import 'package:flutter_ytim/src/ytimapi.dart';
 import 'package:flutter_ytim_example/ui/view/chat_avatar.dart';
 import 'package:flutter_ytim_example/ui/widget/im_custom_textfield.dart';
 import 'package:flutter_ytim_example/ui/widget/im_field_lable.dart';
@@ -24,7 +18,6 @@ import 'package:flutter_ytim_example/values/localizations.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 
 //编辑群组
 class GroupsEditPage extends StatefulWidget {

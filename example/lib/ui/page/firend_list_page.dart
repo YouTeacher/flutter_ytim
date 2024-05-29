@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_ytim/src/utils/im_utils.dart';
 import 'package:flutter_ytim/src/ytim.dart';
-import 'package:flutter_ytim/src/ytimapi.dart';
 import 'package:flutter_ytim/src/model/im_user.dart';
 import 'package:flutter_ytim/src/utils/im_store.dart';
 import 'package:flutter_ytim_example/ui/view/user_cell.dart';

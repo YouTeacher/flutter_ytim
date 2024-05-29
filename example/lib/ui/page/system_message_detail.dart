@@ -1,6 +1,4 @@
 //IM通知详细页面
-
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -12,7 +10,6 @@ import 'package:flutter_ytim/src/model/im_sys_msg.dart';
 import 'package:flutter_ytim/src/model/im_user.dart';
 import 'package:flutter_ytim/src/utils/im_store.dart';
 import 'package:flutter_ytim/src/utils/im_utils.dart';
-import 'package:flutter_ytim/src/ytimapi.dart';
 import 'package:flutter_ytim_example/ui/page/chat_page.dart';
 import 'package:flutter_ytim_example/ui/page/group_chat_page.dart';
 import 'package:flutter_ytim_example/ui/widget/im_custom_textfield.dart';

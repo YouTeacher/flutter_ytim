@@ -9,7 +9,6 @@ import 'package:flutter_ytim_example/ui/view/unread_count_view.dart';
 import 'package:flutter_ytim_example/utils/im_theme.dart';
 import 'package:flutter_ytim_example/utils/yt_utils.dart';
 import 'package:flutter_ytim_example/values/localizations.dart';
-import 'package:provider/provider.dart';
 
 // 会话列表
 class ChatListCell extends StatelessWidget {

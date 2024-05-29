@@ -21,13 +21,7 @@ import 'package:image/image.dart' as img;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_ytim/src/ytim.dart';
-import 'package:flutter_ytim/src/ytimapi.dart';
-import 'package:flutter_ytim/src/model/im_chat_model.dart';
-import 'package:flutter_ytim/src/model/im_group.dart';
 import 'package:flutter_ytim/src/model/im_user.dart';
-import 'package:flutter_ytim/src/utils/im_store.dart';
-import 'package:flutter_ytim/src/utils/im_utils.dart';
-import 'package:provider/provider.dart';
 
 //创建群组
 class GroupCreatePage extends StatefulWidget {
