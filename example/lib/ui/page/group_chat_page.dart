@@ -8,13 +8,8 @@ import 'package:flutter_ytim/src/model/im_group.dart';
 import 'package:flutter_ytim/src/model/im_group_message.dart';
 import 'package:flutter_ytim/src/utils/im_utils.dart';
 import 'package:flutter_ytim/src/ytim.dart';
-import 'package:flutter_ytim/src/ytimapi.dart';
 import 'package:flutter_ytim/src/model/im_chat_model.dart';
-import 'package:flutter_ytim/src/model/im_command.dart';
-import 'package:flutter_ytim/src/model/im_history_msg_list.dart';
 import 'package:flutter_ytim/src/model/im_user.dart';
-import 'package:flutter_ytim/src/utils/im_sp_utils.dart';
-import 'package:flutter_ytim/src/utils/im_store.dart';
 import 'package:flutter_ytim_example/ui/page/group_detail_page.dart';
 import 'package:flutter_ytim_example/ui/view/expanded_viewport.dart';
 import 'package:flutter_ytim_example/ui/view/full_screen_image_gallery.dart';
@@ -25,7 +20,6 @@ import 'package:flutter_ytim_example/utils/im_event_bus.dart';
 import 'package:flutter_ytim_example/utils/im_theme.dart';
 import 'package:flutter_ytim_example/utils/yt_utils.dart';
 import 'package:flutter_ytim_example/values/localizations.dart';
-import 'package:provider/provider.dart';
 
 class GroupChatPage extends StatefulWidget {
   final IMGroup group;
@@ -357,6 +351,9 @@ class _GroupChatPageState extends State<GroupChatPage> {
   }
 
   _remoteMsgFromMsgList(String? timestamp,String? content) {
+    if(content== null || content.isEmpty){
+      return;
+    }
     if (_msgList.isNotEmpty) {
       int index = 0;
       for (var i = 0; i < _msgList.length; i++) {

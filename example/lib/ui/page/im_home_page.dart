@@ -42,7 +42,7 @@ class _IMHomePageState extends State<IMHomePage>
 
     YTIM().init(
         loginToken:
-            'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJrZXkiOiIzNyIsImRhdGEiOnsidXNlclR5cGUiOjIsInVzZXJJZCI6IjM3In0sImV4dCI6MzYwMCwiZXhwIjoxNzE2ODEwOTc3LCJpc3MiOiJ6eTI3MDEiLCJpYXQiOjE3MTY4MDczNzd9.Bq9ugMs0q_3JXJ-nka-I8KMu5IifY_cEuJOudQmctyA',
+            'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJrZXkiOiIzNyIsImRhdGEiOnsidXNlclR5cGUiOjIsInVzZXJJZCI6IjM3In0sImV4dCI6MzYwMCwiZXhwIjoxNzE2OTUwNzU2LCJpc3MiOiJ6eTI3MDEiLCJpYXQiOjE3MTY5NDcxNTZ9.gPPFOhpB9DxebEQlBo_kuDqsoMKHwFSCEsoMkiwxgkY',
         websocketUrl: 'wss://preim.rentalbike.shop:18081',
         onConnectErrorCallback: (WebSocketChannelException error) {},
         imLoginSuccessCallback: (IMUser user) {
