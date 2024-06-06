@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_ytim/flutter_ytim.dart';
 import 'package:flutter_ytim/src/model/im_user.dart';
 import 'package:flutter_ytim/src/model/im_chat_model.dart';
+import 'package:flutter_ytim_example/ui/page/web_page.dart';
 import 'package:flutter_ytim_example/ui/view/chat_avatar.dart';
 import 'package:flutter_ytim_example/ui/view/voice_message_cell.dart';
 import 'package:flutter_ytim_example/utils/yt_utils.dart';
@@ -190,7 +192,22 @@ class ChatMessageType extends StatelessWidget {
   _getItemView(BuildContext context) {
     // 文本
     if (type == '1') {
-      return Text(content ?? "");
+      return Linkify(
+        onOpen: (link) async {
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){
+            return WebPage(
+              url: link.url,
+              title: IMLocalizations.of(context).currentLocalization.detail,
+            );
+          }));
+        },
+        text: content ?? '',
+        style: const TextStyle(height: 1.8),
+        linkStyle: const TextStyle(
+          color: Colors.blue,
+          decorationColor: Colors.blue,
+        ),
+      );
     }
     // 图片
     else if (type == '2') {
