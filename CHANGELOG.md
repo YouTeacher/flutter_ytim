@@ -1,3 +1,8 @@
+## [3.0.0]
+* A lot of Break changes.
+* Support group chat.
+* Support send audio and image, etc.
+
 ## [2.5.6]
 * Upgrade `flutter_slidable` lib version to `3.1.0`.
 
